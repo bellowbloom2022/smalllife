@@ -1,2 +1,2 @@
 # smalllife
-This is a game call smalllife
+This is a game project
