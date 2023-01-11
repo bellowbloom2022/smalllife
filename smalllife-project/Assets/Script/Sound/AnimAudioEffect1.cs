@@ -1,0 +1,26 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class AnimAudioEffect1 : MonoBehaviour
+{
+    public AudioClip mAudio;
+    public bool mIsTriggered;
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    public void onAnimTriggerAudioEffect() {
+        if (!mIsTriggered) {
+            mIsTriggered = true;
+            AudioManager.ins.PlayAudioEffect(mAudio);
+        }
+    }
+
+    public void onAnimTriggerAudioEffectCicle()
+    {
+        AudioManager.ins.PlayAudioEffect(mAudio);
+    }
+}
