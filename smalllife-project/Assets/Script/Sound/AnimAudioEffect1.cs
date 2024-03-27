@@ -12,14 +12,14 @@ public class AnimAudioEffect1 : MonoBehaviour
         
     }
 
-    public void onAnimTriggerAudioEffect() {
+    public void onAnimTriggerAudioEffect1() {
         if (!mIsTriggered) {
             mIsTriggered = true;
             AudioManager.ins.PlayAudioEffect(mAudio);
         }
     }
 
-    public void onAnimTriggerAudioEffectCicle()
+    public void onAnimTriggerAudioEffectCicle1()
     {
         AudioManager.ins.PlayAudioEffect(mAudio);
     }

@@ -6,11 +6,6 @@ public class AnimAudioEffect : MonoBehaviour
 {
     public AudioClip mAudio;
     public bool mIsTriggered;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void onAnimTriggerAudioEffect() {
         if (!mIsTriggered) {
