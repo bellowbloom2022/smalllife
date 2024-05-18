@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        // 如果玩家按下鼠标左键，可以拖动画布
+        // 如果玩家按下鼠标右键，可以拖动画布
         if (Input.GetMouseButton(1))
         {
             Vector3 mouseDelta = new Vector3(-Input.GetAxis("Mouse X"), -Input.GetAxis("Mouse Y"), 0f) * 4f;

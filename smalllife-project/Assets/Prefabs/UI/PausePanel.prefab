@@ -1047,7 +1047,6 @@ GameObject:
   - component: {fileID: 1374658630511230908}
   - component: {fileID: 1374658630511230909}
   - component: {fileID: 1374658630511230910}
-  - component: {fileID: 1374658630511230907}
   m_Layer: 6
   m_Name: LanguageButton
   m_TagString: Untagged
@@ -1170,7 +1169,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1374658630511230907}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: NotebookOpener, Assembly-CSharp
         m_MethodName: ToggleNotebookPanel
         m_Mode: 1
@@ -1182,20 +1181,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1374658630511230907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1374658630511230896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f2c4836e26c34b842a7c3e0591e0ecfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  notebookPanel: {fileID: 984107594893016489}
-  closeButton: {fileID: 984107595731141410}
 --- !u!1 &1374658630684523270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1602,24 +1587,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a04678a1c8a565d4a9a6bac299f7af6e, type: 3}
---- !u!1 &984107594893016489 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2214508885072873267, guid: a04678a1c8a565d4a9a6bac299f7af6e, type: 3}
-  m_PrefabInstance: {fileID: 1374658630140017306}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &984107594893016490 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2214508885072873264, guid: a04678a1c8a565d4a9a6bac299f7af6e, type: 3}
   m_PrefabInstance: {fileID: 1374658630140017306}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &984107595731141410 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2214508886180379064, guid: a04678a1c8a565d4a9a6bac299f7af6e, type: 3}
-  m_PrefabInstance: {fileID: 1374658630140017306}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
