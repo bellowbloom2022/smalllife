@@ -7,8 +7,10 @@ public class AnimAudioEffect : MonoBehaviour
     public AudioClip mAudio;
     public bool mIsTriggered;
 
-    public void onAnimTriggerAudioEffect() {
-        if (!mIsTriggered) {
+    public void onAnimTriggerAudioEffect() 
+    {
+        if (!mIsTriggered) 
+        {
             mIsTriggered = true;
             AudioManager.ins.PlayAudioEffect(mAudio);
         }

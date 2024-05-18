@@ -12,6 +12,7 @@ public class StepByStepText : MonoBehaviour
     public GameObject[] guideTextObjects;
     public Image[] guideImages;
     public GameObject nextButton;
+    public AudioSource typingSound;
 
     private int currentTextIndex = 0;
     private string currentText;
@@ -21,7 +22,10 @@ public class StepByStepText : MonoBehaviour
 
     private void Start()
     {
-        nextButton.SetActive(false);
+        if (nextButton != null)
+        {
+            nextButton.SetActive(false);
+        }
 
         //Hide all LeanLocalizedText game objects
         foreach (var guideTextObject in guideTextObjects)
@@ -40,16 +44,32 @@ public class StepByStepText : MonoBehaviour
 
     private void Update()
     {
-        //Check for input (mouse click or touch)
-        if (Input.GetMouseButtonDown(0) && !isPrinting)
+        // 检查输入（鼠标点击或触摸）
+        if (Input.GetMouseButtonDown(0) && !isPrinting && currentTextIndex < guideTexts.Length - 1)
         {
-            ShowNextText();
+            if (nextButton == null || !nextButton.activeSelf)
+            {
+                // 如果 NextButton 不存在或未激活，则调用 ShowNextText()
+                ShowNextText();
+            }
+            else
+            {
+                // 检查鼠标点击位置是否在 nextButton 区域内
+                RectTransform rectTransform = nextButton.GetComponent<RectTransform>();
+                Vector2 localPoint;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint);
+                if (rectTransform.rect.Contains(localPoint))
+                {
+                    // 如果鼠标点击在 nextButton 区域内，则调用 OnNextButtonClick()
+                    OnNextButtonClick();
+                }
+            }
         }
     }
 
     private void ShowNextText()
     {
-        if(currentTextIndex < guideTexts.Length)
+        if (currentTextIndex < guideTexts.Length)
         {
             //Hide the previous text
             if (currentTextIndex > 0)
@@ -66,35 +86,52 @@ public class StepByStepText : MonoBehaviour
                 guideImages[currentTextIndex].sprite = guideImages[currentTextIndex].sprite;
             }
 
-            StartCoroutine(ShowTextWithTypewriterEffect());
-        }
-        else
-        {
-            //All texts are printed, show the "Next" button
-            nextButton.SetActive(true);
+            StartCoroutine(ShowTextWithTypewriterEffect(currentTextIndex));
         }
     }
 
-    private IEnumerator ShowTextWithTypewriterEffect()
+    public void OnNextButtonClick()
+    {
+        //点击next按钮后隐藏按钮，继续显示下一句话
+        nextButton.SetActive(false);
+        currentTextIndex++;//Move to the next text
+        ShowNextText();
+    }
+
+    private IEnumerator ShowTextWithTypewriterEffect(int textIndex)
     {
         isPrinting = true;
-        //textContainer.SetActive(true);
+
+        string textToShow = GetLocalizedText(guideTexts[textIndex]);
 
         int index = 0;
-        while (index < currentText.Length)
+        while (index < textToShow.Length)
         {
-            foreach (var textComponent in guideTextObjects[currentTextIndex].GetComponentsInChildren<Text>())
+            //播放打字音效
+            if (typingSound != null && index < textToShow.Length - 1)//检查 index < currentText.Length - 1 避免最后一个字符播放音效
             {
-                textComponent.text += currentText[index];
+                typingSound.Play();
             }
-            index++;
-            yield return new WaitForSeconds(delayBetweenCharacters);
-        }
 
+            foreach (var textComponent in guideTextObjects[textIndex].GetComponentsInChildren<Text>())
+            {
+                textComponent.text += textToShow[index];
+            }
+            yield return new WaitForSeconds(delayBetweenCharacters);
+            index++;
+        }
         isPrinting = false;
 
-        //Move to the next text
-        currentTextIndex++;
+        //Hide the "Next" button if there are no more texts to display
+        if (textIndex == guideTexts.Length - 1 && nextButton != null)
+        {
+            nextButton.SetActive(false);
+        }
+        //Show the "Next" button after each text is displayed
+        else if (nextButton != null)
+        {
+            nextButton.SetActive(true);
+        }
     }
 
     private string GetLocalizedText(string phraseName)
@@ -110,4 +147,9 @@ public class StepByStepText : MonoBehaviour
             return phraseName;
         }
     }
+    public bool AllTextRead()
+    {
+        return currentTextIndex == guideTexts.Length - 1;
+    }
 }
+

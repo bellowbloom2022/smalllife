@@ -10,22 +10,18 @@ public class AudioManager : MonoBehaviour
     public AudioClip mAudioClip1;
     public AudioClip mAudioClip2;
     public static  AudioManager ins;
-    // Start is called before the first frame update
+
     void Start()
     {
-        if (mAudioSource == null) {
+        if (mAudioSource == null) 
+        {
             mAudioSource = GetComponent<AudioSource>();
         }
         ins = this;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PlayGetTrigger1AudioEffect() 
     {
-        
-    }
-
-    public void PlayGetTrigger1AudioEffect() {
         this.mAudioSource.PlayOneShot(mAudioClip1);
     }
     public void PlayGetTrigger2AudioEffect()
@@ -33,7 +29,8 @@ public class AudioManager : MonoBehaviour
         this.mAudioSource.PlayOneShot(mAudioClip2);
     }
 
-    public void PlayAudioEffect(AudioClip audio) {
+    public void PlayAudioEffect(AudioClip audio) 
+    {
         this.mAudioSource.PlayOneShot(audio);
     }
 }

@@ -49,7 +49,7 @@ public class Goal : MonoBehaviour
                 cameraController.MoveCameraToPosition(mCamPosB.transform.position);
             }
             Debug.Log("Get cat book");
-            mIsTriggered = true;//将 mIsTriggered 设为 true。
+            mIsTriggered = true;
 
             //根据 mNovelPosStart 对应的位置，在 Canvas 中的坐标系中计算出小说对象 mGameObjectNovel 的起始位置。
             Vector3 screenPos = Camera.main.WorldToScreenPoint(mNovelPosStart.transform.position);
@@ -74,7 +74,7 @@ public class Goal : MonoBehaviour
                 {
                     //最后，在 mGameObjectNovel 上执行 Animator 组件上名为 "click" 的触发器
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
-                    //Level.ins.AddCount();
+                    Level.ins.AddCount();
                 };
             };
         }//如果 mIsTriggered 为 true，则什么也不做。

@@ -8,6 +8,7 @@ public class SelectController : MonoBehaviour
 
     //public GameObject mPrefabMouseClick;
     private GameManager gameManager;
+    private int interactAnimationsClickedCount;
 
     void Start()
     {
@@ -47,15 +48,20 @@ public class SelectController : MonoBehaviour
                     {
                         Debug.Log(go.name + "click1");
                         anim.SetTrigger("click1");
+                        interactAnimationsClickedCount++; // 玩家点击了一个互动动画
                     }
                     else
                     {
                         Debug.Log(go.name + "click");
                         anim.SetTrigger("click");
+                        interactAnimationsClickedCount++; // 玩家点击了一个互动动画
+                    }
+                    if (interactAnimationsClickedCount >= 2)
+                    {
+                        interactAnimationsClickedCount = 2;//防止计数器超过2
                     }
                 }
             }
-
             //显示鼠标特效
             //if (mPrefabMouseClick)
             //{
@@ -63,5 +69,9 @@ public class SelectController : MonoBehaviour
             //mPrefabMouseClick.GetComponent<Animator>().SetTrigger("click");
             //}
         }
+    }
+    public bool InteractAnimationsClicked
+    {
+        get { return interactAnimationsClickedCount == 2; }
     }
 }
