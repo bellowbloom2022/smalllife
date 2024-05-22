@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +13,7 @@ public class StepByStepText : MonoBehaviour
     public GameObject[] guideTextObjects;
     public Image[] guideImages;
     public GameObject nextButton;
+    public GameObject coverUI;
     public AudioSource typingSound;
 
     private int currentTextIndex = 0;
@@ -47,6 +49,13 @@ public class StepByStepText : MonoBehaviour
         // 检查输入（鼠标点击或触摸）
         if (Input.GetMouseButtonDown(0) && !isPrinting && currentTextIndex < guideTexts.Length - 1)
         {
+            // 检查是否有遮罩 UI
+            if (coverUI != null && coverUI.activeSelf)
+            {
+                Debug.Log("遮罩激活，点击事件被阻止");
+                return; // 遮罩激活时，直接返回，不处理点击事件
+            }
+
             if (nextButton == null || !nextButton.activeSelf)
             {
                 // 如果 NextButton 不存在或未激活，则调用 ShowNextText()

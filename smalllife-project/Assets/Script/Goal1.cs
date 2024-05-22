@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class Goal : MonoBehaviour
+public class Goal1 : MonoBehaviour
 {
 
     public GameObject mGameObjectNovel;
@@ -15,6 +15,8 @@ public class Goal : MonoBehaviour
     public bool mMoveCamera;//公共的bool变量用于控制是否移动摄像机
     public float mCamMoveSpeedA = 3f;//移动到A点的默认速度
     public float mCamMoveSpeedB = 3f;//移动到B点的默认速度
+
+    public HintAnimator3 hintAnimator3;
 
     private CameraController cameraController;
 
@@ -80,6 +82,15 @@ public class Goal : MonoBehaviour
                     Debug.Log("可以进入下一关");
                 };
             };
+            if (hintAnimator3 != null)
+            {
+                hintAnimator3.GoalAchieved();
+                Debug.Log("goal事件通知发送成功");
+            }
+            else
+            {
+                Debug.LogError("HintAnimator3 reference is not set in the Goal script");
+            }
         }//如果 mIsTriggered 为 true，则什么也不做。
     }
  }

@@ -65,17 +65,17 @@ public class CameraController : MonoBehaviour
         transform.position = pos;
     }
 
-    public void MoveCameraToPosition(Vector3 position)
+    public void MoveCameraToPosition(Vector3 position,float speed)
     {
         //在这里编写摄像机移动的代码，使其移动到position位置
-        StartCoroutine(MoveCameraCoroutine(position));
+        StartCoroutine(MoveCameraCoroutine(position,speed));
     }
 
-    IEnumerator MoveCameraCoroutine(Vector3 targetPos)
+    IEnumerator MoveCameraCoroutine(Vector3 targetPos,float speed)
     {
         Vector3 startPos = transform.position;
         float elapsedTime = 0.0f;
-        float moveTime = 1.5f;     //移动时间为1秒，可以根据需要修改
+        float moveTime = Vector3.Distance(startPos, targetPos) / speed;     //移动时间为1秒，可以根据需要修改
 
         while (elapsedTime < moveTime)
         {
