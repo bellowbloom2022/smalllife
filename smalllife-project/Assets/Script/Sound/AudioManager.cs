@@ -29,6 +29,11 @@ public class AudioManager : MonoBehaviour
         this.mAudioSource.PlayOneShot(mAudioClip2);
     }
 
+    public void PlayGetTrigger3AudioEffect()
+    {
+        this.mAudioSource.PlayOneShot(mAudioClip2);
+    }
+
     public void PlayAudioEffect(AudioClip audio) 
     {
         this.mAudioSource.PlayOneShot(audio);
