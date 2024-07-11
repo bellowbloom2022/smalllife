@@ -29,6 +29,7 @@ public class HudManager : MonoBehaviour
             }
         }
     }
+
     public void OpenPanel()
     {
         if (panel != null)
@@ -44,7 +45,6 @@ public class HudManager : MonoBehaviour
             panel.SetActive(false);
         }
     }
-
     public void OnResetButtonClicked()
     {
         gameManager.ResetGame();//调用gamemanager中的resetGame方法

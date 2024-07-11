@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class Goal1 : MonoBehaviour
@@ -17,13 +18,21 @@ public class Goal1 : MonoBehaviour
     public float mCamMoveSpeedB = 3f;//移动到B点的默认速度
 
     public HintAnimator3 hintAnimator3;
-
+    public Sprite goalImage;
     private CameraController cameraController;
+    public GameObject goalAchievePrefab;
+    private Animator goalAchieveAnimator;
+    private Image achieveImage;
 
     private void Start()
     {
         //在start方法中查找场景中的CameraController 组件，并将其保存在 cameraController 变量中。
         cameraController = FindObjectOfType<CameraController>();
+        // Instantiate the goal achieve prefab and set up the animators and image
+        GameObject goalAchieveInstance = Instantiate(goalAchievePrefab, mCanvas.transform);
+        goalAchieveAnimator = goalAchieveInstance.GetComponent<Animator>();
+        achieveImage = goalAchieveInstance.transform.Find("goalimage").GetComponent<Image>();
+        achieveImage.sprite = goalImage;
     }
 
     void OnAnim1End()
@@ -34,6 +43,11 @@ public class Goal1 : MonoBehaviour
         for (int i = 0; i < clis.Length; ++i)
         {
             clis[i].enabled = !clis[i].enabled;
+        }
+        //播放UI层级的成就动画goal_step1achieve
+        if (goalAchieveAnimator != null)
+        {
+            goalAchieveAnimator.SetTrigger("goal_step1achieve");
         }
         //如果 cameraController 变量不为空，将相机移动到 mCamPosA 对应的位置。
         if (cameraController != null && mMoveCamera)
@@ -47,6 +61,11 @@ public class Goal1 : MonoBehaviour
         //当 Goal对象的第二个动画（Anim2）播放完毕时，根据 mIsTriggered 变量决定是否执行以下操作：
         if (!mIsTriggered)//如果 mIsTriggered 为 false，则执行以下操作：
         {
+            // 播放UI层级的成就动画 goal_step2achieve
+            if (goalAchieveAnimator != null)
+            {
+                goalAchieveAnimator.SetTrigger("goal_step2achieve");
+            }
             //如果 cameraController 变量不为空，将相机移动到 mCamPosB 对应的位置。
             if (cameraController != null && mMoveCamera)
             {
