@@ -18,6 +18,7 @@ public class Level : MonoBehaviour
         ins = this;
     }
 
+
     public void AddCount()
     {
         ++this.mCount;
