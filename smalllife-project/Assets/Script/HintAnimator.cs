@@ -21,7 +21,7 @@ public class HintAnimator : MonoBehaviour
     {
         hint1.SetActive(true);
         yield return new WaitUntil(() => Input.GetMouseButton(1)); // 等待右键拖拽画布
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(2);
         hint1.SetActive(false);
         StartCoroutine(ShowHint2());
     }
@@ -43,8 +43,8 @@ public class HintAnimator : MonoBehaviour
         // 检查玩家是否已经看到了 hint3，如果是，才继续显示 nextButton
         if (hint3.activeSelf)
         {
-            hint3.SetActive(false);
             yield return new WaitForSeconds(2);
+            hint3.SetActive(false);
             nextButton.SetActive(true);
         }
         else
