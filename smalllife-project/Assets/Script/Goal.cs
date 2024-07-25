@@ -25,6 +25,27 @@ public class Goal : MonoBehaviour
     private Animator goalAchieveAnimator;
     private Image achieveImage;
 
+    // 对白相关
+    public Text dialogueText;
+    private string[] dialoguesPreAnim1;
+    private string[] dialoguesPostAnim1;
+    private string[] dialoguesPostAnim2;
+    private int dialogueIndex;
+
+    // 不同阶段的Collider
+    public Collider2D[] collidersPreAnim1;
+    public Collider2D[] collidersPostAnim1;
+    public Collider2D[] collidersPostAnim2;
+
+    private enum Stage
+    {
+        PreAnim1,
+        PostAnim1,
+        PostAnim2
+    }
+
+    private Stage currentStage;
+
     private void Start()
     {
         //在start方法中查找场景中的CameraController 组件，并将其保存在 cameraController 变量中。
@@ -34,8 +55,79 @@ public class Goal : MonoBehaviour
         goalAchieveAnimator = goalAchieveInstance.GetComponent<Animator>();
         achieveImage = goalAchieveInstance.transform.Find("goalimage").GetComponent<Image>();
         achieveImage.sprite = goalImage;
+
+        // 初始化对白文本
+        dialoguesPreAnim1 = new string[] { "Dialogue 1", "Dialogue 2", "Dialogue 3" };
+        dialoguesPostAnim1 = new string[] { "Dialogue 4", "Dialogue 5", "Dialogue 6" };
+        dialoguesPostAnim2 = new string[] { "Dialogue 7", "Dialogue 8", "Dialogue 9" };
+
+        currentStage = Stage.PreAnim1;
+        SetCollidersActive(collidersPreAnim1);
+
+        // 确保对话框文本一开始是隐藏的
+        if (dialogueText != null)
+        {
+            dialogueText.gameObject.SetActive(false);
+        }
     }
 
+    private void OnMouseDown()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
+
+        if (hit.collider != null)
+        {
+            switch (currentStage)
+            {
+                case Stage.PreAnim1:
+                    HandleDialogue(collidersPreAnim1, dialoguesPreAnim1, hit.collider);
+                    break;
+                case Stage.PostAnim1:
+                    HandleDialogue(collidersPostAnim1, dialoguesPostAnim1, hit.collider);
+                    break;
+                case Stage.PostAnim2:
+                    HandleDialogue(collidersPostAnim2, dialoguesPostAnim2, hit.collider);
+                    break;
+            }
+        }
+    }
+
+    private void HandleDialogue(Collider2D[] colliders, string[] dialogues, Collider2D hitCollider)
+    {
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (hitCollider == colliders[i])
+            {
+                ShowDialogue(dialogues[i]);
+                break;
+            }
+        }
+    }
+    private void ShowDialogue(string dialogue)
+    {
+        if (dialogueText != null)
+        {
+            dialogueText.text = dialogue;
+            dialogueText.gameObject.SetActive(true);
+
+            // 可以设置在一定时间后隐藏
+            DOVirtual.DelayedCall(3f, () =>
+            {
+                dialogueText.gameObject.SetActive(false);
+            });
+        }
+    }
+    private void SetCollidersActive(Collider2D[] activeColliders)
+    {
+        // 先禁用所有Collider
+        foreach (var col in collidersPreAnim1) col.enabled = false;
+        foreach (var col in collidersPostAnim1) col.enabled = false;
+        foreach (var col in collidersPostAnim2) col.enabled = false;
+
+        // 启用当前阶段的Collider
+        foreach (var col in activeColliders) col.enabled = true;
+    }
     void OnAnim1End()
     {
         //当 Goal对象的第一个动画（Anim1）播放完毕时，关闭 Goal 对象上的所有 BoxCollider 组件。
@@ -57,6 +149,10 @@ public class Goal : MonoBehaviour
         {
             cameraController.MoveCameraToPosition(mCamPosA.transform.position, mCamMoveSpeedA);
         }
+
+        //切换到anim1后的阶段
+        currentStage = Stage.PostAnim1;
+        SetCollidersActive(collidersPostAnim1);
     }
 
     void OnAnim2End()
@@ -104,6 +200,10 @@ public class Goal : MonoBehaviour
                     Debug.Log("可以进入下一关");
                 };
             };
+
+            // 切换到anim2后的阶段
+            currentStage = Stage.PostAnim2;
+            SetCollidersActive(collidersPostAnim2);
         }//如果 mIsTriggered 为 true，则什么也不做。
     }
  }

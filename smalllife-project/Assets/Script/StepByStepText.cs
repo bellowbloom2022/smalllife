@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using Lean.Localization;
+using UnityEngine.SceneManagement;
 
 public class StepByStepText : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class StepByStepText : MonoBehaviour
     public GameObject[] guideTextObjects;
     public Image[] guideImages;
     public GameObject nextButton;
+    public GameObject nextSceneButton;
     public GameObject coverUI;
     public AudioSource typingSound;
 
@@ -20,6 +22,8 @@ public class StepByStepText : MonoBehaviour
     private string currentText;
 
     private bool isPrinting = false;
+    private bool textFullyDisplayed = false; // Track if the text is fully displayed
+    private bool skipToFullText = false;
 
 
     private void Start()
@@ -29,52 +33,52 @@ public class StepByStepText : MonoBehaviour
             nextButton.SetActive(false);
         }
 
+        if (nextSceneButton != null)
+        {
+            nextSceneButton.SetActive(false);
+        }
+
         //Hide all LeanLocalizedText game objects
         foreach (var guideTextObject in guideTextObjects)
         {
             guideTextObject.SetActive(false);
         }
 
-        // 初始化guideImagesInTextobjects数组
-        guideImages = new Image[guideTextObjects.Length];
-        for (int i = 0; i < guideTextObjects.Length; i++)
-        {
-            guideImages[i] = guideTextObjects[i].GetComponentInChildren<Image>();
-        }
         ShowNextText();
     }
 
     private void Update()
     {
-        // 检查输入（鼠标点击或触摸）
-        if (Input.GetMouseButtonDown(0) && !isPrinting && currentTextIndex < guideTexts.Length - 1)
+        // Check input (mouse click or touch)
+        if (Input.GetMouseButtonDown(0))
         {
-            // 检查是否有遮罩 UI
-            if (coverUI != null && coverUI.activeSelf)
+            // If text is being printed, skip to full text
+            if (isPrinting)
             {
-                Debug.Log("遮罩激活，点击事件被阻止");
-                return; // 遮罩激活时，直接返回，不处理点击事件
+                skipToFullText = true;
             }
-
-            if (nextButton == null || !nextButton.activeSelf)
+            // If text is fully displayed and not printing, show the next text
+            else if (textFullyDisplayed)
             {
-                // 如果 NextButton 不存在或未激活，则调用 ShowNextText()
-                ShowNextText();
-            }
-            else
-            {
-                // 检查鼠标点击位置是否在 nextButton 区域内
-                RectTransform rectTransform = nextButton.GetComponent<RectTransform>();
-                Vector2 localPoint;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint);
-                if (rectTransform.rect.Contains(localPoint))
+                if (nextButton == null || !nextButton.activeSelf)
                 {
-                    // 如果鼠标点击在 nextButton 区域内，则调用 OnNextButtonClick()
                     OnNextButtonClick();
+                }
+                else
+                {
+                    // Check if mouse click position is within nextButton area
+                    RectTransform rectTransform = nextButton.GetComponent<RectTransform>();
+                    Vector2 localPoint;
+                    RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, Input.mousePosition, null, out localPoint);
+                    if (rectTransform.rect.Contains(localPoint))
+                    {
+                        OnNextButtonClick();
+                    }
                 }
             }
         }
     }
+
 
     private void ShowNextText()
     {
@@ -95,6 +99,7 @@ public class StepByStepText : MonoBehaviour
                 guideImages[currentTextIndex].sprite = guideImages[currentTextIndex].sprite;
             }
 
+            textFullyDisplayed = false; // Reset display status
             StartCoroutine(ShowTextWithTypewriterEffect(currentTextIndex));
         }
     }
@@ -110,12 +115,26 @@ public class StepByStepText : MonoBehaviour
     private IEnumerator ShowTextWithTypewriterEffect(int textIndex)
     {
         isPrinting = true;
+        skipToFullText = false; // Reset skip flag
 
         string textToShow = GetLocalizedText(guideTexts[textIndex]);
-
+        // Clear the text components before starting to display text
+        foreach (var textComponent in guideTextObjects[textIndex].GetComponentsInChildren<Text>())
+        {
+            textComponent.text = string.Empty; // Clear the text
+        }
         int index = 0;
         while (index < textToShow.Length)
         {
+            // Check if skip to full text is requested
+            if (skipToFullText)
+            {
+                foreach (var textComponent in guideTextObjects[textIndex].GetComponentsInChildren<Text>())
+                {
+                    textComponent.text = textToShow; // Immediately show the full text
+                }
+                break;
+            }
             //播放打字音效
             if (typingSound != null && index < textToShow.Length - 1)//检查 index < currentText.Length - 1 避免最后一个字符播放音效
             {
@@ -130,16 +149,17 @@ public class StepByStepText : MonoBehaviour
             index++;
         }
         isPrinting = false;
+        textFullyDisplayed = true; // Set text display status
 
-        //Hide the "Next" button if there are no more texts to display
-        if (textIndex == guideTexts.Length - 1 && nextButton != null)
-        {
-            nextButton.SetActive(false);
-        }
-        //Show the "Next" button after each text is displayed
-        else if (nextButton != null)
+        // Show the next button if there are more texts to display
+        if (textIndex < guideTexts.Length - 1 && nextButton != null)
         {
             nextButton.SetActive(true);
+        }
+        // Show the "Next Scene" button if this is the last text
+        else if (textIndex == guideTexts.Length - 1 && nextSceneButton != null)
+        {
+            nextSceneButton.SetActive(true);
         }
     }
 
