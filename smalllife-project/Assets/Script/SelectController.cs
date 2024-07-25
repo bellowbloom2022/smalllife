@@ -61,6 +61,12 @@ public class SelectController : MonoBehaviour
                     {
                         interactAnimationsClickedCount = 2;//防止计数器超过2
                     }
+                    //Hide HintMark
+                    HintMarkController hintMark = go.GetComponentInChildren<HintMarkController>();
+                    if(hintMark != null)
+                    {
+                        hintMark.HideHint();
+                    }
                 }
             }
             //显示鼠标特效
