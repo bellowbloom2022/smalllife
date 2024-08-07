@@ -18,11 +18,35 @@ public class Goal1 : MonoBehaviour
     public float mCamMoveSpeedB = 3f;//移动到B点的默认速度
 
     public HintAnimator3 hintAnimator3;
+
     public Sprite goalImage;
     private CameraController cameraController;
     public GameObject goalAchievePrefab;
+
     private Animator goalAchieveAnimator;
     private Image achieveImage;
+
+    // 每个阶段的 Collider 数组
+    public Collider2D[] collidersPreAnim1;
+    public Collider2D[] collidersPostAnim1;
+    public Collider2D[] collidersPostAnim2;
+
+    // 每个阶段的对话框 Sprite 数组
+    public GameObject[] dialogueSpritesPreAnim1;
+    public GameObject[] dialogueSpritesPostAnim1;
+    public GameObject[] dialogueSpritesPostAnim2;
+
+    // 角色对白的 TextBox
+    public GameObject dialogueTextBox;
+    private enum Stage
+    {
+        PreAnim1,
+        PostAnim1,
+        PostAnim2
+    }
+
+    private Stage currentStage;
+    private GameObject activeDialogueSprite;
 
     private void Start()
     {
@@ -33,8 +57,93 @@ public class Goal1 : MonoBehaviour
         goalAchieveAnimator = goalAchieveInstance.GetComponent<Animator>();
         achieveImage = goalAchieveInstance.transform.Find("goalimage").GetComponent<Image>();
         achieveImage.sprite = goalImage;
+
+        currentStage = Stage.PreAnim1;
+        // 初始时隐藏所有对话框
+        HideAllDialogueSprites();
+    }
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
+
+            if (activeDialogueSprite != null)
+            {
+                //如果对话框已经显示，点击任何地方关闭对话框
+                HideActiveDialogueSprite();
+            }
+
+            else if (hitCollider != null)
+            {
+                switch (currentStage)
+                {
+                    case Stage.PreAnim1:
+                        HandleDialogueClick(collidersPreAnim1, dialogueSpritesPreAnim1, hitCollider);
+                        break;
+                    case Stage.PostAnim1:
+                        HandleDialogueClick(collidersPostAnim1, dialogueSpritesPostAnim1, hitCollider);
+                        break;
+                    case Stage.PostAnim2:
+                        HandleDialogueClick(collidersPostAnim2, dialogueSpritesPostAnim2, hitCollider);
+                        break;
+                }
+            }
+        }
     }
 
+    private void HandleDialogueClick(Collider2D[] colliders, GameObject[] dialogueSprites, Collider2D hitCollider)
+    {
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] == hitCollider)
+            {
+                ShowDialogueSprite(dialogueSprites[i]);
+                break;
+            }
+        }
+    }
+
+    private void ShowDialogueSprite(GameObject dialogueSprite)
+    {
+        //显示对话框
+        dialogueTextBox.SetActive(true);
+
+        activeDialogueSprite = dialogueSprite;
+        activeDialogueSprite.SetActive(true);
+    }
+
+    private void HideActiveDialogueSprite()
+    {
+        if (activeDialogueSprite != null)
+        {
+            activeDialogueSprite.SetActive(false);
+            activeDialogueSprite = null;
+
+            //隐藏对话框
+            dialogueTextBox.SetActive(false);
+        }
+    }
+    private void HideAllDialogueSprites()
+    {
+        foreach (var sprite in dialogueSpritesPreAnim1)
+        {
+            sprite.SetActive(false);
+        }
+        foreach (var sprite in dialogueSpritesPostAnim1)
+        {
+            sprite.SetActive(false);
+        }
+        foreach (var sprite in dialogueSpritesPostAnim2)
+        {
+            sprite.SetActive(false);
+        }
+        activeDialogueSprite = null;
+
+        //初始隐藏对话框
+        dialogueTextBox.SetActive(false);
+    }
     void OnAnim1End()
     {
         //当 Goal对象的第一个动画（Anim1）播放完毕时，关闭 Goal 对象上的所有 BoxCollider 组件。
@@ -54,6 +163,9 @@ public class Goal1 : MonoBehaviour
         {
             cameraController.MoveCameraToPosition(mCamPosA.transform.position, mCamMoveSpeedA);
         }
+
+        //切换到anim1后的阶段
+        currentStage = Stage.PostAnim1;
     }
 
     void OnAnim2End()
@@ -110,6 +222,9 @@ public class Goal1 : MonoBehaviour
             {
                 Debug.LogError("HintAnimator3 reference is not set in the Goal script");
             }
+
+            // 切换到anim2后的阶段
+            currentStage = Stage.PostAnim2;
         }//如果 mIsTriggered 为 true，则什么也不做。
     }
  }

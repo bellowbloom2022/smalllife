@@ -8,6 +8,8 @@ public class Level : MonoBehaviour
     public static Level ins;
 
     public GameObject mBtnNext;
+    public GameObject mBtnNext1;
+    public GameObject popup;
     public int TotalCount;
     public string NextLevelName;
 
@@ -25,6 +27,8 @@ public class Level : MonoBehaviour
         if (this.mCount > (this.TotalCount -1) )
         {
             mBtnNext.SetActive(true);
+            popup.SetActive(true);
+
             //设置是否完成关卡
             if (NextLevelName == "Level2")
             {
@@ -39,6 +43,11 @@ public class Level : MonoBehaviour
     }
 
     public void onBtnNextClicked() 
+    {
+        //加载下一个场景
+        SceneManager.LoadScene(NextLevelName);
+    }
+    public void onBtnNext1Clicked()
     {
         //加载下一个场景
         SceneManager.LoadScene(NextLevelName);
