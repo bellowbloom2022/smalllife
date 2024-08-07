@@ -25,18 +25,18 @@ public class Goal : MonoBehaviour
     private Animator goalAchieveAnimator;
     private Image achieveImage;
 
-    // 对白相关
-    public Text dialogueText;
-    private string[] dialoguesPreAnim1;
-    private string[] dialoguesPostAnim1;
-    private string[] dialoguesPostAnim2;
-    private int dialogueIndex;
-
-    // 不同阶段的Collider
+    // 每个阶段的 Collider 数组
     public Collider2D[] collidersPreAnim1;
     public Collider2D[] collidersPostAnim1;
     public Collider2D[] collidersPostAnim2;
 
+    // 每个阶段的对话框 Sprite 数组
+    public GameObject[] dialogueSpritesPreAnim1;
+    public GameObject[] dialogueSpritesPostAnim1;
+    public GameObject[] dialogueSpritesPostAnim2;
+
+    // 角色对白的 TextBox
+    public GameObject dialogueTextBox;
     private enum Stage
     {
         PreAnim1,
@@ -45,6 +45,7 @@ public class Goal : MonoBehaviour
     }
 
     private Stage currentStage;
+    private GameObject activeDialogueSprite;
 
     private void Start()
     {
@@ -56,77 +57,97 @@ public class Goal : MonoBehaviour
         achieveImage = goalAchieveInstance.transform.Find("goalimage").GetComponent<Image>();
         achieveImage.sprite = goalImage;
 
-        // 初始化对白文本
-        dialoguesPreAnim1 = new string[] { "Dialogue 1", "Dialogue 2", "Dialogue 3" };
-        dialoguesPostAnim1 = new string[] { "Dialogue 4", "Dialogue 5", "Dialogue 6" };
-        dialoguesPostAnim2 = new string[] { "Dialogue 7", "Dialogue 8", "Dialogue 9" };
-
         currentStage = Stage.PreAnim1;
-        SetCollidersActive(collidersPreAnim1);
-
-        // 确保对话框文本一开始是隐藏的
-        if (dialogueText != null)
-        {
-            dialogueText.gameObject.SetActive(false);
-        }
+        // 初始时隐藏所有对话框
+        HideAllDialogueSprites();
     }
 
-    private void OnMouseDown()
+    private void Update()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction);
-
-        if (hit.collider != null)
+        if (Input.GetMouseButtonDown(0))
         {
-            switch (currentStage)
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
+
+            if(activeDialogueSprite != null)
             {
-                case Stage.PreAnim1:
-                    HandleDialogue(collidersPreAnim1, dialoguesPreAnim1, hit.collider);
-                    break;
-                case Stage.PostAnim1:
-                    HandleDialogue(collidersPostAnim1, dialoguesPostAnim1, hit.collider);
-                    break;
-                case Stage.PostAnim2:
-                    HandleDialogue(collidersPostAnim2, dialoguesPostAnim2, hit.collider);
-                    break;
+                //如果对话框已经显示，点击任何地方关闭对话框
+                HideActiveDialogueSprite();
+            }
+
+            else if (hitCollider != null)
+            {
+                switch (currentStage)
+                {
+                    case Stage.PreAnim1:
+                        HandleDialogueClick(collidersPreAnim1, dialogueSpritesPreAnim1, hitCollider);
+                        break;
+                    case Stage.PostAnim1:
+                        HandleDialogueClick(collidersPostAnim1, dialogueSpritesPostAnim1, hitCollider);
+                        break;
+                    case Stage.PostAnim2:
+                        HandleDialogueClick(collidersPostAnim2, dialogueSpritesPostAnim2, hitCollider);
+                        break;
+                }
             }
         }
     }
 
-    private void HandleDialogue(Collider2D[] colliders, string[] dialogues, Collider2D hitCollider)
+    private void HandleDialogueClick(Collider2D[] colliders, GameObject[] dialogueSprites, Collider2D hitCollider)
     {
         for (int i = 0; i < colliders.Length; i++)
         {
-            if (hitCollider == colliders[i])
+            if (colliders[i] == hitCollider)
             {
-                ShowDialogue(dialogues[i]);
+                ShowDialogueSprite(dialogueSprites[i]);
                 break;
             }
         }
     }
-    private void ShowDialogue(string dialogue)
+    private void ShowDialogueSprite(GameObject dialogueSprite)
     {
-        if (dialogueText != null)
-        {
-            dialogueText.text = dialogue;
-            dialogueText.gameObject.SetActive(true);
+        //显示对话框
+        dialogueTextBox.SetActive(true);
 
-            // 可以设置在一定时间后隐藏
-            DOVirtual.DelayedCall(3f, () =>
-            {
-                dialogueText.gameObject.SetActive(false);
-            });
+        activeDialogueSprite = dialogueSprite;
+        activeDialogueSprite.SetActive(true);
+
+        // 一定时间后隐藏对话框
+        //DOVirtual.DelayedCall(3f, () =>
+        //{
+        //dialogueSprite.SetActive(false);
+        //});
+    }
+
+    private void HideActiveDialogueSprite()
+    {
+        if(activeDialogueSprite != null)
+        {
+            activeDialogueSprite.SetActive(false);
+            activeDialogueSprite = null;
+
+            //隐藏对话框
+            dialogueTextBox.SetActive(false);
         }
     }
-    private void SetCollidersActive(Collider2D[] activeColliders)
+    private void HideAllDialogueSprites()
     {
-        // 先禁用所有Collider
-        foreach (var col in collidersPreAnim1) col.enabled = false;
-        foreach (var col in collidersPostAnim1) col.enabled = false;
-        foreach (var col in collidersPostAnim2) col.enabled = false;
+        foreach (var sprite in dialogueSpritesPreAnim1)
+        {
+            sprite.SetActive(false);
+        }
+        foreach (var sprite in dialogueSpritesPostAnim1)
+        {
+            sprite.SetActive(false);
+        }
+        foreach (var sprite in dialogueSpritesPostAnim2)
+        {
+            sprite.SetActive(false);
+        }
+        activeDialogueSprite = null;
 
-        // 启用当前阶段的Collider
-        foreach (var col in activeColliders) col.enabled = true;
+        //初始隐藏对话框
+        dialogueTextBox.SetActive(false);
     }
     void OnAnim1End()
     {
@@ -152,7 +173,6 @@ public class Goal : MonoBehaviour
 
         //切换到anim1后的阶段
         currentStage = Stage.PostAnim1;
-        SetCollidersActive(collidersPostAnim1);
     }
 
     void OnAnim2End()
@@ -185,14 +205,14 @@ public class Goal : MonoBehaviour
             RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out uiPos);
 
             //使用 DOTween 库实现动画效果，将 mGameObjectNovel 从起始位置放大两倍，同时在 Canvas 中的坐标系中移动到中间位置。
-            mGameObjectNovel.transform.DOScale(Vector3.one * 2, 0.8f);
-            rectPenZai.DOLocalMove(uiPos, 0.8f).onComplete = () =>
+            mGameObjectNovel.transform.DOScale(Vector3.one * 2, 0.3f);
+            rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
             {
                 //然后再将 mGameObjectNovel 从中间位置缩小回原来的大小，并移动到 mNovelPos 对应位置在 Canvas 中的坐标系中。
-                mGameObjectNovel.transform.DOScale(Vector3.one, .5f);
+                mGameObjectNovel.transform.DOScale(Vector3.one, 0.3f);
                 RectTransform r = mNovelPos.transform as RectTransform;
                 uiPos = r.anchoredPosition;
-                rectPenZai.DOLocalMove(uiPos, .5f).onComplete = () =>
+                rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
                 {
                     //最后，在 mGameObjectNovel 上执行 Animator 组件上名为 "click" 的触发器
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
@@ -203,7 +223,6 @@ public class Goal : MonoBehaviour
 
             // 切换到anim2后的阶段
             currentStage = Stage.PostAnim2;
-            SetCollidersActive(collidersPostAnim2);
         }//如果 mIsTriggered 为 true，则什么也不做。
     }
  }
