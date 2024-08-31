@@ -4,7 +4,8 @@ using DG.Tweening;
 
 public class Goal : MonoBehaviour
 {
-
+    public int goalID;//唯一标识符
+    public bool isFound;     // 是否已找到
     public GameObject mGameObjectNovel;
     public GameObject mNovelPosStart;
     public GameObject mNovelPosMid;
@@ -111,12 +112,6 @@ public class Goal : MonoBehaviour
 
         activeDialogueSprite = dialogueSprite;
         activeDialogueSprite.SetActive(true);
-
-        // 一定时间后隐藏对话框
-        //DOVirtual.DelayedCall(3f, () =>
-        //{
-        //dialogueSprite.SetActive(false);
-        //});
     }
 
     private void HideActiveDialogueSprite()
@@ -217,7 +212,9 @@ public class Goal : MonoBehaviour
                     //最后，在 mGameObjectNovel 上执行 Animator 组件上名为 "click" 的触发器
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
                     Level.ins.AddCount();
-                    Debug.Log("可以进入下一关");
+                    isFound = true;
+                    Debug.Log($"Goal ID {goalID} marked as found.");
+                    Debug.Log("找到一个goal了");
                 };
             };
 
