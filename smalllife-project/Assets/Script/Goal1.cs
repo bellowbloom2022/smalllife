@@ -4,7 +4,8 @@ using DG.Tweening;
 
 public class Goal1 : MonoBehaviour
 {
-
+    public int goalID;//唯一标识符
+    public bool isFound;     // 是否已找到
     public GameObject mGameObjectNovel;
     public GameObject mNovelPosStart;
     public GameObject mNovelPosMid;
@@ -210,6 +211,8 @@ public class Goal1 : MonoBehaviour
                     //最后，在 mGameObjectNovel 上执行 Animator 组件上名为 "click" 的触发器
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
                     Level.ins.AddCount();
+                    isFound = true;
+                    Debug.Log($"Goal ID {goalID} marked as found.");
                     Debug.Log("可以进入下一关");
                 };
             };
