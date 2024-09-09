@@ -57,10 +57,7 @@ public class Level : MonoBehaviour
 
         if (this.mCount >= requiredCount)
         {
-            if (mBtnNext != null)
-            {
-                mBtnNext.SetActive(true);
-            }
+            ShowNextButton();
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, 1);
         }
 
@@ -70,6 +67,13 @@ public class Level : MonoBehaviour
         }
         // 延迟保存数据，确保状态更新完毕
         StartCoroutine(DelaySave());
+    }
+    private void ShowNextButton()
+    {
+        if (mBtnNext != null)
+        {
+            mBtnNext.SetActive(true);
+        }
     }
     private IEnumerator DelaySave()
     {
@@ -204,6 +208,11 @@ public class Level : MonoBehaviour
 
             mCount = foundCount;
             UpdateGoalHint(mCount, TotalCount);
+
+            if (mCount >= requiredCount)
+            {
+                ShowNextButton(); // 再次检查并显示 mBtnNext
+            }
         }
     }
 
