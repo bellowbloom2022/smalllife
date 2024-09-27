@@ -5,7 +5,12 @@ using UnityEngine;
 public class OnObjectClicked : MonoBehaviour
 {
     public GameObject ripplePrefab;//水纹动画的预制体
+    private AnimAudioEffect audioEffect; //引用播放声音的脚本
 
+    private void Start()
+    {
+        audioEffect = GetComponent<AnimAudioEffect>();
+    }
     private void OnMouseDown()
     {
         //获取点击位置
@@ -26,5 +31,10 @@ public class OnObjectClicked : MonoBehaviour
 
         //在水纹动画播放完毕后删除水纹实例
         Destroy(ripple, ripple.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+
+        if (audioEffect != null)
+        {
+            audioEffect.onAnimTriggerAudioEffect();
+        }
     }
 }

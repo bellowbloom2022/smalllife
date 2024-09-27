@@ -18,6 +18,13 @@ public class AnimAudioEffect : MonoBehaviour
 
     public void onAnimTriggerAudioEffectCicle()
     {
-        AudioManager.ins.PlayAudioEffect(mAudio);
+        if (mAudio != null)
+        {
+            AudioManager.ins.PlayAudioEffect(mAudio);
+        }
+        else
+        {
+            Debug.LogError("mAudio is null! Please assign an AudioClip.");
+        }
     }
 }
