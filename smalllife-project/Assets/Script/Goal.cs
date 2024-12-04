@@ -146,6 +146,7 @@ public class Goal : MonoBehaviour
     }
     void OnAnim1End()
     {
+        Debug.Log("OnAnim1End called!");
         //当 Goal对象的第一个动画（Anim1）播放完毕时，关闭 Goal 对象上的所有 BoxCollider 组件。
         this.GetComponent<Animator>().ResetTrigger("click");
         BoxCollider[] clis = this.GetComponents<BoxCollider>();
