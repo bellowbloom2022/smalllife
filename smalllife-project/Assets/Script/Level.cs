@@ -75,6 +75,13 @@ public class Level : MonoBehaviour
             mBtnNext.SetActive(true);
         }
     }
+    public void ClosePopup()
+    {
+        if (popup != null)
+        {
+            popup.SetActive(false); // 关闭 popup 弹窗
+        }
+    }
     private IEnumerator DelaySave()
     {
         yield return new WaitForEndOfFrame(); // 等待当前帧结束，确保所有状态更新完毕

@@ -46,7 +46,7 @@ public class Goal : MonoBehaviour
     }
 
     private Stage currentStage;
-    private GameObject activeDialogueSprite;
+    private GameObject activeDialogueSprite;//当前激活的对话内容
 
     private void Start()
     {
@@ -107,6 +107,11 @@ public class Goal : MonoBehaviour
     }
     private void ShowDialogueSprite(GameObject dialogueSprite)
     {
+        // 隐藏上一个对话框
+        if (activeDialogueSprite != null)
+        {
+            HideDialogueSprite();
+        }
         //显示对话框
         dialogueTextBox.SetActive(true);
 
@@ -124,6 +129,15 @@ public class Goal : MonoBehaviour
             //隐藏对话框
             dialogueTextBox.SetActive(false);
         }
+    }
+    private void HideDialogueSprite()
+    {
+        if (activeDialogueSprite != null)
+        {
+            activeDialogueSprite.SetActive(false);
+            activeDialogueSprite = null;
+        }
+        dialogueTextBox.SetActive(false);
     }
     private void HideAllDialogueSprites()
     {
@@ -169,6 +183,12 @@ public class Goal : MonoBehaviour
 
         //切换到anim1后的阶段
         currentStage = Stage.PostAnim1;
+
+        // 自动显示 PostAnim1 阶段的第一个对话框
+        if (dialogueSpritesPostAnim1.Length > 0)
+        {
+            ShowDialogueSprite(dialogueSpritesPostAnim1[0]);
+        }
     }
 
     void OnAnim2End()
@@ -221,6 +241,11 @@ public class Goal : MonoBehaviour
 
             // 切换到anim2后的阶段
             currentStage = Stage.PostAnim2;
+            // 自动显示 PostAnim2 阶段的第一个对话框
+            if (dialogueSpritesPostAnim2.Length > 0)
+            {
+                ShowDialogueSprite(dialogueSpritesPostAnim2[0]);
+            }
         }//如果 mIsTriggered 为 true，则什么也不做。
     }
  }
