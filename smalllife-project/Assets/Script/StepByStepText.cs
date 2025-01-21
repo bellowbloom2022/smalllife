@@ -79,7 +79,6 @@ public class StepByStepText : MonoBehaviour
         }
     }
 
-
     private void ShowNextText()
     {
         if (currentTextIndex < guideTexts.Length)

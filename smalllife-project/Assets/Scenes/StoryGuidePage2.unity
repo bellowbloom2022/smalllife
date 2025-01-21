@@ -329,7 +329,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -534,12 +534,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 260419425}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -24, y: -405}
-  m_SizeDelta: {x: 532, y: 82}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -32.181274, y: -456.8945}
+  m_SizeDelta: {x: 548.3625, y: 113.779}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &154088947
 MonoBehaviour:
@@ -576,8 +576,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
+    m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
+    m_FontSize: 27
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
@@ -587,7 +587,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1.3
+    m_LineSpacing: 0.8
   m_Text: 
 --- !u!222 &154088949
 CanvasRenderer:
@@ -690,15 +690,16 @@ RectTransform:
   m_Children:
   - {fileID: 1737593516}
   - {fileID: 1561175319}
+  - {fileID: 851170954}
   - {fileID: 1782548035}
   - {fileID: 1012032746}
   - {fileID: 154088946}
   m_Father: {fileID: 807620687}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 540}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &260419426
@@ -1268,7 +1269,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1855448657}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &584799598
 MonoBehaviour:
@@ -1285,13 +1286,13 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: And you're curious about the local people and life
+    Text: And you're curious about the local people and life.
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\u5BF9\u5F53\u5730\u7684\u4EBA\u548C\u751F\u6D3B\u5F88\u597D\u5947"
+    Text: "\u4F60\u5BF9\u5F53\u5730\u7684\u4EBA\u548C\u751F\u6D3B\u5F88\u597D\u5947\u3002"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u73FE\u5730\u306E\u4EBA\u3005\u3084\u751F\u6D3B\u306B\u8208\u5473\u3092\u6301\u3063\u3066\u3044\u307E\u3059"
+    Text: "\u73FE\u5730\u306E\u4EBA\u3005\u3084\u751F\u6D3B\u306B\u8208\u5473\u3092\u6301\u3063\u3066\u3044\u307E\u3059\u3002"
     Object: {fileID: 0}
 --- !u!1 &586863552
 GameObject:
@@ -1431,61 +1432,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5060756264981860718, guid: 0505b735e257dcf4e99ad2dbbdb0beee, type: 3}
   m_PrefabInstance: {fileID: 614858361}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &622234213
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 622234214}
-  - component: {fileID: 622234215}
-  m_Layer: 0
-  m_Name: GUIDETEXT1
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &622234214
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622234213}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1855448657}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &622234215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 622234213}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data: 0
-  entries:
-  - Language: English
-    Text: You're traveling to Shanghai, China
-    Object: {fileID: 0}
-  - Language: Chinese
-    Text: "\u4F60\u65C5\u6E38\u6765\u5230\u4E86\u4E2D\u56FD\u4E0A\u6D77"
-    Object: {fileID: 0}
-  - Language: Japanese
-    Text: "\u3042\u306A\u305F\u306F\u4E2D\u56FD\u306E\u4E0A\u6D77\u306B\u65C5\u884C\u3057\u3066\u304A\u308A"
-    Object: {fileID: 0}
 --- !u!1001 &657156194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1948,7 +1894,6 @@ RectTransform:
   - {fileID: 1513083767}
   - {fileID: 1879626806}
   - {fileID: 260419425}
-  - {fileID: 851170954}
   - {fileID: 2010564092}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -1991,8 +1936,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 807620687}
-  m_RootOrder: 5
+  m_Father: {fileID: 260419425}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2011,6 +1956,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d7007f1c8fd4f4fa9d2e6f0f309461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetSceneName: StoryGuidePage3
+  showLoadingPage: 0
 --- !u!114 &851170956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2057,8 +2004,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 851170955}
         m_TargetAssemblyTypeName: SceneChanger, Assembly-CSharp
-        m_MethodName: LoadToScene
-        m_Mode: 5
+        m_MethodName: ChangeScene
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2220,12 +2167,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 260419425}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -24, y: -405}
-  m_SizeDelta: {x: 532, y: 82}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -24, y: -455.6234}
+  m_SizeDelta: {x: 532, y: 98.2092}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012032747
 MonoBehaviour:
@@ -2276,7 +2223,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
     m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
@@ -2287,7 +2234,7 @@ MonoBehaviour:
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
-    m_LineSpacing: 1.3
+    m_LineSpacing: 1
   m_Text: 
 --- !u!222 &1012032750
 CanvasRenderer:
@@ -2681,7 +2628,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1285664855
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2714,6 +2661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5d7007f1c8fd4f4fa9d2e6f0f309461, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  targetSceneName: 
+  showLoadingPage: 1
 --- !u!114 &1285664857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3776,7 +3725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_AnchorMin.x
@@ -3784,7 +3733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_SizeDelta.x
@@ -3828,7 +3777,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -405
+      value: -455
       objectReference: {fileID: 0}
     - target: {fileID: 4710965916680087881, guid: 0e1387b92e34dd747ab6ac1650e96cb1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -4020,7 +3969,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 260419425}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -4371,7 +4320,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: Japanese
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -4391,7 +4340,6 @@ Transform:
   - {fileID: 1601867802}
   - {fileID: 657156195}
   - {fileID: 1569556330}
-  - {fileID: 622234214}
   - {fileID: 584799597}
   - {fileID: 2038497598}
   m_Father: {fileID: 0}
@@ -4883,31 +4831,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 54.2061
+      value: 54.206116
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 42.8195
+      value: 42.81949
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4939,11 +4887,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 877
+      value: -83
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -474.59506
+      value: 65.40494
       objectReference: {fileID: 0}
     - target: {fileID: 150653044419190560, guid: 50aac688bb2fff947bd5ec373a3df8be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5014,7 +4962,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1855448657}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2038497599
 MonoBehaviour:
@@ -5031,14 +4979,14 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: Chinese
-    Text: "\u5728\u5373\u5C06\u5F00\u59CB\u7684\u65C5\u9014\u4E2D\uFF0C\u53EF\u80FD\u4F1A\u6536\u83B7\u5404\u79CD\u5145\u6EE1\u610F\u5916\u548C\u641E\u7B11\u7684\u4E8B\u60C5"
+    Text: "\u5728\u5373\u5C06\u5F00\u59CB\u7684\u65C5\u9014\u4E2D\uFF0C\u53EF\u80FD\u4F1A\u6536\u83B7\u5404\u79CD\u5E73\u51E1\u4F46\u641E\u7B11\u7684\u4E8B\u60C5\u3002"
     Object: {fileID: 0}
   - Language: English
-    Text: On the upcoming journey, you may encounter various unexpected and funny
-      things
+    Text: On the upcoming journey, you may encounter all kinds of ordinary but funny
+      things.
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u4ECA\u5F8C\u306E\u65C5\u3067\u306F\u3001\u3055\u307E\u3056\u307E\u306A\u4E88\u671F\u305B\u306C\u9762\u767D\u3044\u51FA\u6765\u4E8B\u306B\u51FA\u4F1A\u3046\u304B\u3082\u3057\u308C\u307E\u305B\u3093"
+    Text: "\u3053\u308C\u304B\u3089\u306E\u65C5\u3067\u306F\u3001\u3042\u308A\u3075\u308C\u305F\u65E5\u5E38\u3060\u3051\u3069\u9762\u767D\u3044\u3053\u3068\u306B\u51FA\u4F1A\u3048\u308B\u304B\u3082\u3057\u308C\u306A\u3044\u3002"
     Object: {fileID: 0}
 --- !u!1001 &5060756265121565054
 PrefabInstance:
