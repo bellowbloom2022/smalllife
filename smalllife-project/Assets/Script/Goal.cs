@@ -4,8 +4,8 @@ using DG.Tweening;
 
 public class Goal : MonoBehaviour
 {
-    public int goalID;//Î¨Ò»±êÊ¶·û
-    public bool isFound;     // ÊÇ·ñÒÑÕÒµ½
+    public int goalID;//å”¯ä¸€æ ‡è¯†ç¬¦
+    public bool isFound;     //æ˜¯å¦å·²æ‰¾åˆ°
     public GameObject mGameObjectNovel;
     public GameObject mNovelPosStart;
     public GameObject mNovelPosMid;
@@ -14,154 +14,83 @@ public class Goal : MonoBehaviour
     public GameObject mCamPosB;
     public Canvas mCanvas;
     private bool mIsTriggered;
-    public bool mMoveCamera;//¹«¹²µÄbool±äÁ¿ÓÃÓÚ¿ØÖÆÊÇ·ñÒÆ¶¯ÉãÏñ»ú
-    public float mCamMoveSpeedA = 3f;//ÒÆ¶¯µ½AµãµÄÄ¬ÈÏËÙ¶È
-    public float mCamMoveSpeedB = 3f;//ÒÆ¶¯µ½BµãµÄÄ¬ÈÏËÙ¶È
+    public bool mMoveCamera;//å…¬å…±çš„boolå˜é‡ç”¨äºæ§åˆ¶æ˜¯å¦ç§»åŠ¨æ‘„åƒæœº
+    public float mCamMoveSpeedA = 1f;//ç§»åŠ¨åˆ°Aç‚¹çš„é»˜è®¤é€Ÿåº¦
+    public float mCamMoveSpeedB = 1f;//ç§»åŠ¨åˆ°Bç‚¹çš„é»˜è®¤é€Ÿåº¦
 
     private CameraController cameraController;
 
-    public GameObject goalAchievePrefab;
-    public Sprite goalImage;
-
-    private Animator goalAchieveAnimator;
-    private Image achieveImage;
-
-    // Ã¿¸ö½×¶ÎµÄ Collider Êı×é
+    // anim1å‰çš„Colliderã€å¯¹è¯æ¡†Spriteã€å¯¹ç™½å†…å®¹è®¾ç½®é”šç‚¹ä½ç½®æ•°ç»„
     public Collider2D[] collidersPreAnim1;
-    public Collider2D[] collidersPostAnim1;
-    public Collider2D[] collidersPostAnim2;
-
-    // Ã¿¸ö½×¶ÎµÄ¶Ô»°¿ò Sprite Êı×é
     public GameObject[] dialogueSpritesPreAnim1;
+    public Transform[] dialogueAnchorsPreAnim1;
+
+    // anim1åçš„Colliderã€å¯¹è¯æ¡†Spriteã€å¯¹ç™½å†…å®¹è®¾ç½®é”šç‚¹ä½ç½®æ•°ç»„
+    public Collider2D[] collidersPostAnim1;
     public GameObject[] dialogueSpritesPostAnim1;
+    public Transform[] dialogueAnchorsPostAnim1;
+
+    // anim2åçš„Colliderã€å¯¹è¯æ¡†Spriteã€å¯¹ç™½å†…å®¹è®¾ç½®é”šç‚¹ä½ç½®æ•°ç»„
+    public Collider2D[] collidersPostAnim2;
     public GameObject[] dialogueSpritesPostAnim2;
+    public Transform[] dialogueAnchorsPostAnim2;
 
-    // ½ÇÉ«¶Ô°×µÄ TextBox
-    public GameObject dialogueTextBox;
-    private enum Stage
-    {
-        PreAnim1,
-        PostAnim1,
-        PostAnim2
-    }
-
+    private enum Stage { PreAnim1, PostAnim1, PostAnim2}
     private Stage currentStage;
-    private GameObject activeDialogueSprite;//µ±Ç°¼¤»îµÄ¶Ô»°ÄÚÈİ
+
 
     private void Start()
     {
-        //ÔÚstart·½·¨ÖĞ²éÕÒ³¡¾°ÖĞµÄCameraController ×é¼ş£¬²¢½«Æä±£´æÔÚ cameraController ±äÁ¿ÖĞ¡£
+        //åœ¨startæ–¹æ³•ä¸­æŸ¥æ‰¾åœºæ™¯ä¸­çš„CameraControllerç»„ä»¶ï¼Œå¹¶å°†å…¶ä¿å­˜åœ¨cameraControllerå˜é‡ä¸­ã€‚
         cameraController = FindObjectOfType<CameraController>();
-        // Instantiate the goal achieve prefab and set up the animators and image
-        GameObject goalAchieveInstance = Instantiate(goalAchievePrefab, mCanvas.transform);
-        goalAchieveAnimator = goalAchieveInstance.GetComponent<Animator>();
-        achieveImage = goalAchieveInstance.transform.Find("goalimage").GetComponent<Image>();
-        achieveImage.sprite = goalImage;
-
         currentStage = Stage.PreAnim1;
-        // ³õÊ¼Ê±Òş²ØËùÓĞ¶Ô»°¿ò
-        HideAllDialogueSprites();
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Collider2D hitCollider = Physics2D.OverlapPoint(mousePosition);
-
-            if(activeDialogueSprite != null)
-            {
-                //Èç¹û¶Ô»°¿òÒÑ¾­ÏÔÊ¾£¬µã»÷ÈÎºÎµØ·½¹Ø±Õ¶Ô»°¿ò
-                HideActiveDialogueSprite();
-            }
-
-            else if (hitCollider != null)
-            {
-                switch (currentStage)
-                {
-                    case Stage.PreAnim1:
-                        HandleDialogueClick(collidersPreAnim1, dialogueSpritesPreAnim1, hitCollider);
-                        break;
-                    case Stage.PostAnim1:
-                        HandleDialogueClick(collidersPostAnim1, dialogueSpritesPostAnim1, hitCollider);
-                        break;
-                    case Stage.PostAnim2:
-                        HandleDialogueClick(collidersPostAnim2, dialogueSpritesPostAnim2, hitCollider);
-                        break;
-                }
-            }
+    public void HandleClick(Collider2D hitCollider){
+        switch (currentStage){
+            case Stage.PreAnim1:
+                HandleDialogueClick(collidersPreAnim1, dialogueSpritesPreAnim1, dialogueAnchorsPreAnim1, hitCollider);
+                break;
+            case Stage.PostAnim1:
+                HandleDialogueClick(collidersPostAnim1, dialogueSpritesPostAnim1, dialogueAnchorsPostAnim1, hitCollider);
+                break;
+            case Stage.PostAnim2:
+                HandleDialogueClick(collidersPostAnim2, dialogueSpritesPostAnim2, dialogueAnchorsPostAnim2, hitCollider);
+                break;
         }
     }
 
-    private void HandleDialogueClick(Collider2D[] colliders, GameObject[] dialogueSprites, Collider2D hitCollider)
+    private void HandleDialogueClick(Collider2D[] colliders, GameObject[] dialogueSprites, Transform[] dialogueAnchors, Collider2D hitCollider)
     {
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i] == hitCollider)
             {
-                ShowDialogueSprite(dialogueSprites[i]);
+                DialogueManager.Instance.ShowDialogue(dialogueSprites[i], dialogueAnchors[i]);
                 break;
             }
         }
     }
-    private void ShowDialogueSprite(GameObject dialogueSprite)
+    
+    public bool IsMyGoalCollider(Collider2D collider)
     {
-        // Òş²ØÉÏÒ»¸ö¶Ô»°¿ò
-        if (activeDialogueSprite != null)
+        switch (currentStage)
         {
-            HideDialogueSprite();
+            case Stage.PreAnim1:
+                return System.Array.Exists(collidersPreAnim1, c => c == collider);
+            case Stage.PostAnim1:
+                return System.Array.Exists(collidersPostAnim1, c => c == collider);
+            case Stage.PostAnim2:
+                return System.Array.Exists(collidersPostAnim2, c => c == collider);
+            default:
+                return false;
         }
-        //ÏÔÊ¾¶Ô»°¿ò
-        dialogueTextBox.SetActive(true);
-
-        activeDialogueSprite = dialogueSprite;
-        activeDialogueSprite.SetActive(true);
     }
 
-    private void HideActiveDialogueSprite()
-    {
-        if(activeDialogueSprite != null)
-        {
-            activeDialogueSprite.SetActive(false);
-            activeDialogueSprite = null;
-
-            //Òş²Ø¶Ô»°¿ò
-            dialogueTextBox.SetActive(false);
-        }
-    }
-    private void HideDialogueSprite()
-    {
-        if (activeDialogueSprite != null)
-        {
-            activeDialogueSprite.SetActive(false);
-            activeDialogueSprite = null;
-        }
-        dialogueTextBox.SetActive(false);
-    }
-    private void HideAllDialogueSprites()
-    {
-        foreach (var sprite in dialogueSpritesPreAnim1)
-        {
-            sprite.SetActive(false);
-        }
-        foreach (var sprite in dialogueSpritesPostAnim1)
-        {
-            sprite.SetActive(false);
-        }
-        foreach (var sprite in dialogueSpritesPostAnim2)
-        {
-            sprite.SetActive(false);
-        }
-        activeDialogueSprite = null;
-
-        //³õÊ¼Òş²Ø¶Ô»°¿ò
-        dialogueTextBox.SetActive(false);
-    }
     void OnAnim1End()
     {
         Debug.Log("OnAnim1End called!");
-        //µ± Goal¶ÔÏóµÄµÚÒ»¸ö¶¯»­£¨Anim1£©²¥·ÅÍê±ÏÊ±£¬¹Ø±Õ Goal ¶ÔÏóÉÏµÄËùÓĞ BoxCollider ×é¼ş¡£
+        //å½“Goalå¯¹è±¡çš„ç¬¬ä¸€ä¸ªåŠ¨ç”»ï¼ˆAnim1ï¼‰æ’­æ”¾å®Œæ¯•æ—¶ï¼Œå…³é—­Goalå¯¹è±¡ä¸Šçš„æ‰€æœ‰boxcolliderç»„ä»¶ã€‚
         this.GetComponent<Animator>().ResetTrigger("click");
         BoxCollider[] clis = this.GetComponents<BoxCollider>();
         for (int i = 0; i < clis.Length; ++i)
@@ -169,39 +98,27 @@ public class Goal : MonoBehaviour
             clis[i].enabled = !clis[i].enabled;
         }
 
-        //²¥·ÅUI²ã¼¶µÄ³É¾Í¶¯»­goal_step1achieve
-        if (goalAchieveAnimator != null)
-        {
-            goalAchieveAnimator.SetTrigger("goal_step1achieve");
-        }
-
-        //Èç¹û cameraController ±äÁ¿²»Îª¿Õ£¬½«Ïà»úÒÆ¶¯µ½ mCamPosA ¶ÔÓ¦µÄÎ»ÖÃ¡£
+        //å¦‚æœcameraController å˜é‡ä¸ä¸ºç©ºï¼Œå°†ç›¸æœºç§»åŠ¨åˆ° mCamPosA å¯¹åº”çš„ä½ç½®ã€‚
         if (cameraController != null && mMoveCamera)
         {
             cameraController.MoveCameraToPosition(mCamPosA.transform.position, mCamMoveSpeedA);
         }
 
-        //ÇĞ»»µ½anim1ºóµÄ½×¶Î
+        //åˆ‡æ¢åˆ°anim1åçš„é˜¶æ®µ
         currentStage = Stage.PostAnim1;
 
-        // ×Ô¶¯ÏÔÊ¾ PostAnim1 ½×¶ÎµÄµÚÒ»¸ö¶Ô»°¿ò
-        if (dialogueSpritesPostAnim1.Length > 0)
-        {
-            ShowDialogueSprite(dialogueSpritesPostAnim1[0]);
-        }
+        // è‡ªåŠ¨æ˜¾ç¤º PostAnim1 é˜¶æ®µçš„ç¬¬ä¸€ä¸ªå¯¹è¯æ¡†
+        ShowFirstDialogueOfCurrentStage();
+
     }
+    // åŠ¨ç”»äº‹ä»¶å›è°ƒï¼ˆé€šè¿‡ Animation Event è°ƒç”¨è¿™ä¸ªæ–¹æ³•ï¼‰
 
     void OnAnim2End()
     {
-        //µ± Goal¶ÔÏóµÄµÚ¶ş¸ö¶¯»­£¨Anim2£©²¥·ÅÍê±ÏÊ±£¬¸ù¾İ mIsTriggered ±äÁ¿¾ö¶¨ÊÇ·ñÖ´ĞĞÒÔÏÂ²Ù×÷£º
-        if (!mIsTriggered)//Èç¹û mIsTriggered Îª false£¬ÔòÖ´ĞĞÒÔÏÂ²Ù×÷£º
+        //å½“goalå¯¹è±¡çš„ç¬¬äºŒä¸ªåŠ¨ç”»ï¼ˆAnim2ï¼‰æ’­æ”¾å®Œæ¯•æ—¶ï¼Œæ ¹æ® mIsTrigger å˜é‡å†³å®šæ˜¯å¦æ‰§è¡Œä¸€ä¸‹æ“ä½œ
+        if (!mIsTriggered)//å¦‚æœ mIsTriggered ä¸ºfalseï¼Œåˆ™æ‰§è¡Œä»¥ä¸‹æ“ä½œï¼š
         {
-            // ²¥·ÅUI²ã¼¶µÄ³É¾Í¶¯»­ goal_step2achieve
-            if (goalAchieveAnimator != null)
-            {
-                goalAchieveAnimator.SetTrigger("goal_step2achieve");
-            }
-            //Èç¹û cameraController ±äÁ¿²»Îª¿Õ£¬½«Ïà»úÒÆ¶¯µ½ mCamPosB ¶ÔÓ¦µÄÎ»ÖÃ¡£
+            //å¦‚æœ cameraController å˜é‡ä¸ä¸ºç©ºï¼Œå°†ç›¸æœºç§»åŠ¨åˆ° mCamPosB å¯¹åº”çš„ä½ç½®
             if (cameraController != null && mMoveCamera)
             {
                 cameraController.MoveCameraToPosition(mCamPosB.transform.position, mCamMoveSpeedB);
@@ -209,43 +126,71 @@ public class Goal : MonoBehaviour
             Debug.Log("goal get");
             mIsTriggered = true;
 
-            //¸ù¾İ mNovelPosStart ¶ÔÓ¦µÄÎ»ÖÃ£¬ÔÚ Canvas ÖĞµÄ×ø±êÏµÖĞ¼ÆËã³öĞ¡Ëµ¶ÔÏó mGameObjectNovel µÄÆğÊ¼Î»ÖÃ¡£
+            //æ ¹æ® mNovelPosStart å¯¹åº”çš„ä½ç½®ï¼Œåœ¨ Canvas ä¸­çš„åæ ‡ç³»ä¸­è®¡ç®—å‡ºå°è¯´å¯¹è±¡ mGameObjectNovel çš„èµ·å§‹ä½ç½®
             Vector3 screenPos = Camera.main.WorldToScreenPoint(mNovelPosStart.transform.position);
             Vector2 uiPos = Vector2.zero;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out uiPos);
             RectTransform rectPenZai = mGameObjectNovel.GetComponent<RectTransform>();
             rectPenZai.anchoredPosition = uiPos;
 
-            //¸ù¾İ mNovelPosMid ¶ÔÓ¦µÄÎ»ÖÃ£¬ÔÚ Canvas ÖĞµÄ×ø±êÏµÖĞ¼ÆËã³öĞ¡Ëµ¶ÔÏó mGameObjectNovel µÄÖĞ¼äÎ»ÖÃ¡£
+            //æ ¹æ® mNovelPosMid å¯¹åº”çš„ä½ç½®ï¼Œåœ¨ Canvas ä¸­çš„åæ ‡ç³»ä¸­è®¡ç®—å‡ºå°è¯´å¯¹è±¡ mGameObjectNovel çš„ä¸­é—´ä½ç½®
             screenPos = Camera.main.WorldToScreenPoint(mNovelPosMid.transform.position);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out uiPos);
 
-            //Ê¹ÓÃ DOTween ¿âÊµÏÖ¶¯»­Ğ§¹û£¬½« mGameObjectNovel ´ÓÆğÊ¼Î»ÖÃ·Å´óÁ½±¶£¬Í¬Ê±ÔÚ Canvas ÖĞµÄ×ø±êÏµÖĞÒÆ¶¯µ½ÖĞ¼äÎ»ÖÃ¡£
+            //ä½¿ç”¨ DOTween åº“å®ç°åŠ¨ç”»æ•ˆæœï¼Œå°† mGameObjectNovel ä»èµ·å§‹ä½ç½®æ”¾å¤§ä¸¤å€ï¼ŒåŒæ—¶åœ¨ Canvas ä¸­çš„åæ ‡ç³»ä¸­ç§»åŠ¨åˆ°ä¸­é—´ä½ç½®
             mGameObjectNovel.transform.DOScale(Vector3.one * 2, 0.3f);
             rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
             {
-                //È»ºóÔÙ½« mGameObjectNovel ´ÓÖĞ¼äÎ»ÖÃËõĞ¡»ØÔ­À´µÄ´óĞ¡£¬²¢ÒÆ¶¯µ½ mNovelPos ¶ÔÓ¦Î»ÖÃÔÚ Canvas ÖĞµÄ×ø±êÏµÖĞ¡£
+                //ç„¶åå†å°† mGameObjectNovel ä»ä¸­é—´ä½ç½®ç¼©å°å›åŸæ¥çš„å¤§å°ï¼Œå¹¶ç§»åŠ¨åˆ° mNovelPos å¯¹åº”ä½ç½®åœ¨ Canvas ä¸­çš„åæ ‡ç³»ä¸­ã€‚
                 mGameObjectNovel.transform.DOScale(Vector3.one, 0.3f);
                 RectTransform r = mNovelPos.transform as RectTransform;
                 uiPos = r.anchoredPosition;
                 rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
                 {
-                    //×îºó£¬ÔÚ mGameObjectNovel ÉÏÖ´ĞĞ Animator ×é¼şÉÏÃûÎª "click" µÄ´¥·¢Æ÷
+                    //æœ€åï¼Œåœ¨mGameObjectNovel ä¸Šæ‰§è¡Œ Animator ç»„ä»¶ä¸Šåä¸º "click" çš„è§¦å‘å™¨
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
                     Level.ins.AddCount();
                     isFound = true;
                     Debug.Log($"Goal ID {goalID} marked as found.");
-                    Debug.Log("ÕÒµ½Ò»¸ögoalÁË");
+                    Debug.Log("æ‰¾åˆ°ä¸€ä¸ªgoaläº†");
                 };
             };
 
-            // ÇĞ»»µ½anim2ºóµÄ½×¶Î
+            // åˆ‡æ¢åˆ°anim2åçš„é˜¶æ®µ
             currentStage = Stage.PostAnim2;
-            // ×Ô¶¯ÏÔÊ¾ PostAnim2 ½×¶ÎµÄµÚÒ»¸ö¶Ô»°¿ò
-            if (dialogueSpritesPostAnim2.Length > 0)
-            {
-                ShowDialogueSprite(dialogueSpritesPostAnim2[0]);
-            }
-        }//Èç¹û mIsTriggered Îª true£¬ÔòÊ²Ã´Ò²²»×ö¡£
+            // è‡ªåŠ¨æ˜¾ç¤º PostAnim2 é˜¶æ®µçš„ç¬¬ä¸€ä¸ªå¯¹è¯æ¡†
+            ShowFirstDialogueOfCurrentStage();
+
+        }
     }
- }
+
+    public void ShowFirstDialogueOfCurrentStage()
+    {
+        DialogueManager.Instance.HideDialogue(); // å…ˆå…³æ‰å¯èƒ½é—ç•™çš„å¯¹è¯
+
+        switch (currentStage)
+        {
+            case Stage.PreAnim1:
+                if (dialogueSpritesPreAnim1.Length > 0 && dialogueAnchorsPreAnim1.Length > 0)
+                {
+                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPreAnim1[0], dialogueAnchorsPreAnim1[0]);
+                }
+                break;
+
+            case Stage.PostAnim1:
+                if (dialogueSpritesPostAnim1.Length > 0 && dialogueAnchorsPostAnim1.Length > 0)
+                {
+                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPostAnim1[0], dialogueAnchorsPostAnim1[0]);
+                }
+                break;
+
+            case Stage.PostAnim2:
+                if (dialogueSpritesPostAnim2.Length > 0 && dialogueAnchorsPostAnim2.Length > 0)
+                {
+                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPostAnim2[0], dialogueAnchorsPostAnim2[0]);
+                }
+                break;
+        }
+    }
+}
+

@@ -68,22 +68,38 @@ public class CameraController : MonoBehaviour
     public void MoveCameraToPosition(Vector3 position,float speed)
     {
         //在这里编写摄像机移动的代码，使其移动到position位置
+        StopAllCoroutines();//可选：防止多次调用时冲突
         StartCoroutine(MoveCameraCoroutine(position,speed));
     }
 
     IEnumerator MoveCameraCoroutine(Vector3 targetPos,float speed)
     {
         Vector3 startPos = transform.position;
-        float elapsedTime = 0.0f;
-        float moveTime = Vector3.Distance(startPos, targetPos) / speed;     //移动时间为1秒，可以根据需要修改
+        float journeyLength = Vector3.Distance(startPos, targetPos);
+        float startTime = Time.time;
 
-        while (elapsedTime < moveTime)
-        {
-            elapsedTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(startPos, targetPos, elapsedTime / moveTime);
+        //使用AnimationCurve控制缓入缓出
+        AnimationCurve easeInOutCurve = new AnimationCurve(
+           new Keyframe(0, 0),      // 开始点
+           new Keyframe(0.5f, 1),   // 中间加速点
+           new Keyframe(1, 0)       // 结束点
+        );
+
+        //直到相机到达目标位置
+        while(Vector3.Distance(transform.position, targetPos) > 0.01f){
+            float distanceCovered = (Time.time - startTime) * speed;
+            float fractionOfJourney = distanceCovered / journeyLength;
+
+            //使用曲线来控制移动的加速度
+            float easedFraction = easeInOutCurve.Evaluate(fractionOfJourney);
+            transform.position = Vector3.Lerp(startPos, targetPos, easedFraction);
+
             yield return null;
         }
+        //最终强制设为目标位置，避免误差
+        transform.position = targetPos;
     }
+
     public void SetDraggingUI(bool value)
     {
         isDraggingUI = value;
