@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
 {
-    [Header("场景切换配置")]
+    [Header("SceneChanger")]
     public string targetSceneName; // 下一个场景的名称
     public bool showLoadingPage = true; // 是否需要加载页面
 
