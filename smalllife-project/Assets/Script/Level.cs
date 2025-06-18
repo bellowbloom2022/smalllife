@@ -9,12 +9,12 @@ public class Level : MonoBehaviour
     public static Level ins;
     public int currentLevelIndex;
 
-    public GameObject mBtnNext;
-    public GameObject mBtnNext1;
+    public GameObject mBtnNext;//通关后首次显示的确认按钮
+    public GameObject mBtnNext1;//直接跳转下一关的确认按钮
     public GameObject popup;
     public GameObject confirmationPanel;
-    public GameObject continueButton;
-    public GameObject proceedButton;
+    public GameObject continueButton;//弹窗确认框里的“取消/继续当前关卡”按钮
+    public GameObject proceedButton;//弹窗确认框里的“确认跳转下一关”按钮
     public int TotalCount;
     public int requiredCount;
     public string NextLevelName;
@@ -77,16 +77,19 @@ public class Level : MonoBehaviour
     }
     public void ClosePopup()
     {
+        Debug.Log("ClosePopup called");
         if (popup != null)
         {
             popup.SetActive(false); // 关闭 popup 弹窗
         }
     }
+
     private IEnumerator DelaySave()
     {
         yield return new WaitForEndOfFrame(); // 等待当前帧结束，确保所有状态更新完毕
         SaveLevelData();
     }
+    
     private void UpdateGoalHint(int current, int total)
     {
         if (goalText != null)
@@ -106,24 +109,16 @@ public class Level : MonoBehaviour
 
     private void ShowAllGoalsFoundFeedback()
     {
-        if (popup != null)
-        {
-            popup.SetActive(true);
-        }
+        if (mBtnNext != null) mBtnNext.SetActive(false);
+        if (mBtnNext1 != null) mBtnNext1.SetActive(true);
     }
 
     public void onBtnNextClicked()
     {
-        if (usePopup && confirmationPanel != null)
+        // 点击“下一关按钮”（用于未收集完的情况下）
+        if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(true);
-        }
-        else if (!usePopup)
-        {
-            if (mBtnNext1 != null)
-            {
-                mBtnNext1.SetActive(true);
-            }
         }
     }
 
@@ -137,6 +132,15 @@ public class Level : MonoBehaviour
         if (confirmationPanel != null)
         {
             confirmationPanel.SetActive(false);
+        }
+    }
+
+    public void OnAllGoalsFoundBtnClicked()
+    {
+        // 玩家已经找到所有目标，再点击显示 popup（恭喜之类）
+        if (popup != null)
+        {
+            popup.SetActive(true);
         }
     }
 

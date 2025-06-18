@@ -3,47 +3,73 @@ using UnityEngine;
 using Lean.Localization;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Text), typeof(AudioSource))]
 public class LocalizedTypewriterEffect : MonoBehaviour
 {
-    public float delayBetweenCharacters = 0.1f;
+    public float delayBetweenCharacters = 0.05f;
     public string phraseName = "YourPhraseName";//The phrase name you set in Lean.Localization for this text
+    public AudioClip typingSound;
+    public int playSoundEveryNCharacters = 1;
 
     private Text textComponent;
+    private AudioSource audioSource;
     private string fullText;
+
+    private Coroutine typingCoroutine;
+    private LayoutGroup layoutGroup;
+    private ContentSizeFitter contentSizeFitter;
 
     private void Awake()
     {
         textComponent = GetComponent<Text>();
+        audioSource = GetComponent<AudioSource>();
+
+        //获取上层TextContainer，用于控制自适应大小
+        layoutGroup = GetComponentInParent<LayoutGroup>();
+        contentSizeFitter = GetComponentInParent<ContentSizeFitter>();
     }
 
     private void OnEnable()
     {
-        Lean.Localization.LeanLocalization.OnLocalizationChanged += UpdateLocalization;
+        LeanLocalization.OnLocalizationChanged += UpdateLocalizationAndRestart;
+        RestartTypewriter();
     }
 
     private void OnDisable()
     {
-        Lean.Localization.LeanLocalization.OnLocalizationChanged -= UpdateLocalization;
+        LeanLocalization.OnLocalizationChanged -= UpdateLocalizationAndRestart;
     }
 
-    private void Start()
-    {
-        textComponent.text = "";//Clear the text initially
+    private void RestartTypewriter(){
+        if(typingCoroutine != null)
+           StopCoroutine(typingCoroutine);
+
+        textComponent.text = "";
         fullText = GetLocalizedText(phraseName);
-        StartCoroutine(ShowTextWithTypewriterEffect());
+        typingCoroutine = StartCoroutine(ShowTextWithTypewriterEffect());
+        Debug.Log($"[RestartTypewriter] phraseName: {phraseName}, fullText: {GetLocalizedText(phraseName)}");
     }
 
-    private void UpdateLocalization()
-    {
-        fullText = GetLocalizedText(phraseName);
+    private void UpdateLocalizationAndRestart(){
+        RestartTypewriter();
     }
+
     private IEnumerator ShowTextWithTypewriterEffect()
     {
-        int index = 0;
-        while(index < fullText.Length)//Make sure we don't go out of bounds
-        {
-            textComponent.text += fullText[index];
-            index++;
+        Debug.Log($"[TypewriterEffect] Starting typing coroutine...");
+        for (int i = 0; i < fullText.Length; i++){
+            textComponent.text += fullText[i];
+
+            if (typingSound != null && audioSource != null && i % playSoundEveryNCharacters == 0){
+                audioSource.pitch = Random.Range(0.95f, 1.05f);
+                audioSource.PlayOneShot(typingSound);
+            }
+
+            //每次加字后，重新触发Layout（关键步骤）
+            LayoutRebuilder.ForceRebuildLayoutImmediate(textComponent.rectTransform);
+            if (layoutGroup != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
+
             yield return new WaitForSeconds(delayBetweenCharacters);
         }
     }
@@ -52,13 +78,9 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     {
         var translation = LeanLocalization.GetTranslation(phraseName);
 
-        if (translation != null && translation.Data is string)
-        {
-            return (string)translation.Data;
-        }
-        else
-        {
-            return textComponent.text;
-        }
+        if (translation != null && translation.Data is string str)
+            return str;
+        
+        return textComponent.text;
     }
 }

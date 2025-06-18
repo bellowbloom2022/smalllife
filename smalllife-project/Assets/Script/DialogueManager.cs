@@ -1,14 +1,15 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class DialogueManager : MonoBehaviour
 {
     public static DialogueManager Instance;
-
-    public GameObject dialogueTextBox; // UI 面板
-    public RectTransform dialogueTextBoxRect; // UI 面板的 RectTransform
     public Canvas mCanvas; // UI Canvas
 
     private GameObject activeDialogueSprite;
+    private RectTransform activeSpriteRect;
+    private ContentSizeFitter sizeFitter;
 
     private void Awake()
     {
@@ -28,7 +29,6 @@ public class DialogueManager : MonoBehaviour
 
         activeDialogueSprite = dialogueSprite;
         activeDialogueSprite.SetActive(true);
-        dialogueTextBox.SetActive(true);
 
         // 把世界坐标 anchor 转换为 UI 坐标
         Vector3 screenPos = Camera.main.WorldToScreenPoint(anchor.position);
@@ -40,12 +40,10 @@ public class DialogueManager : MonoBehaviour
             out anchoredPos
         );
 
-        dialogueTextBoxRect.anchoredPosition = anchoredPos;
-
-        RectTransform spriteRect = dialogueSprite.GetComponent<RectTransform>();
-        if (spriteRect != null)
+        activeSpriteRect = dialogueSprite.GetComponent<RectTransform>();
+        if (activeSpriteRect != null)
         {
-            spriteRect.anchoredPosition = dialogueTextBoxRect.anchoredPosition;
+            activeSpriteRect.anchoredPosition = anchoredPos;
         }
     }
 
@@ -55,11 +53,6 @@ public class DialogueManager : MonoBehaviour
         {
             activeDialogueSprite.SetActive(false);
             activeDialogueSprite = null;
-        }
-
-        if (dialogueTextBox != null)
-        {
-            dialogueTextBox.SetActive(false);
         }
     }
 
