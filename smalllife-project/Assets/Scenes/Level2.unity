@@ -15746,6 +15746,7 @@ GameObject:
   - component: {fileID: 1167733980}
   - component: {fileID: 1167733982}
   - component: {fileID: 1167733983}
+  - component: {fileID: 1167733984}
   m_Layer: 6
   m_Name: Panel_info
   m_TagString: Untagged
@@ -15945,6 +15946,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad92192d010b4623a0fa325621b86f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1167733984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167733976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupImage: {fileID: 684108091}
+  popupSprite: {fileID: 21300000, guid: b5946079a0173bd47b740fe707abaf81, type: 3}
+  closeButton: {fileID: 2003311563}
 --- !u!1001 &1172180709
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18610,7 +18626,7 @@ GameObject:
   - component: {fileID: 1377200889}
   - component: {fileID: 1377200893}
   - component: {fileID: 1377200891}
-  - component: {fileID: 1377200892}
+  - component: {fileID: 1377200894}
   m_Layer: 0
   m_Name: paizi
   m_TagString: Untagged
@@ -18698,22 +18714,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.69939375, y: 0.9352527, z: 0}
   m_Center: {x: -0.005966902, y: 0.10143575, z: 0}
---- !u!114 &1377200892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1377200888}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InfoPopup: {fileID: 1167733976}
-  popupImage: {fileID: 684108091}
-  popupSprite: {fileID: 21300000, guid: b5946079a0173bd47b740fe707abaf81, type: 3}
-  closeButton: {fileID: 2003311563}
 --- !u!95 &1377200893
 Animator:
   serializedVersion: 4
@@ -18734,6 +18734,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1377200894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377200888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15f6a17d15aa47b28f1a2839511bfc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoPanel: {fileID: 1167733984}
 --- !u!1 &1385415061
 GameObject:
   m_ObjectHideFlags: 0

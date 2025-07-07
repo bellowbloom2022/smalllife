@@ -30381,6 +30381,7 @@ GameObject:
   - component: {fileID: 758990581}
   - component: {fileID: 758990583}
   - component: {fileID: 758990584}
+  - component: {fileID: 758990585}
   m_Layer: 6
   m_Name: Panel_info
   m_TagString: Untagged
@@ -30580,6 +30581,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad92192d010b4623a0fa325621b86f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &758990585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 758990577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupImage: {fileID: 496140961}
+  popupSprite: {fileID: 21300000, guid: 0f91d26e4e963c046a86783200f5aaef, type: 3}
+  closeButton: {fileID: 1903387996}
 --- !u!1 &760404911
 GameObject:
   m_ObjectHideFlags: 0
@@ -48515,10 +48531,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1288152680}
   - component: {fileID: 1288152679}
-  - component: {fileID: 1288152681}
   - component: {fileID: 1288152682}
   - component: {fileID: 1288152683}
   - component: {fileID: 1288152685}
+  - component: {fileID: 1288152686}
   m_Layer: 0
   m_Name: paizi
   m_TagString: Untagged
@@ -48593,22 +48609,6 @@ Transform:
   m_Father: {fileID: 1271759600}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1288152681
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1288152678}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InfoPopup: {fileID: 758990577}
-  popupImage: {fileID: 496140961}
-  popupSprite: {fileID: 21300000, guid: 0f91d26e4e963c046a86783200f5aaef, type: 3}
-  closeButton: {fileID: 1903387996}
 --- !u!65 &1288152682
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -48738,6 +48738,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1288152686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288152678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15f6a17d15aa47b28f1a2839511bfc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoPanel: {fileID: 758990585}
 --- !u!1 &1289217572
 GameObject:
   m_ObjectHideFlags: 0
