@@ -56,8 +56,5 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public bool IsDialogueActive()
-    {
-        return activeDialogueSprite != null;
-    }
+    public bool IsDialogueActive() => activeDialogueSprite != null;
 }

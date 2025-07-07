@@ -1,87 +1,86 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectPoolManager : MonoBehaviour
 {
-    [System.Serializable]
-    public class Pool
-    {
-        public string poolName;
-        public GameObject prefab;
-        public int poolSize;
-    }
+    public static ObjectPoolManager Instance;
 
-    public static ObjectPoolManager Instance { get; private set; }
-    public List<Pool> pools = new List<Pool>();
-    private Dictionary<string, Queue<GameObject>> objectPools = new Dictionary<string, Queue<GameObject>>();
+    // 每种预制体的池子，按prefab名分类
+    private Dictionary<string, Queue<GameObject>> poolDict = new Dictionary<string, Queue<GameObject>>();
+    private Dictionary<string, GameObject> prefabDict = new Dictionary<string, GameObject>();
+
+    private Transform uiRoot;
 
     private void Awake()
     {
-        if(Instance == null)
-        {
+        if (Instance == null) {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
+        } else {
             Destroy(gameObject);
         }
     }
-    private void Start()
-    {
-        //预先生成对象池中的对象
-        InitializeObjectPools();
-    }
 
-    private void InitializeObjectPools()
-    {
-        foreach (Pool pool in pools)
-        {
-            Queue<GameObject> objectPool = new Queue<GameObject>();
-
-            for(int i=0; i< pool.poolSize; i++)
-            {
-                GameObject obj = Instantiate(pool.prefab, transform);
-                obj.SetActive(false);
-                objectPool.Enqueue(obj);
+    private Transform UIRoot{
+        get{
+            if (uiRoot == null){
+                uiRoot = GameObject.Find("Canvas")?.transform;
+                if (uiRoot == null){
+                    Debug.LogError("ObjectPoolManager: Canvas not found in scene.");
+                }
             }
-            objectPools.Add(pool.poolName, objectPool);
+            return uiRoot;
         }
     }
 
-    public GameObject GetPooledObject(string poolName)
+    /// <summary>
+    /// 注册一个新的预制体，用于生成对象池
+    /// </summary>
+    public void RegisterPrefab(string key, GameObject prefab)
     {
-        if (objectPools.ContainsKey(poolName))
-        {
-            if(objectPools[poolName].Count > 0)
-            {
-                GameObject obj = objectPools[poolName].Dequeue();
-                obj.SetActive(true);
-                return obj;
-            }
-            else
-            {
-                Debug.LogWarning("No available objects in the object pool:" + poolName);
-            }
+        if (!prefabDict.ContainsKey(key)) {
+            prefabDict[key] = prefab;
+            poolDict[key] = new Queue<GameObject>();
         }
-        else
-        {
-            Debug.LogError("Object pool does not exist:" + poolName);
-        }
-        return null;
     }
 
-    public void ReturnPooledObject(string poolName,GameObject obj)
+    /// <summary>
+    /// 从对象池中获取对象
+    /// </summary>
+    public GameObject GetFromPool(string key, Vector3 pos, Quaternion rot, Transform parent = null)
     {
-        if (objectPools.ContainsKey(poolName))
-        {
-            obj.SetActive(false);
-            objectPools[poolName].Enqueue(obj);
+        if (!poolDict.ContainsKey(key)) {
+            Debug.LogWarning($"Pool for '{key}' not found. Please register prefab first.");
+            return null;
         }
-        else
-        {
-            Debug.LogError("Object pool does not exist:" + poolName);
-        }
+
+        GameObject obj = poolDict[key].Count > 0 ? poolDict[key].Dequeue() : Instantiate(prefabDict[key]);
+
+        obj.transform.SetParent(parent);
+        obj.transform.position = pos;
+        obj.transform.rotation = rot;
+        obj.SetActive(true);
+        return obj;
+    }
+
+    /// <summary>
+    /// 回收对象到池中
+    /// </summary>
+    public void ReturnToPool(string key, GameObject obj)
+    {
+        obj.SetActive(false);
+        obj.transform.SetParent(this.transform);
+        poolDict[key].Enqueue(obj);
+    }
+
+    public GameObject GetUIPanelFromPool(string key)
+    {
+        GameObject obj = GetFromPool(key, Vector3.zero, Quaternion.identity, UIRoot);
+        return obj;
+    }
+
+    public void ReturnUIPanelToPool(string key, GameObject obj)
+    {
+        ReturnToPool(key, obj);
     }
 }

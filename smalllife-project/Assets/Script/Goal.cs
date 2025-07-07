@@ -44,6 +44,8 @@ public class Goal : MonoBehaviour
         //在start方法中查找场景中的CameraController组件，并将其保存在cameraController变量中。
         cameraController = FindObjectOfType<CameraController>();
         currentStage = Stage.PreAnim1;
+        //自动注册 Goal Audio 到 SFXZone（衰减控制）
+        SFXZone.TryRegister(GetComponent<AudioSource>());
     }
 
     public void HandleClick(Collider2D hitCollider){
@@ -103,7 +105,7 @@ public class Goal : MonoBehaviour
         {
             cameraController.MoveCameraToPosition(mCamPosA.transform.position, mCamMoveSpeedA);
         }
-
+        AudioHub.Instance.PlayGlobal("goal_step1");
         //切换到anim1后的阶段
         currentStage = Stage.PostAnim1;
 
@@ -155,7 +157,7 @@ public class Goal : MonoBehaviour
                     Debug.Log("找到一个goal了");
                 };
             };
-
+            AudioHub.Instance.PlayGlobal("goal_found");
             // 切换到anim2后的阶段
             currentStage = Stage.PostAnim2;
             // 自动显示 PostAnim2 阶段的第一个对话框

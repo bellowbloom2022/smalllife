@@ -10,18 +10,18 @@ public class InfoClickHandler : MonoBehaviour
     public Sprite popupSprite;  //弹窗图片的sprite
     public Button closeButton;  //关闭按钮
 
-    private void OnMouseUp()
-    {
-        //加载弹窗内容
-        popupImage.sprite = popupSprite;
-
-        //显示弹窗
-        InfoPopup.SetActive(true);
-    }
     private void Start()
     {
         //设置弹窗的关闭时间处理程序
         closeButton.onClick.AddListener(ClosePopup);
+    }
+
+    private void OnMouseUp()
+    {
+        //加载弹窗内容
+        popupImage.sprite = popupSprite;
+        //显示弹窗
+        InfoPopup.SetActive(true);
     }
 
     private void ClosePopup()

@@ -7,6 +7,7 @@ public class ExitButton : MonoBehaviour
     // 这个方法将在按钮被点击时调用
     public void OnExitButtonClick()
     {
+        AudioHub.Instance.PlayGlobal("click_confirm");
 #if UNITY_EDITOR
         // 在Unity编辑器中，点击按钮会停止播放，类似于按下Stop按钮
         UnityEditor.EditorApplication.isPlaying = false;
