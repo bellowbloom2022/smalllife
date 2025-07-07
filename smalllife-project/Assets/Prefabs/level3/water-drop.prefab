@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1453112137529684766}
   - component: {fileID: 1453112137529684765}
   - component: {fileID: 1453112137529684764}
-  - component: {fileID: 1654298843013139309}
   - component: {fileID: 2378602646045977058}
+  - component: {fileID: 5473837201693584045}
   m_Layer: 0
   m_Name: water-drop
   m_TagString: Untagged
@@ -121,22 +121,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.7149184, y: 0.8507527, z: 0.2}
   m_Center: {x: 0.12162554, y: 0.29537636, z: 0}
---- !u!114 &1654298843013139309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1453112137529684752}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 862f5cfbc168d394c95c4f070c80bf0d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mAudio: {fileID: 8300000, guid: 1dca7b37340b44d81a514e7527a44287, type: 3}
-  mIsTriggered: 0
-  audioSource: {fileID: 2378602646045977058}
-  assignedZone: {fileID: 0}
 --- !u!82 &2378602646045977058
 AudioSource:
   m_ObjectHideFlags: 0
@@ -233,3 +217,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &5473837201693584045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1453112137529684752}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad92192d010b4623a0fa325621b86f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

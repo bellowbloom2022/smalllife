@@ -2,32 +2,44 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class HowToPlayPanel : MonoBehaviour
+public class HowToPlayPanel : BasePanel
 {
-    public GameObject[] images; // 存储四个HowToPlay的图片对象
-    public Text[] texts; // 存储对应的文本对象
-    public Button prevButton; // 左按钮
-    public Button nextButton; // 右按钮
-    public Button closeButton; // 关闭按钮
-    public TMP_Text pageNumberText; // 显示页码的文本对象
-    public Button questionButton;
+    public GameObject[] images; // 四个引导图
+    public Text[] texts; // 对应文字
+    public Button prevButton;
+    public Button nextButton;
+    public Button closeButton;
+    public TMP_Text pageNumberText;
 
     private int currentPage = 0;
     private int maxPages;
+    
+    private void OnEnable()
+    {
+        // 安全绑定
+        prevButton.onClick.RemoveAllListeners();
+        nextButton.onClick.RemoveAllListeners();
+        closeButton.onClick.RemoveAllListeners();
 
-    void Start()
+        prevButton.onClick.AddListener(PrevPage);
+        nextButton.onClick.AddListener(NextPage);
+        closeButton.onClick.AddListener(Hide);
+
+        currentPage = 0;
+        UpdateUI();
+    }
+
+    public override void Show()
+    {
+        currentPage = 0;
+        UpdateUI();
+        base.Show(); // 播放 BasePanel 的动画
+    }
+
+    private void UpdateUI()
     {
         maxPages = images.Length;
 
-        UpdateUI();
-        prevButton.onClick.AddListener(PrevPage);
-        nextButton.onClick.AddListener(NextPage);
-        closeButton.onClick.AddListener(ClosePanel);
-        questionButton.onClick.AddListener(OpenPanel);
-    }
-
-    void UpdateUI()
-    {
         for (int i = 0; i < images.Length; i++)
         {
             images[i].SetActive(i == currentPage);
@@ -40,33 +52,28 @@ public class HowToPlayPanel : MonoBehaviour
         pageNumberText.text = $"{currentPage + 1}/{maxPages}";
     }
 
-    public void NextPage()
+    private void NextPage()
     {
         if (currentPage < maxPages - 1)
         {
+            AudioHub.Instance.PlayGlobal("howtoplay-bookflip");
             currentPage++;
             UpdateUI();
         }
     }
 
-    public void PrevPage()
+    private void PrevPage()
     {
         if (currentPage > 0)
         {
+            AudioHub.Instance.PlayGlobal("howtoplay-bookflip");
             currentPage--;
             UpdateUI();
         }
     }
 
-    public void ClosePanel()
+    public override void Hide()
     {
-        gameObject.SetActive(false); // 关闭panel
-    }
-
-    public void OpenPanel()
-    {
-        currentPage = 0; // 打开时重置到第一页
-        gameObject.SetActive(true);
-        UpdateUI();
+        base.Hide();
     }
 }

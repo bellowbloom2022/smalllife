@@ -16,6 +16,8 @@ public class BGMController : MonoBehaviour
 
     void Awake()
     {
+        //¥” PlayerPrefs ∂¡»° BGM “Ù¡ø
+        originalVolume = PlayerPrefs.GetFloat("Volume_BGM", 1f);
         audioSource = GetComponent<AudioSource>();
         originalVolume = audioSource.volume;
 
@@ -25,6 +27,12 @@ public class BGMController : MonoBehaviour
             audioSource.Play();
             FadeIn(fadeInDuration);
         }
+    }
+    
+    public void SetVolume(float value)
+    {
+        originalVolume = value;
+        audioSource.volume = value;
     }
 
     public void FadeIn(float duration)

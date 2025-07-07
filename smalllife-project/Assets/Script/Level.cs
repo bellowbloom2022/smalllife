@@ -3,29 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class Level : MonoBehaviour
 {
     public static Level ins;
     public int currentLevelIndex;
 
-    public GameObject mBtnNext;//通关后首次显示的确认按钮
-    public GameObject mBtnNext1;//直接跳转下一关的确认按钮
-    public GameObject popup;
-    public GameObject confirmationPanel;
-    public GameObject continueButton;//弹窗确认框里的“取消/继续当前关卡”按钮
-    public GameObject proceedButton;//弹窗确认框里的“确认跳转下一关”按钮
+    [Header("UI Buttons")]
+    public Button mBtnNext;     // 找到部分目标后显示的按钮
+    public Button mBtnNext1;    // 找到全部目标后显示的按钮
+    public Button continueButton; // “取消/继续当前关卡”按钮
+    public Button proceedButton;  // “确认跳转下一关”按钮
+
+    [Header("congrats panel prefabs")]
+    public GameObject CongratulatePanel_ConfirmPrefab;   // Panel-congratulate1
+    public GameObject CongratulatePanel_CelebratePrefab; // Panel-congratulate2
+    
+    private BasePanel confirmPanelInstance;
+    private BasePanel celebratePanelInstance;
+
+    [Header("Game Logic")]
     public int TotalCount;
     public int requiredCount;
     public string NextLevelName;
-
-    public int mCount = 0;
-    public bool usePopup = true;
     public TextMeshProUGUI goalText;
-
     public List<GameObject> goals;
 
-    private GameData currentGameData; // 内存中的数据副本
+    private int mCount = 0;
+    private GameData currentGameData;
 
     private void Awake()
     {
@@ -34,62 +40,104 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
-        // 加载数据并初始化
+        // 注册按钮点击事件 + 播放音效
+        if (mBtnNext != null)
+            mBtnNext.onClick.AddListener(OnBtnNextClicked);
+        if (mBtnNext1 != null)
+            mBtnNext1.onClick.AddListener(OnAllGoalsFoundBtnClicked);
+        if (continueButton != null)
+            continueButton.onClick.AddListener(OnContinueButtonClicked);
+        if (proceedButton != null)
+            proceedButton.onClick.AddListener(OnProceedButtonClicked);
+
+        // 初始化目标和进度
         LoadGameData();
         UpdateGoalHint(mCount, TotalCount);
         UpdateLevelGoals();
-
-        if (popup != null) popup.SetActive(false);
-        if (confirmationPanel != null) confirmationPanel.SetActive(false);
     }
 
     private void LoadGameData()
     {
-        // 尝试加载现有的游戏数据，如果不存在则创建新数据
         currentGameData = SaveSystem.LoadGame() ?? new GameData();
         Debug.Log("Game data loaded successfully.");
     }
 
     public void AddCount()
     {
-        ++this.mCount;
-        UpdateGoalHint(this.mCount, this.TotalCount);
+        ++mCount;
+        UpdateGoalHint(mCount, TotalCount);
 
-        if (this.mCount >= requiredCount)
-        {
-            ShowNextButton();
-            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, 1);
+        if (mCount >= requiredCount){
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
+
+            //当目标数为1且requireCount也是1时，直接显示AllGoals反馈
+            if (TotalCount == 1 && requiredCount == 1){
+                ShowAllGoalsFoundFeedback();
+            }
+            else{
+                ShowNextButton();
+            }
         }
 
-        if (this.mCount == this.TotalCount)
-        {
+        if (mCount == TotalCount){
             ShowAllGoalsFoundFeedback();
         }
-        // 延迟保存数据，确保状态更新完毕
         StartCoroutine(DelaySave());
     }
+
     private void ShowNextButton()
     {
         if (mBtnNext != null)
-        {
-            mBtnNext.SetActive(true);
-        }
-    }
-    public void ClosePopup()
-    {
-        Debug.Log("ClosePopup called");
-        if (popup != null)
-        {
-            popup.SetActive(false); // 关闭 popup 弹窗
-        }
+            mBtnNext.gameObject.SetActive(true);
     }
 
-    private IEnumerator DelaySave()
+    private void ShowAllGoalsFoundFeedback()
     {
-        yield return new WaitForEndOfFrame(); // 等待当前帧结束，确保所有状态更新完毕
-        SaveLevelData();
+        if (mBtnNext != null)
+            mBtnNext.gameObject.SetActive(false);
+        if (mBtnNext1 != null)
+            mBtnNext1.gameObject.SetActive(true);
     }
-    
+
+    public void OnBtnNextClicked()
+    {
+        AudioHub.Instance.PlayGlobal("click_confirm");
+
+        if (confirmPanelInstance == null)
+        {
+            GameObject obj = Instantiate(CongratulatePanel_ConfirmPrefab, GameObject.Find("Canvas").transform);
+            confirmPanelInstance = obj.GetComponent<BasePanel>();
+        }
+
+        confirmPanelInstance.Show();
+    }
+
+    public void OnAllGoalsFoundBtnClicked()
+    {
+        AudioHub.Instance.PlayGlobal("click_confirm");
+
+        if (celebratePanelInstance == null)
+        {
+            GameObject obj = Instantiate(CongratulatePanel_CelebratePrefab, GameObject.Find("Canvas").transform);
+            celebratePanelInstance = obj.GetComponent<BasePanel>();
+        }
+
+        celebratePanelInstance.Show();
+    }
+
+    public void OnContinueButtonClicked()
+    {
+        AudioHub.Instance.PlayGlobal("back_confirm");
+        if (confirmPanelInstance != null)
+            confirmPanelInstance.Hide();
+    }
+
+    public void OnProceedButtonClicked()
+    {
+        AudioHub.Instance.PlayGlobal("click_confirm");
+        SceneManager.LoadScene(NextLevelName);
+    }
+
     private void UpdateGoalHint(int current, int total)
     {
         if (goalText != null)
@@ -107,93 +155,41 @@ public class Level : MonoBehaviour
         goalText.transform.localScale = originalScale;
     }
 
-    private void ShowAllGoalsFoundFeedback()
+    private IEnumerator DelaySave()
     {
-        if (mBtnNext != null) mBtnNext.SetActive(false);
-        if (mBtnNext1 != null) mBtnNext1.SetActive(true);
-    }
-
-    public void onBtnNextClicked()
-    {
-        // 点击“下一关按钮”（用于未收集完的情况下）
-        if (confirmationPanel != null)
-        {
-            confirmationPanel.SetActive(true);
-        }
-    }
-
-    public void onProceedButtonClicked()
-    {
-        SceneManager.LoadScene(NextLevelName);
-    }
-
-    public void onContinueButtonClicked()
-    {
-        if (confirmationPanel != null)
-        {
-            confirmationPanel.SetActive(false);
-        }
-    }
-
-    public void OnAllGoalsFoundBtnClicked()
-    {
-        // 玩家已经找到所有目标，再点击显示 popup（恭喜之类）
-        if (popup != null)
-        {
-            popup.SetActive(true);
-        }
+        yield return new WaitForEndOfFrame();
+        SaveLevelData();
     }
 
     public void SaveLevelData()
     {
-        // 确保目标对象ID列表已经初始化
         if (currentGameData.foundGoalIDs == null)
         {
             currentGameData.foundGoalIDs = new Dictionary<int, List<int>>();
         }
 
-        int levelIndex = currentLevelIndex;
-        Debug.Log("Current level index: " + levelIndex);
-
-        currentGameData.goalsFound[levelIndex] = this.mCount;
-        Debug.Log("Goals found in current level: " + this.mCount);
+        currentGameData.goalsFound[currentLevelIndex] = mCount;
 
         List<int> foundGoalIDs = new List<int>();
         foreach (GameObject goal in goals)
         {
             Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null)
+            if (goalComponent != null && goalComponent.goalID != -1 && goalComponent.isFound)
             {
-                Debug.Log($"Checking goal with ID: {goalComponent.goalID}");
-
-                if (goalComponent.goalID != -1 && goalComponent.isFound)
-                {
-                    Debug.Log($"Adding goal ID: {goalComponent.goalID} to found goals.");
-                    foundGoalIDs.Add(goalComponent.goalID);
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"No Goal component found on: {goal.name}");
+                foundGoalIDs.Add(goalComponent.goalID);
             }
         }
-        currentGameData.foundGoalIDs[levelIndex] = foundGoalIDs;
-        currentGameData.currentLevel = levelIndex;
 
-        // 只在必要时保存到文件
+        currentGameData.foundGoalIDs[currentLevelIndex] = foundGoalIDs;
+        currentGameData.currentLevel = currentLevelIndex;
+
         SaveSystem.SaveGame(currentGameData);
-        Debug.Log("Saved goals found: " + currentGameData.goalsFound[levelIndex] + " for level: " + levelIndex);
-    }
-
-    public bool IsGoalFound(int goalID)
-    {
-        return currentGameData.foundGoalIDs.ContainsKey(currentLevelIndex) &&
-               currentGameData.foundGoalIDs[currentLevelIndex].Contains(goalID);
     }
 
     public void UpdateLevelGoals()
     {
-        if (currentGameData != null && currentGameData.goalsFound != null &&
+        if (currentGameData != null &&
+            currentGameData.goalsFound != null &&
             currentGameData.goalsFound.ContainsKey(currentLevelIndex))
         {
             int foundCount = currentGameData.goalsFound[currentLevelIndex];
@@ -201,19 +197,12 @@ public class Level : MonoBehaviour
                 ? currentGameData.foundGoalIDs[currentLevelIndex]
                 : null;
 
-            Debug.Log("Loading goals for level:" + currentLevelIndex);
-            Debug.Log("Total goals found: " + foundCount);
-            Debug.Log("Found goal IDs: " + string.Join(",", foundGoalIDs));
-
-            if (foundGoalIDs != null)
+            foreach (GameObject goal in goals)
             {
-                foreach (GameObject goal in goals)
+                Goal goalComponent = goal.GetComponent<Goal>();
+                if (goalComponent != null && foundGoalIDs != null && foundGoalIDs.Contains(goalComponent.goalID))
                 {
-                    Goal goalComponent = goal.GetComponent<Goal>();
-                    if (goalComponent != null && foundGoalIDs.Contains(goalComponent.goalID))
-                    {
-                        UpdateGoalUI(goal);
-                    }
+                    UpdateGoalUI(goal);
                 }
             }
 
@@ -222,31 +211,33 @@ public class Level : MonoBehaviour
 
             if (mCount >= requiredCount)
             {
-                ShowNextButton(); // 再次检查并显示 mBtnNext
+                ShowNextButton();
             }
         }
     }
 
     private void UpdateGoalUI(GameObject goal)
     {
-        if (goal != null)
+        if (goal == null) return;
+
+        Goal goalComponent = goal.GetComponent<Goal>();
+        if (goalComponent == null) return;
+
+        if (goalComponent.mGameObjectNovel != null)
         {
-            Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null)
+            goalComponent.mGameObjectNovel.transform.localScale = new Vector3(1, 1, goalComponent.mGameObjectNovel.transform.localScale.z);
+
+            Animator animator = goalComponent.mGameObjectNovel.GetComponent<Animator>();
+            if (animator != null)
             {
-                if(goalComponent.mGameObjectNovel != null)
-                {
-                    goalComponent.mGameObjectNovel.transform.localScale = new Vector3(1, 1, goalComponent.mGameObjectNovel.transform.localScale.z);
-
-                    Animator animator = goalComponent.mGameObjectNovel.GetComponent<Animator>();
-                    if(animator != null)
-                    {
-                        animator.SetTrigger("click");
-
-                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-                    }
-                }
+                animator.SetTrigger("click");
             }
         }
+    }
+
+    public bool IsGoalFound(int goalID)
+    {
+        return currentGameData.foundGoalIDs.ContainsKey(currentLevelIndex) &&
+               currentGameData.foundGoalIDs[currentLevelIndex].Contains(goalID);
     }
 }

@@ -59,10 +59,12 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.DeleteAll();
         Debug.Log("删除所有数据");
     }
+
     public void OnClearDataButtonClicked()
     {
         ClearSavedData();
     }
+    
     public void ClearSavedData()
     {
         // 使用你自己的保存系统清除数据

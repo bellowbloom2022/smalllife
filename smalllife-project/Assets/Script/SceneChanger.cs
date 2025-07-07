@@ -46,4 +46,8 @@ public class SceneChanger : MonoBehaviour
             SceneManager.LoadScene(targetSceneName);
         }
     }
+    public void OnConfirmClick(){
+        AudioHub.Instance.PlayGlobal("click_confirm");
+        ChangeScene();
+    }
 }
