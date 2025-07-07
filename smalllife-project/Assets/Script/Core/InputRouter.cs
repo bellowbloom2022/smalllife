@@ -7,12 +7,15 @@ public class InputRouter : MonoBehaviour
 
     public event Action<Vector3> OnDrag;   // 拖拽事件（delta）
     public event Action<Vector3> OnClick;  // 点击事件（屏幕位置）
+    public static event Action OnBlankClick;
 
     private Vector3 lastMousePos;
-    private string dragMode = "right"; // "left" or "right"
+    private float clickCooldown = 0.2f;
+    private float lastClickTime = -10f;
 
-    private int DragMouseButton => (dragMode == "left") ? 0 : 1;
-    private int ClickMouseButton => 0; // 总是使用左键作为点击（交互）
+    private string dragMode = "right"; // "left" or "right"
+    public bool InputLocked { get; private set; } = false;
+
 
     void Awake()
     {
@@ -23,27 +26,37 @@ public class InputRouter : MonoBehaviour
 
     void Update()
     {
-        //if (GameManager.instance != null && GameManager.instance.IsPaused)
-            //return;
-
-        if (GameManager.instance != null && GameManager.instance.CheckGuiRaycastObject())
+        if (InputLocked)
             return;
 
-        // 拖拽逻辑
-        if (Input.GetMouseButtonDown(DragMouseButton))
+        float now = Time.time;
+
+        // === 拖拽检测 ===
+        int dragBtn = dragMode == "left" ? 0 : 1;
+        if (Input.GetMouseButtonDown(dragBtn))
             lastMousePos = Input.mousePosition;
 
-        if (Input.GetMouseButton(DragMouseButton))
+        if (Input.GetMouseButton(dragBtn))
         {
             Vector3 delta = Input.mousePosition - lastMousePos;
             lastMousePos = Input.mousePosition;
             OnDrag?.Invoke(delta);
         }
 
-        // 点击逻辑（左键点击）
-        if (Input.GetMouseButtonDown(ClickMouseButton))
+        // === 点击检测 ===
+        if (Input.GetMouseButtonDown(0) && now - lastClickTime >= clickCooldown)
         {
+            lastClickTime = now;
+
+            // 检查是否点在 UI 上
+            bool isOverUI = UIBlockChecker.IsPointerOverUI();
+
+            if (!isOverUI)
+                OnBlankClick?.Invoke(); // 通知：点击空白区域
+
             OnClick?.Invoke(Input.mousePosition);
+
+            Debug.Log("click!");
         }
     }
 
@@ -53,5 +66,7 @@ public class InputRouter : MonoBehaviour
         PlayerPrefs.SetString("Control_DragMode", mode);
     }
 
+    public void LockInput() => InputLocked = true;
+    public void UnlockInput() => InputLocked = false;
     public string GetDragMode() => dragMode;
 }

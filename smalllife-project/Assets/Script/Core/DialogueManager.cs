@@ -23,6 +23,16 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        InputRouter.OnBlankClick += TryHide;
+    }
+
+    void OnDisable()
+    {
+        InputRouter.OnBlankClick -= TryHide;
+    }
+
     public void ShowDialogue(GameObject dialogueSprite, Transform anchor)
     {
         HideDialogue();
@@ -53,6 +63,15 @@ public class DialogueManager : MonoBehaviour
         {
             activeDialogueSprite.SetActive(false);
             activeDialogueSprite = null;
+        }
+    }
+    
+    public void TryHide()
+    {
+        if (IsDialogueActive())
+        {
+            HideDialogue();
+            InputRouter.Instance.UnlockInput();
         }
     }
 

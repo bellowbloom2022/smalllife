@@ -8119,7 +8119,7 @@ GameObject:
   - component: {fileID: 1339340028}
   - component: {fileID: 1339340027}
   - component: {fileID: 1339340026}
-  - component: {fileID: 1339340025}
+  - component: {fileID: 1339340030}
   m_Layer: 0
   m_Name: paizi
   m_TagString: Untagged
@@ -8127,22 +8127,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1339340025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1339340024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InfoPopup: {fileID: 1838640147}
-  popupImage: {fileID: 1310556023}
-  popupSprite: {fileID: 21300000, guid: fbe27da8693ee444382003d1838a54cf, type: 3}
-  closeButton: {fileID: 1726859177}
 --- !u!65 &1339340026
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8244,6 +8228,19 @@ Transform:
   m_Father: {fileID: 1042190691}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1339340030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1339340024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15f6a17d15aa47b28f1a2839511bfc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoPanel: {fileID: 1838640155}
 --- !u!1001 &1370636247
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10811,6 +10808,7 @@ GameObject:
   - component: {fileID: 1838640150}
   - component: {fileID: 1838640149}
   - component: {fileID: 1838640153}
+  - component: {fileID: 1838640155}
   - component: {fileID: 1838640154}
   m_Layer: 5
   m_Name: Panel_info
@@ -11011,6 +11009,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad92192d010b4623a0fa325621b86f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1838640155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1838640147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupImage: {fileID: 1310556023}
+  popupSprite: {fileID: 21300000, guid: fbe27da8693ee444382003d1838a54cf, type: 3}
+  closeButton: {fileID: 1726859177}
 --- !u!1 &1838756217
 GameObject:
   m_ObjectHideFlags: 0

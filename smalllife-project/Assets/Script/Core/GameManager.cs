@@ -46,12 +46,14 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         isPaused = true;
+        InputRouter.Instance?.LockInput();
     }
 
     public void ResumeGame()
     {
         Time.timeScale = 1f;
         isPaused = false;
+        InputRouter.Instance?.UnlockInput();
     }
     public void ResetGame()
     {

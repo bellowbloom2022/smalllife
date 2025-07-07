@@ -61712,6 +61712,7 @@ GameObject:
   - component: {fileID: 1586629086}
   - component: {fileID: 1586629088}
   - component: {fileID: 1586629089}
+  - component: {fileID: 1586629090}
   m_Layer: 6
   m_Name: Panel_info
   m_TagString: Untagged
@@ -61911,6 +61912,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ad92192d010b4623a0fa325621b86f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1586629090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1586629082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  popupImage: {fileID: 1891703504}
+  popupSprite: {fileID: 21300000, guid: b01c3544590ba6c4786fb06b7ca5f537, type: 3}
+  closeButton: {fileID: 2069878155}
 --- !u!1 &1588837963
 GameObject:
   m_ObjectHideFlags: 0
@@ -74369,7 +74385,7 @@ GameObject:
   - component: {fileID: 1946847434}
   - component: {fileID: 1946847433}
   - component: {fileID: 1946847432}
-  - component: {fileID: 1946847431}
+  - component: {fileID: 1946847435}
   m_Layer: 0
   m_Name: paizi
   m_TagString: Untagged
@@ -74392,22 +74408,6 @@ Transform:
   m_Father: {fileID: 856891574}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1946847431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1946847429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3911eb2ddb397194c8f5c15bb63c7338, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InfoPopup: {fileID: 1586629082}
-  popupImage: {fileID: 1891703504}
-  popupSprite: {fileID: 21300000, guid: b01c3544590ba6c4786fb06b7ca5f537, type: 3}
-  closeButton: {fileID: 2069878155}
 --- !u!65 &1946847432
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -74493,6 +74493,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1946847435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1946847429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c15f6a17d15aa47b28f1a2839511bfc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  infoPanel: {fileID: 1586629090}
 --- !u!1 &1947220103
 GameObject:
   m_ObjectHideFlags: 0
