@@ -25,8 +25,9 @@ public class GameManager : MonoBehaviour
     }
     private void LoadGameData()
     {
-        // 尝试加载现有的游戏数据，如果没有则初始化新的数据
-        gameData = SaveSystem.LoadGame() ?? new GameData();
+        SaveSystem.LoadGame(); // 仅调用加载方法
+        var data = SaveSystem.GameData; // 获取数据
+
     }
 
     //公共方法用来执行GUI射线检测
@@ -81,7 +82,21 @@ public class GameManager : MonoBehaviour
 
     public void PrintGameData()
     {
-        Debug.Log("Current Level: " + gameData.currentLevel);
-        Debug.Log("Goals Found: " + (gameData.goalsFound != null ? string.Join(",", gameData.goalsFound) : "No data"));
+        Debug.Log("Current Level: " + SaveSystem.GameData.currentLevel);
+
+        var goalMap = SaveSystem.GameData.goalProgressMap;
+        if (goalMap == null || goalMap.Count == 0){
+            Debug.Log("Goals Found: No data");
+        }
+        else{
+            List<string> goalStates = new();
+            foreach (var kvp in goalMap){
+                string key = kvp.Key;
+                var progress = kvp.Value;
+                string status = $"{key}: step1={progress.step1Completed}, step2={progress.step2Completed}";
+                goalStates.Add(status);
+            }
+            Debug.Log("Goals Found: " + string.Join(";", goalStates));
+        }
     }
 }

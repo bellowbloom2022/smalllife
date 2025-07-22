@@ -714,7 +714,6 @@ GameObject:
   m_Component:
   - component: {fileID: 117690232}
   - component: {fileID: 117690233}
-  - component: {fileID: 117690234}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -770,19 +769,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &117690234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117690231}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eebbf8ce7d65e4e41b579c13961d8b26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelStars: []
 --- !u!1 &216652620
 GameObject:
   m_ObjectHideFlags: 0
@@ -1955,7 +1941,16 @@ MonoBehaviour:
   levelItemPrefab: {fileID: 3362899201897059991, guid: c57ef2a6ec6f3485c880ca92da54be9f, type: 3}
   rightPanel: {fileID: 1093198632}
   gameData:
+    saveVersion: 1
     currentLevel: 0
+    settings:
+      masterVolume: 1
+      bgmVolume: 1
+      sfxVolume: 1
+      dragMode: RightClick
+      displayMode: Fullscreen
+      resolution: 1920x1080
+      tone: PureWhite
 --- !u!1 &657686862
 GameObject:
   m_ObjectHideFlags: 0
@@ -3184,7 +3179,16 @@ MonoBehaviour:
   buttonEnter: {fileID: 509588643}
   buttonCancel: {fileID: 486397972}
   gameData:
+    saveVersion: 1
     currentLevel: 0
+    settings:
+      masterVolume: 1
+      bgmVolume: 1
+      sfxVolume: 1
+      dragMode: RightClick
+      displayMode: Fullscreen
+      resolution: 1920x1080
+      tone: PureWhite
 --- !u!1 &1143743115
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 
 public class SelectController : MonoBehaviour
 {
-    Ray cameraRay;                      //ÉùÃ÷Ò»¸öÉäÏß
-    Vector3 mousePos = new Vector3();   //¼ÇÂ¼½«Êó±ê£¨ÒòÎªÆÁÄ»×ø±êÃ»ÓĞz£¬ËùÒÔÏÂÃæÊÇ½«zÉèÎª0£©
+    Ray cameraRay;                      //ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    Vector3 mousePos = new Vector3();   //ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ê£¨ï¿½ï¿½Îªï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç½ï¿½zï¿½ï¿½Îª0ï¿½ï¿½
     RaycastHit cameraHit;
 
     private int interactAnimationsClickedCount;
@@ -23,7 +23,7 @@ public class SelectController : MonoBehaviour
     
     void HandleClick(Vector3 screenPos)
     {
-        // ÆÁÄ»×ø±ê×ªÉäÏß
+        // ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½
         cameraRay = Camera.main.ScreenPointToRay(screenPos);
         Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.red, 10);
 

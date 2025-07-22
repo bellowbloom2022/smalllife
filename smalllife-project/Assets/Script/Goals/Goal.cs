@@ -4,7 +4,8 @@ using DG.Tweening;
 
 public class Goal : MonoBehaviour
 {
-    public int goalID;//唯一标识符
+    [SerializeField] private int goalID; //唯一标识符
+    public int GoalID => goalID; // 添加一个只读属性
     public bool isFound;     //是否已找到
     public GameObject mGameObjectNovel;
     public GameObject mNovelPosStart;
@@ -38,6 +39,9 @@ public class Goal : MonoBehaviour
     private enum Stage { PreAnim1, PostAnim1, PostAnim2}
     private Stage currentStage;
 
+    private Animator animator;
+    public bool step1Completed;
+    public bool step2Completed;
 
     private void Start()
     {
@@ -46,6 +50,39 @@ public class Goal : MonoBehaviour
         currentStage = Stage.PreAnim1;
         //自动注册 Goal Audio 到 SFXZone（衰减控制）
         SFXZone.TryRegister(GetComponent<AudioSource>());
+    }
+
+    public void ApplySavedProgress(GoalProgress progress){
+        step1Completed = progress.step1Completed;
+        step2Completed = progress.step2Completed;
+        isFound = step1Completed && step2Completed;
+        PlayLoopAnimationAccordingToStep(); // 在设置完状态后自动播放动画
+    }
+
+    public void PlayLoopAnimationAccordingToStep(){
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
+        if (animator == null){
+            Debug.LogWarning($"Animator not found on {gameObject.name}");
+            return;
+        }
+
+        string animName = "";
+
+        if (step1Completed && step2Completed){
+            animName = $"2_goal{goalID}_loop";
+            currentStage = Stage.PostAnim2;
+        }
+        else if (step1Completed){
+            animName = $"1_goal{goalID}_loop";
+            currentStage = Stage.PostAnim1;
+        }
+        else{
+            animName = $"0_goal{goalID}_normal";
+            currentStage = Stage.PreAnim1;
+        }
+        animator.Play(animName);
     }
 
     public void HandleClick(Collider2D hitCollider){
@@ -108,17 +145,18 @@ public class Goal : MonoBehaviour
         AudioHub.Instance.PlayGlobal("goal_step1");
         //切换到anim1后的阶段
         currentStage = Stage.PostAnim1;
+        //记录step1完成
+        GameDataUtils.SetGoalStep(SaveSystem.GameData, Level.ins.currentLevelIndex, goalID, true, false);
+        SaveSystem.SaveGame();
 
         // 自动显示 PostAnim1 阶段的第一个对话框
         ShowFirstDialogueOfCurrentStage();
-
     }
-    // 动画事件回调（通过 Animation Event 调用这个方法）
 
     void OnAnim2End()
     {
         //当goal对象的第二个动画（Anim2）播放完毕时，根据 mIsTrigger 变量决定是否执行一下操作
-        if (!mIsTriggered)//如果 mIsTriggered 为false，则执行以下操作：
+        if (!mIsTriggered)
         {
             //如果 cameraController 变量不为空，将相机移动到 mCamPosB 对应的位置
             if (cameraController != null && mMoveCamera)
@@ -153,8 +191,14 @@ public class Goal : MonoBehaviour
                     rectPenZai.GetComponent<Animator>().SetTrigger("click");
                     Level.ins.AddCount();
                     isFound = true;
-                    Debug.Log($"Goal ID {goalID} marked as found.");
+                    Debug.Log($"Goal ID {goalID} marked has found.");
                     Debug.Log("找到一个goal了");
+                    //标记step1+step2都完成
+                    GameDataUtils.SetGoalStep(SaveSystem.GameData, Level.ins.currentLevelIndex, goalID, true, true);
+
+                    //更新该关卡的已完成目标数量到存档中
+                    int completedGoals = GameDataUtils.GetCompletedGoalCount(SaveSystem.GameData, Level.ins.currentLevelIndex);
+                    SaveSystem.UpdateLevelStar(Level.ins.currentLevelIndex, completedGoals);
                 };
             };
             AudioHub.Instance.PlayGlobal("goal_found");
