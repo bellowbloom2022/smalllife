@@ -1,20 +1,13 @@
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-[System.Serializable]
-public class GameData
-{
-    public Dictionary<int, int> goalsFound = new Dictionary<int, int>(); // Ã¿¸ö¹Ø¿¨ÕÒµ½µÄÄ¿±ê×ÜÊı
-    public Dictionary<int, List<int>> foundGoalIDs = new Dictionary<int, List<int>>(); // Ã¿¸ö¹Ø¿¨ÕÒµ½µÄÄ¿±ê¶ÔÏóIDÁĞ±í
-    public int currentLevel;//µ±Ç°¹Ø¿¨½ø¶È
-}
 public class SaveSystem : MonoBehaviour
 {
     public static SaveSystem Instance;
     private static string savePath;
+    public static GameData GameData { get; private set; }
+
 
     private void Awake()
     {
@@ -22,68 +15,82 @@ public class SaveSystem : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            savePath = Application.persistentDataPath + "/gamedata.save";
+            savePath = Path.Combine(Application.persistentDataPath, "gamedata.json");
             Debug.Log("SaveSystem initialized and preserved across scenes.");
+            LoadGame(); // è‡ªåŠ¨åŠ è½½
         }
         else
         {
             Destroy(gameObject);
         }
     }
-    public static void SaveGame(GameData data)
+
+    public static void SaveGame()
     {
+        try{
+            GameData.SerializeGoalData(); // è½¬æ¢ Dictionary ä¸º List
 
-        BinaryFormatter formatter = new BinaryFormatter();
-        FileStream file = new FileStream(savePath, FileMode.Create);
-
-        formatter.Serialize(file, data);
-        file.Close();
+            string json = JsonUtility.ToJson(GameData, true);//true: æ ¼å¼åŒ–è¾“å‡ºï¼Œä¾¿äºè°ƒè¯•
+            File.WriteAllText(savePath, json);
+            Debug.Log("Game saved to: " + savePath);
+        }
+        catch (Exception ex){
+            Debug.LogError("Failed to save game: " + ex.Message);
+        }
+        Debug.Log(JsonUtility.ToJson(GameData)); // æ‰“å°å®é™…å†™å…¥çš„æ•°æ®
     }
 
-    public static GameData LoadGame()
+    public static void LoadGame()
     {
 
-        if (File.Exists(savePath))
-        {
-            try
-            {
-                // Ê¹ÓÃ using Óï¾äÀ´È·±£ÎÄ¼şÁ÷ÔÚÊ¹ÓÃÍê±Ïºó×Ô¶¯¹Ø±Õ
-                using (FileStream file = new FileStream(savePath, FileMode.Open, FileAccess.Read))
-                {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    GameData data = formatter.Deserialize(file) as GameData;
-
-                    if (data != null)
-                    {
-                        Debug.Log("Game data loaded successfully.");
-                    }
-                    return data;
-                }
+        if (File.Exists(savePath)){
+            try {
+                string json = File.ReadAllText(savePath);
+                GameData = JsonUtility.FromJson<GameData>(json);
+                GameData.DeserializeGoalData(); // è½¬æ¢ List ä¸º Dictionary
+                Debug.Log("Game data loaded successfully.");
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 Debug.LogError("Error loading game data: " + ex.Message);
-                return null;
+                GameData = new GameData();
             }
         }
-        else
-        {
-            Debug.LogWarning("No save file found at path: " + savePath);
-            return null;
+        else{
+            Debug.LogWarning("No save file found. Creating new game data.");
+            GameData = new GameData();
+            SaveGame();
         }
     }
 
     public static void ClearData()
     {
-        // Ö±½ÓÊ¹ÓÃ savePath ½øĞĞÎÄ¼şÉ¾³ı²Ù×÷
+        // ç›´æ¥ä½¿ç”¨ savePath è¿›è¡Œæ–‡ä»¶åˆ é™¤æ“ä½œ
         if (File.Exists(savePath))
         {
-            File.Delete(savePath); // É¾³ı±£´æÎÄ¼ş
+            File.Delete(savePath); // åˆ é™¤ä¿å­˜æ–‡ä»¶
             Debug.Log("Save file deleted.");
         }
         else
         {
             Debug.Log("No save file found to delete.");
+        }
+        GameData = new GameData();
+    }
+
+    //åªæœ‰ç›®æ ‡æ•°å¢åŠ æ—¶æ‰æ›´æ–°å­˜æ¡£
+    public static void UpdateLevelStar(int levelIndex, int newValue){
+        if(GameData == null)
+           LoadGame();
+
+        if (GameData.levelStars.ContainsKey(levelIndex)){
+            if(GameData.levelStars[levelIndex] < newValue){
+                GameData.levelStars[levelIndex] = newValue;
+                SaveGame();
+            }
+        }
+        else{
+            GameData.levelStars[levelIndex] = newValue;
+            SaveGame();
         }
     }
 }

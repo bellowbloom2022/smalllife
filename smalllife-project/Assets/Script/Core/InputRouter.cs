@@ -56,7 +56,7 @@ public class InputRouter : MonoBehaviour
 
             OnClick?.Invoke(Input.mousePosition);
 
-            Debug.Log("click!");
+            //Debug.Log("click!");
         }
     }
 

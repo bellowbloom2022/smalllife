@@ -7,7 +7,7 @@ public class LevelItemUI : MonoBehaviour
     public LeanLocalizedText titleText;
     
     [HideInInspector] public LevelDataAsset data;
-    [HideInInspector] public int levelIndex; //ÓÃÓÚ²éÕÒ´æµµÊı¾İ±ÈÈçµÚ¼¸¹Ø
+    [HideInInspector] public int levelIndex; //ç”¨äºæŸ¥æ‰¾å­˜æ¡£æ•°æ®æ¯”å¦‚ç¬¬å‡ å…³
     [HideInInspector] public LevelScrollController controller;
 
     public void Init(LevelDataAsset d, int index, LevelScrollController ctrl){
@@ -23,7 +23,7 @@ public class LevelItemUI : MonoBehaviour
             Debug.LogWarning($"titleText is null on LevelItemUI: {gameObject.name}");
         }
 
-        GetComponent<Button>().onClick.RemoveAllListeners(); // Çå¿Õ¾ÉÊÂ¼ş
-        GetComponent<Button>().onClick.AddListener(() => controller.OnLevelClicked(this)); // ÕıÈ·´«²Î
+        GetComponent<Button>().onClick.RemoveAllListeners(); // æ¸…ç©ºæ—§äº‹ä»¶
+        GetComponent<Button>().onClick.AddListener(() => controller.OnLevelClicked(this)); // æ­£ç¡®ä¼ å‚
     }
 }

@@ -52,14 +52,36 @@ public class Level : MonoBehaviour
 
         // 初始化目标和进度
         LoadGameData();
+        LoadAllGoalStates();
         UpdateGoalHint(mCount, TotalCount);
         UpdateLevelGoals();
     }
 
     private void LoadGameData()
     {
-        currentGameData = SaveSystem.LoadGame() ?? new GameData();
+        SaveSystem.LoadGame(); // 仅调用加载方法
+        var data = SaveSystem.GameData; // 获取数据
         Debug.Log("Game data loaded successfully.");
+    }
+
+    private void LoadAllGoalStates(){
+        var data = SaveSystem.GameData;
+        int foundCount = 0;
+
+        foreach (GameObject goal in goals){
+            Goal goalComponent = goal.GetComponent<Goal>();
+            if (goalComponent != null){
+                string key = $"{currentLevelIndex}_{goalComponent.GoalID}";
+                if (data.goalProgressMap.TryGetValue(key, out var progress)){
+                    goalComponent.ApplySavedProgress(progress);// 调用 Goal 脚本中的统一加载方法
+
+                    if (progress.step1Completed && progress.step2Completed){
+                        foundCount++;
+                    }
+                }
+            }
+        }
+        mCount = foundCount;
     }
 
     public void AddCount()
@@ -163,56 +185,45 @@ public class Level : MonoBehaviour
 
     public void SaveLevelData()
     {
-        if (currentGameData.foundGoalIDs == null)
-        {
-            currentGameData.foundGoalIDs = new Dictionary<int, List<int>>();
-        }
+        var data = SaveSystem.GameData;
 
-        currentGameData.goalsFound[currentLevelIndex] = mCount;
-
-        List<int> foundGoalIDs = new List<int>();
-        foreach (GameObject goal in goals)
-        {
+        foreach (GameObject goal in goals){
             Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null && goalComponent.goalID != -1 && goalComponent.isFound)
-            {
-                foundGoalIDs.Add(goalComponent.goalID);
+            if (goalComponent != null && goalComponent.GoalID != -1 && goalComponent.isFound){
+                string key = currentLevelIndex + "_" + goalComponent.GoalID;
+
+                GameDataUtils.SetGoalStep(data, currentLevelIndex, goalComponent.GoalID, true, true);
             }
         }
-
-        currentGameData.foundGoalIDs[currentLevelIndex] = foundGoalIDs;
-        currentGameData.currentLevel = currentLevelIndex;
-
-        SaveSystem.SaveGame(currentGameData);
+        data.currentLevel = currentLevelIndex;
+        SaveSystem.SaveGame();
     }
 
     public void UpdateLevelGoals()
     {
-        if (currentGameData != null &&
-            currentGameData.goalsFound != null &&
-            currentGameData.goalsFound.ContainsKey(currentLevelIndex))
-        {
-            int foundCount = currentGameData.goalsFound[currentLevelIndex];
-            List<int> foundGoalIDs = currentGameData.foundGoalIDs.ContainsKey(currentLevelIndex)
-                ? currentGameData.foundGoalIDs[currentLevelIndex]
-                : null;
+        var data = SaveSystem.GameData;
+        int foundCount = 0;
 
-            foreach (GameObject goal in goals)
+        foreach (GameObject goal in goals)
+        {
+            Goal goalComponent = goal.GetComponent<Goal>();
+            if (goalComponent != null)
             {
-                Goal goalComponent = goal.GetComponent<Goal>();
-                if (goalComponent != null && foundGoalIDs != null && foundGoalIDs.Contains(goalComponent.goalID))
+                string key = currentLevelIndex + "_" + goalComponent.GoalID;
+                if (data.goalProgressMap.TryGetValue(key, out var progress) && progress.step1Completed && progress.step2Completed)
                 {
                     UpdateGoalUI(goal);
+                    foundCount++;
                 }
             }
+        }
 
-            mCount = foundCount;
-            UpdateGoalHint(mCount, TotalCount);
+        mCount = foundCount;
+        UpdateGoalHint(mCount, TotalCount);
 
-            if (mCount >= requiredCount)
-            {
-                ShowNextButton();
-            }
+        if (mCount >= requiredCount)
+        {
+            ShowNextButton();
         }
     }
 
@@ -237,7 +248,25 @@ public class Level : MonoBehaviour
 
     public bool IsGoalFound(int goalID)
     {
-        return currentGameData.foundGoalIDs.ContainsKey(currentLevelIndex) &&
-               currentGameData.foundGoalIDs[currentLevelIndex].Contains(goalID);
+        string key = currentLevelIndex + "_" + goalID;
+        return SaveSystem.GameData.goalProgressMap.ContainsKey(key) &&
+               SaveSystem.GameData.goalProgressMap[key].step1Completed &&
+               SaveSystem.GameData.goalProgressMap[key].step2Completed;
+    }
+    
+    public void CompleteStep(string levelID, int goalID, int step)
+    {
+        var data = SaveSystem.GameData;
+        bool step1 = step == 1;
+        bool step2 = step == 2;
+
+        string key = $"{levelID}_{goalID}";
+        if (!data.goalProgressMap.ContainsKey(key))
+            data.goalProgressMap[key] = new GoalProgress();
+
+        var progress = data.goalProgressMap[key];
+        GameDataUtils.SetGoalStep(data, int.Parse(levelID), goalID, progress.step1Completed || step1, progress.step2Completed || step2);
+
+        SaveSystem.SaveGame();
     }
 }

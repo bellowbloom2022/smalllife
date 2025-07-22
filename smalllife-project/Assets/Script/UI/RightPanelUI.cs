@@ -9,15 +9,15 @@ public class RightPanelUI : MonoBehaviour
     public Image previewImage;
     public LeanLocalizedText descriptionLocalizedText;
     public LeanLocalizedText titleLocalizedText;
-    public Transform starParent;       // ĞÇĞÇµÄÈİÆ÷£¨¿ÕÎïÌå£©
-    public GameObject starPrefab;      // Ò»¸öĞÇĞÇ prefab£¨Í¼±ê£©
+    public Transform starParent;       // æ˜Ÿæ˜Ÿçš„å®¹å™¨ï¼ˆç©ºç‰©ä½“ï¼‰
+    public GameObject starPrefab;      // ä¸€ä¸ªæ˜Ÿæ˜Ÿ prefabï¼ˆå›¾æ ‡ï¼‰
     public GameObject confirmPopup;
     public Button previewImageButton;
     public Button buttonEnter;
     public Button buttonCancel;
 
     private List<GameObject> starPool = new List<GameObject>();
-    public GameData gameData;  // ÔÚ Inspector ÖĞÍÏÈëµ±Ç°µÄ GameData ÒıÓÃ
+    public GameData gameData;  // åœ¨ Inspector ä¸­æ‹–å…¥å½“å‰çš„ GameData å¼•ç”¨
 
     private string currentSceneToLoad;
 
@@ -30,44 +30,38 @@ public class RightPanelUI : MonoBehaviour
 
     public void UpdateContent(LevelDataAsset data, int levelIndex)
     {
-        // --- 1. ±¾µØ»¯±êÌâºÍÃèÊö ---
+        // --- 1. æœ¬åœ°åŒ–æ ‡é¢˜å’Œæè¿° ---
         titleLocalizedText.TranslationName = data.titleKey;
         descriptionLocalizedText.TranslationName = data.descriptionKey;
-        // --- 2. ¼ÓÔØµ±Ç°Ô¤ÀÀÍ¼Æ¬ ---
+        // --- 2. åŠ è½½å½“å‰é¢„è§ˆå›¾ç‰‡ ---
         previewImage.sprite = data.previewImage;
-        // --- 3. ÉèÖÃµ±Ç°´ı¼ÓÔØµÄ¹Ø¿¨Ãû ---
+        // --- 3. è®¾ç½®å½“å‰å¾…åŠ è½½çš„å…³å¡å ---
         currentSceneToLoad = data.sceneToLoad;
-        // --- 4. È·±£ gameData ²»Îª null£¨ÓÃÓÚĞÇĞÇÏÔÊ¾£©---
-        if (gameData == null){
-            gameData = SaveSystem.LoadGame();
-            if (gameData == null){
-                gameData = new GameData();// ´´½¨Ò»¸ö¿ÕÊı¾İ£¬±ÜÃâ null
-            }
-        }
-        
-
-        // --- 5. Çå³ı¾ÉĞÇĞÇ ---
+        // --- 4. å…ˆè°ƒç”¨åŠ è½½ç„¶åè·å–æ•°æ®
+        SaveSystem.LoadGame(); 
+        gameData = SaveSystem.GameData; 
+        // --- 5. æ¸…é™¤æ—§æ˜Ÿæ˜Ÿ ---
         foreach (var star in starPool)
         {
             Destroy(star);
         }
         starPool.Clear();
-
-        // --- 6. »ñÈ¡µ±Ç°¹Ø¿¨ÒÑÍê³ÉÄ¿±êÊı ---
-        int goalsFound = 0;
-        if (gameData != null && gameData.goalsFound.ContainsKey(levelIndex)){
-            goalsFound = gameData.goalsFound[levelIndex];
-        }
-
-        // --- 7. Éú³ÉĞÂµÄĞÇĞÇ£¨¸ù¾İÄ¿±ê×ÜÊı£©---
+        // --- 6. è¯»å–ä¸Šä¸€æ¬¡è®°å½•çš„æ˜Ÿæ˜Ÿæ•°ï¼ˆæ— è®°å½•åˆ™ä¸º0ï¼‰ ---
+        int previousGoalsFound = 0;
+        if (gameData.levelStars.TryGetValue(levelIndex, out int savedCount))
+            previousGoalsFound = savedCount;
+        // --- 7. å½“å‰å­˜æ¡£ä¸­ç»Ÿè®¡å…³å¡å·²å®Œæˆç›®æ ‡æ•° ---
+        int currentGoalsFound = GameDataUtils.GetCompletedGoalCount(gameData, levelIndex);
+        Debug.Log($"[UIæ£€æŸ¥] å…³å¡ {levelIndex} å·²å®Œæˆç›®æ ‡æ•°: {currentGoalsFound}/{data.goalTotal}");
+        // --- 8. ç”Ÿæˆæ˜Ÿæ˜Ÿ UI ---
         for (int i = 0; i < data.goalTotal; i++)
         {
             GameObject star = Instantiate(starPrefab, starParent);
-            Image starImage = star.GetComponent<Image>();
-            starImage.color = i < goalsFound ? Color.yellow : Color.gray;
             starPool.Add(star);
         }
-        Debug.Log($"¸üĞÂÄÚÈİ: {data.levelID}, index: {levelIndex}, sceneToLoad: {data.sceneToLoad}");
+        // --- 9. æ›´æ–°æ˜Ÿæ˜ŸçŠ¶æ€ï¼Œåªæœ‰æ–°å®Œæˆçš„æ‰æ’­æ”¾ FillStar åŠ¨ç”» ---
+        UIUtils.UpdateStarsUI(starParent.gameObject, previousGoalsFound, currentGoalsFound, data.goalTotal);
+        Debug.Log($"[UIæ£€æŸ¥] è°ƒç”¨äº† UpdateStarsUIï¼Œæ›´æ–°åŠ¨ç”»ï¼š{previousGoalsFound} â†’ {currentGoalsFound}");
     }
         
     private void OnPreviewImageButtonClicked()
@@ -83,6 +77,6 @@ public class RightPanelUI : MonoBehaviour
     private void LoadScene()
     {
         confirmPopup.SetActive(false);
-        SceneManager.LoadScene(currentSceneToLoad); // ×¢ÒâÄãĞèÒªÔÚ LevelDataAsset ÖĞÉèÖÃºÃ sceneToLoad
+        SceneManager.LoadScene(currentSceneToLoad); // æ³¨æ„ä½ éœ€è¦åœ¨ LevelDataAsset ä¸­è®¾ç½®å¥½ sceneToLoad
     }
 }

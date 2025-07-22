@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class LevelScrollController : MonoBehaviour
 {
-    public ScrollRect scrollRect;// ÄãµÄ ScrollView
-    public RectTransform content;// Content ÈİÆ÷
-    public RectTransform selectorIcon;// ?Í¼±êµÄÎ»ÖÃ£¨ÊÀ½ç¿Õ¼ä×ø±ê£©
-    public GameObject levelItemPrefab;//ÓÃÓÚ¶¯Ì¬Éú³ÉµÄLevelItemUI prefab
+    public ScrollRect scrollRect;// ä½ çš„ ScrollView
+    public RectTransform content;// Content å®¹å™¨
+    public RectTransform selectorIcon;// ?å›¾æ ‡çš„ä½ç½®ï¼ˆä¸–ç•Œç©ºé—´åæ ‡ï¼‰
+    public GameObject levelItemPrefab;//ç”¨äºåŠ¨æ€ç”Ÿæˆçš„LevelItemUI prefab
 
-    public RightPanelUI rightPanel;// ÓÒ±ßĞÅÏ¢Ãæ°å½Å±¾
+    public RightPanelUI rightPanel;// å³è¾¹ä¿¡æ¯é¢æ¿è„šæœ¬
     public GameData gameData;
 
     private LevelItemUI currentSelected;
@@ -25,7 +25,7 @@ public class LevelScrollController : MonoBehaviour
 
             GameObject itemGO = Instantiate(levelItemPrefab, content);
             LevelItemUI itemUI =  itemGO.GetComponent<LevelItemUI>();
-            itemUI.Init(data, i, this);// °Ñ¿ØÖÆÆ÷Ò²´«¸øËü£¬·½±ãµã»÷»Øµ÷
+            itemUI.Init(data, i, this);// æŠŠæ§åˆ¶å™¨ä¹Ÿä¼ ç»™å®ƒï¼Œæ–¹ä¾¿ç‚¹å‡»å›è°ƒ
             levelItems.Add(itemUI);
         }
         if (levelItems.Count > 0){
@@ -33,23 +33,23 @@ public class LevelScrollController : MonoBehaviour
         }
     }
 
-    // Íæ¼Òµã»÷¹Ø¿¨°´Å¥Ê±µ÷ÓÃ
+    // ç©å®¶ç‚¹å‡»å…³å¡æŒ‰é’®æ—¶è°ƒç”¨
     public void OnLevelClicked(LevelItemUI clickedItem)
     {
-        Debug.Log($"µã»÷ÁË¹Ø¿¨°´Å¥£º{clickedItem.levelIndex}, ID: {clickedItem.data.levelID}");
+        Debug.Log($"ç‚¹å‡»äº†å…³å¡æŒ‰é’®ï¼š{clickedItem.levelIndex}, ID: {clickedItem.data.levelID}");
         
         if (clickedItem == currentSelected) return;
 
         currentSelected = clickedItem;
-        // »ñÈ¡ clickedItem µÄÖĞĞÄµãÊÀ½ç×ø±ê
+        // è·å– clickedItem çš„ä¸­å¿ƒç‚¹ä¸–ç•Œåæ ‡
         Vector3 itemWorldPos = clickedItem.GetComponent<RectTransform>().position;
-        // ½«Ëü×ª»»Îª Viewport ÏÂµÄ localPosition£¨ÒòÎª selectorIcon ÊÇ Viewport µÄ×ÓÎïÌå£©
+        // å°†å®ƒè½¬æ¢ä¸º Viewport ä¸‹çš„ localPositionï¼ˆå› ä¸º selectorIcon æ˜¯ Viewport çš„å­ç‰©ä½“ï¼‰
         Vector3 localPoint = selectorIcon.transform.parent.InverseTransformPoint(itemWorldPos);
-        // ±£Áô selectorIcon µÄ X ×ø±ê£¬½ö¸üĞÂ Y
+        // ä¿ç•™ selectorIcon çš„ X åæ ‡ï¼Œä»…æ›´æ–° Y
         Vector3 currentPos = selectorIcon.localPosition;
         selectorIcon.localPosition = new Vector3(currentPos.x, localPoint.y, currentPos.z);
 
-        // ¸üĞÂÓÒ±ßµÄÏêÇéÃæ°å?µ÷ÓÃ UpdateContent Ê±£¬´«Èë levelIndex
+        // æ›´æ–°å³è¾¹çš„è¯¦æƒ…é¢æ¿?è°ƒç”¨ UpdateContent æ—¶ï¼Œä¼ å…¥ levelIndex
         rightPanel.UpdateContent(clickedItem.data, clickedItem.levelIndex);
     }
 }
