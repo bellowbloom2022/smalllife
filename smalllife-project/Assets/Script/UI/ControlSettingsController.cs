@@ -49,7 +49,9 @@ public class ControlSettingsController : MonoBehaviour
 
     private void LoadSettings()
     {
-        string mode = PlayerPrefs.GetString(KEY_DRAG_MODE, "right"); // 默认右键
+        string mode = SaveSystem.GameData.settings.dragMode; 
+        if (string.IsNullOrEmpty(mode)) mode = "right"; // 默认值保险
+
         // 初始化 Toggle 状态
         leftDragToggle.isOn = (mode == "left");
         rightDragToggle.isOn = (mode == "right");
@@ -57,9 +59,8 @@ public class ControlSettingsController : MonoBehaviour
 
     private void SetDragMode(string mode)
     {
-        PlayerPrefs.SetString(KEY_DRAG_MODE, mode);
-        Debug.Log($"[ControlSettings] current drag mode：{mode}");
-        PlayerPrefs.Save();
+        SaveSystem.GameData.settings.dragMode = mode;
+        Debug.Log($"[ControlSettings] current drag mode:{mode}");
         InputRouter.Instance?.SetDragMode(mode);
 
         AudioHub.Instance.PlayGlobal("click_confirm");
@@ -67,9 +68,6 @@ public class ControlSettingsController : MonoBehaviour
 
     public void ResetToDefault()
     {
-        // 默认是右键拖拽
-        leftDragToggle.isOn = false;
-        rightDragToggle.isOn = true;
         SetDragMode("right");
         LoadSettings();
         AudioHub.Instance?.PlayGlobal("back_confirm");

@@ -2214,6 +2214,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 436103689}
     m_Modifications:
+    - target: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: leanLocalization
+      value: 
+      objectReference: {fileID: 1117080943}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
@@ -2221,14 +2225,14 @@ PrefabInstance:
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1117080943}
+      objectReference: {fileID: 53262617}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -2237,14 +2241,14 @@ PrefabInstance:
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1117080943}
+      objectReference: {fileID: 53262617}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -2253,14 +2257,14 @@ PrefabInstance:
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1117080943}
+      objectReference: {fileID: 53262617}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2550,6 +2554,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a4d1d443a4c14bfeb964fa0ba1d0336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &53262617 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 53262614}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &55052809
@@ -4947,6 +4962,8 @@ MonoBehaviour:
   - {fileID: 1863186150}
   - {fileID: 1392597573}
   - {fileID: 1122546192}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &133015977
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -12199,6 +12216,8 @@ MonoBehaviour:
   - {fileID: 1086023389}
   dialogueAnchorsPostAnim2:
   - {fileID: 1902805366}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!82 &304030075
 AudioSource:
   m_ObjectHideFlags: 0
@@ -16665,7 +16684,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E0A\u6D77\u5E02\u533A\u5468\u8FB9\u6709\u8BB8\u591A\u6751\uFF0C\u6751\u4E2D\u6709\u672C\u5730\u4EBA\uFF0C\u4E5F\u6709\u5F88\u591A\u662F\u5916\u5730\u6765\u7684\u6253\u5DE5\u8005\uFF0C\u8FD9\u4E2A\u6751\u9644\u8FD1\u8FD8\u6709\u4E2A\u9493\u9C7C\u573A\u3002"
+  m_Text: There are many villages around downtown Shanghai. The villages have local
+    residents as well as many migrant workers from other regions. Near this village,
+    there is also a fishing spot.
 --- !u!222 &397618963
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20264,6 +20285,8 @@ MonoBehaviour:
   - {fileID: 936583358}
   dialogueAnchorsPostAnim2:
   - {fileID: 1951956512}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &473486493
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22346,6 +22369,8 @@ MonoBehaviour:
   - {fileID: 1609112895}
   dialogueAnchorsPostAnim2:
   - {fileID: 1880452883}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &529437265
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23634,6 +23659,8 @@ MonoBehaviour:
   dialogueAnchorsPostAnim2:
   - {fileID: 591757339}
   - {fileID: 534034883}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &547461424
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -30242,6 +30269,8 @@ MonoBehaviour:
   - {fileID: 2117742123}
   dialogueAnchorsPostAnim2:
   - {fileID: 1794476813}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &697021591
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -42057,6 +42086,8 @@ MonoBehaviour:
   dialogueAnchorsPostAnim2:
   - {fileID: 394225062}
   - {fileID: 1778791125}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &997697472
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -45684,7 +45715,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: 
   saveLoad: 1
@@ -47725,6 +47756,8 @@ MonoBehaviour:
   dialogueAnchorsPostAnim2:
   - {fileID: 725236084}
   - {fileID: 716788852}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1166375190
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -48442,7 +48475,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5730\u70B94 \u5728\u4E0A\u6D77\u5E02\u5317\u8FB9\u88AB\u6CB3\u6D41\u548C\u5927\u6865\u9694\u5F00\u7684\u4E00\u4E2A\u72EC\u7ACB\u6751\u843D"
+  m_Text: Spot 4 An isolated village north of Shanghai, separated by rivers and bridges
 --- !u!222 &1199064271
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -49959,6 +49992,8 @@ MonoBehaviour:
   - {fileID: 51047763}
   dialogueAnchorsPostAnim2:
   - {fileID: 497190129}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1242796749
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -68746,6 +68781,8 @@ MonoBehaviour:
   - {fileID: 905783153}
   dialogueAnchorsPostAnim2:
   - {fileID: 1184721912}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1792623621
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -79218,6 +79255,8 @@ MonoBehaviour:
   dialogueAnchorsPostAnim2:
   - {fileID: 557639076}
   - {fileID: 992618808}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &2070763556
 BoxCollider:
   m_ObjectHideFlags: 0

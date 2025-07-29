@@ -4,6 +4,7 @@ using System;
 
 public class SaveSystem : MonoBehaviour
 {
+    public const string CURRENT_SAVE_VERSION = "0.1.0";
     public static SaveSystem Instance;
     private static string savePath;
     public static GameData GameData { get; private set; }
@@ -29,7 +30,8 @@ public class SaveSystem : MonoBehaviour
     {
         try{
             GameData.SerializeGoalData(); // 转换 Dictionary 为 List
-
+            
+            GameData.version = CURRENT_SAVE_VERSION;
             string json = JsonUtility.ToJson(GameData, true);//true: 格式化输出，便于调试
             File.WriteAllText(savePath, json);
             Debug.Log("Game saved to: " + savePath);
@@ -47,6 +49,11 @@ public class SaveSystem : MonoBehaviour
             try {
                 string json = File.ReadAllText(savePath);
                 GameData = JsonUtility.FromJson<GameData>(json);
+                if (GameData.version != CURRENT_SAVE_VERSION){
+                    Debug.LogWarning($"检测到存档版本不一致：存档为 v{GameData.version}, 当前为 v{CURRENT_SAVE_VERSION}。 ");
+                    // TODO：未来添加升级逻辑，如 UpgradeGameData(GameData)
+                }
+
                 GameData.DeserializeGoalData(); // 转换 List 为 Dictionary
                 Debug.Log("Game data loaded successfully.");
             }

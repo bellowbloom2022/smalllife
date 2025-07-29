@@ -32,6 +32,7 @@ public class PausePanel : BasePanel
 
     private void OnResumeClicked()
     {
+        SaveSystem.SaveGame(); 
         Hide();
     }
 

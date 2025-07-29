@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
         // 在游戏启动时加载保存的数据
         LoadGameData();
     }
+    
     private void LoadGameData()
     {
         SaveSystem.LoadGame(); // 仅调用加载方法

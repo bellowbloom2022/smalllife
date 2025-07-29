@@ -3254,6 +3254,8 @@ MonoBehaviour:
   - {fileID: 1757351860}
   dialogueAnchorsPostAnim2:
   - {fileID: 171836937}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!82 &515472298
 AudioSource:
   m_ObjectHideFlags: 0
@@ -9855,6 +9857,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 807620687}
     m_Modifications:
+    - target: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: leanLocalization
+      value: 
+      objectReference: {fileID: 1855448656}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
@@ -9862,14 +9868,14 @@ PrefabInstance:
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 1833825437}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -9878,14 +9884,14 @@ PrefabInstance:
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 1833825437}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -9894,15 +9900,19 @@ PrefabInstance:
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 1833825437}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 6645295892441018490, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: colorOverlayImage
+      value: 
+      objectReference: {fileID: 472270604}
     - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -10169,6 +10179,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a4d1d443a4c14bfeb964fa0ba1d0336, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1833825437 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 1833825434}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1855448655
 GameObject:
   m_ObjectHideFlags: 0
@@ -10198,7 +10219,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: System Language
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1

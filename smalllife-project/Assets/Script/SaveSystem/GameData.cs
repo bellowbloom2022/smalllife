@@ -4,8 +4,9 @@ using System.Collections.Generic;
 [System.Serializable]
 public class GameData
 {
-    public int saveVersion = 1; // 可用于版本兼容控制
+    public string version = "0.1.0"; // 存档对应的游戏版本号
     public int currentLevel = 0;
+    public int lastLevelIndex = -1; // -1 表示尚未开始任何游戏
 
     // 设置项存储
     public GameSettings settings = new();
@@ -73,12 +74,13 @@ public class GoalProgress
 public class GameSettings
 {
     public float masterVolume = 1f;
-    public float bgmVolume = 1f;
+    public float musicVolume = 1f;
     public float sfxVolume = 1f;
     public string dragMode = "RightClick"; // 举例：LeftClick, RightClick
-    public string displayMode = "Fullscreen";
-    public string resolution = "1920x1080";
-    public string tone = "PureWhite"; // 色调选项
+    public int displayModeIndex = 0;
+    public int resolutionIndex = 0;
+    public int overlayColorIndex = 0; // 色调选项
+    public string language = "English";
 }
 
 // --------- 为 Dictionary 提供序列化包装 -----------
