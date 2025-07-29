@@ -1133,6 +1133,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: leanLocalization
+      value: 
+      objectReference: {fileID: 1855448656}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
@@ -1140,14 +1144,14 @@ PrefabInstance:
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 223510950}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1156,14 +1160,14 @@ PrefabInstance:
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 223510950}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1172,14 +1176,14 @@ PrefabInstance:
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1855448656}
+      objectReference: {fileID: 223510950}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4119559770336850702, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_IsActive
@@ -1502,6 +1506,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a4d1d443a4c14bfeb964fa0ba1d0336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &223510950 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 223510947}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &223510951 stripped
@@ -4918,6 +4933,8 @@ MonoBehaviour:
   collidersPostAnim2: []
   dialogueSpritesPostAnim2: []
   dialogueAnchorsPostAnim2: []
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &724685804
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9472,7 +9489,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E00\u680B\u8001\u5EFA\u7B51\uFF0C\u5750\u843D\u5728\u4E00\u4E2A\u5341\u5B57\u8DEF\u53E3\u3002\u62E5\u6709\u5386\u53F2\u7684\u8001\u5EFA\u7B51\u4E00\u76F4\u662F\u8FD9\u4E2A\u57CE\u5E02\u8FF7\u4EBA\u7684\u5730\u65B9\u3002"
+  m_Text: "An old building stands at a crossroads.\r\nStructures with history have
+    always been one of the city\u2019s quiet charms."
 --- !u!222 &1533875718
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10429,7 +10447,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5730\u70B90 \u5E02\u533A\u67D0\u8001\u5EFA\u7B51"
+  m_Text: Spot0 An Old Building Somewhere in the City
 --- !u!222 &1689249092
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11339,7 +11357,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1

@@ -9,7 +9,7 @@ public class DisplaySettingsController : MonoBehaviour
     public Button resetButton;
 
     [Header("Overlay Color Settings")]
-    public Image colorOverlayImage;//????
+    public Image colorOverlayImage;
 
     public Toggle toggleWhite;
     public Toggle toggleBeige;
@@ -96,15 +96,14 @@ public class DisplaySettingsController : MonoBehaviour
         Screen.SetResolution(selectedRes.width, selectedRes.height, screenMode);
 
         // ±£¥Ê…Ë÷√
-        PlayerPrefs.SetInt(PREF_RES_INDEX, resIndex);
-        PlayerPrefs.SetInt(PREF_MODE_INDEX, modeIndex);
-        PlayerPrefs.Save();
+        SaveSystem.GameData.settings.resolutionIndex = resIndex;
+        SaveSystem.GameData.settings.displayModeIndex = modeIndex;
     }
 
     public void LoadSavedSettings()
     {
-        int savedRes = PlayerPrefs.GetInt(PREF_RES_INDEX, defaultResolutionIndex);
-        int savedMode = PlayerPrefs.GetInt(PREF_MODE_INDEX, defaultModeIndex);
+        int savedRes = SaveSystem.GameData.settings.resolutionIndex;
+        int savedMode = SaveSystem.GameData.settings.displayModeIndex;
 
         resolutionDropdown.value = Mathf.Clamp(savedRes, 0, resolutions.Length - 1);
         modeDropdown.value = savedMode;
@@ -117,7 +116,7 @@ public class DisplaySettingsController : MonoBehaviour
     
     private void LoadSavedOverlayColor()
     {
-        int savedIndex = PlayerPrefs.GetInt(KEY_COLOR_INDEX, 0);
+        int savedIndex = SaveSystem.GameData.settings.overlayColorIndex;
         Toggle selectedToggle = GetToggleByIndex(savedIndex);
         if (selectedToggle != null)
         {
@@ -126,25 +125,23 @@ public class DisplaySettingsController : MonoBehaviour
         }
     }
     
-    private void SetOverlayColor(Toggle toggle)
+    public void SetOverlayColor(Toggle toggle)
     {
         if (!colorMap.ContainsKey(toggle)) return;
 
         Color selectedColor = colorMap[toggle];
 
-        // ?? UI Image ???????? Unity Inspector ???
+        // UI Image  Unity Inspector 
         colorOverlayImage.color = selectedColor;
 
-        // ????????? Shader ???? _Color ???
+        // Shader  _Color 
         if (colorOverlayImage.material != null)
         {
             colorOverlayImage.material.color = selectedColor;
         }
 
-        // ??? PlayerPrefs
         int index = GetToggleIndex(toggle);
-        PlayerPrefs.SetInt(KEY_COLOR_INDEX, index);
-        PlayerPrefs.Save();
+        SaveSystem.GameData.settings.overlayColorIndex = index;
     }
 
     public void ResetToDefault()
@@ -173,7 +170,7 @@ public class DisplaySettingsController : MonoBehaviour
         return 0;
     }
     
-    private Toggle GetToggleByIndex(int index)
+    public Toggle GetToggleByIndex(int index)
     {
         switch (index)
         {

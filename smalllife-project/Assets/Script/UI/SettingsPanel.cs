@@ -22,11 +22,8 @@ public class SettingsPanel : BasePanel
 
     [Header("Sound Controls")]
     public Slider masterSlider;
-    public Text masterLabel;
     public Slider musicSlider;
-    public Text musicLabel;
     public Slider sfxSlider;
-    public Text sfxLabel;
 
     public DisplaySettingsController displayController;
 
@@ -36,29 +33,26 @@ public class SettingsPanel : BasePanel
     private Dictionary<string, GameObject> tabMap;
     private bool isInitialized = false;
 
+    private GameSettings settings;
+
+    [SerializeField] private BGMController bgmController;
+
     private void Start(){
-        // 加载之前保存的设置
-        float masterVol = PlayerPrefs.GetFloat("MasterVolume", 1f);
-        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 1f);
-        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 1f);
 
         // 赋值到 UI
-        masterSlider.value = masterVol;
-        musicSlider.value = musicVol;
-        sfxSlider.value = sfxVol;
+        masterSlider.value = SaveSystem.GameData.settings.masterVolume;
+        musicSlider.value = SaveSystem.GameData.settings.musicVolume;
+        sfxSlider.value = SaveSystem.GameData.settings.sfxVolume;
 
         // 应用到音频系统
-        AudioListener.volume = masterVol;
-        FindObjectOfType<BGMController>()?.SetVolume(musicVol);
-        AudioHub.Instance.SetSFXVolume(sfxVol);
+        AudioListener.volume = SaveSystem.GameData.settings.masterVolume;
+        FindObjectOfType<BGMController>()?.SetVolume(SaveSystem.GameData.settings.musicVolume);
+        AudioHub.Instance.SetSFXVolume(SaveSystem.GameData.settings.sfxVolume);
 
         // 添加监听
         masterSlider.onValueChanged.AddListener(OnMasterVolumeChanged);
         musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
         sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
-
-        UpdateSoundLabels();
-
     }
 
     private void Awake()
@@ -85,6 +79,9 @@ public class SettingsPanel : BasePanel
 
     private void OnEnable()
     {
+        settings = SaveSystem.GameData.settings;
+        GameSettingsApplier.ApplyAll(settings, bgmController);
+
         if (!isInitialized)
         {
             backButton.onClick.AddListener(ShowMain);
@@ -131,6 +128,7 @@ public class SettingsPanel : BasePanel
         {
             backButton.onClick.AddListener(ShowMain);
         }
+        //SaveSystem.SaveGame();
     }
 
     // 可选：打开设置面板时重置到主菜单
@@ -139,33 +137,30 @@ public class SettingsPanel : BasePanel
         base.Show();
         ShowTab("Main");
     }
+    
+    public override void Hide()
+    {
+        Debug.Log("[SettingsPanel] Hide called, saving settings...");
+        SaveSystem.SaveGame(); 
+        base.Hide();           
+    }
 
     private void OnMasterVolumeChanged(float value)
     {
         AudioListener.volume = value;
-        PlayerPrefs.SetFloat("MasterVolume", value);
-        UpdateSoundLabels();
+        SaveSystem.GameData.settings.masterVolume = value;
     }
 
     private void OnMusicVolumeChanged(float value)
     {
         FindObjectOfType<BGMController>()?.SetVolume(value);
-        PlayerPrefs.SetFloat("MusicVolume", value);
-        UpdateSoundLabels();
+        SaveSystem.GameData.settings.musicVolume = value;
     }
 
     private void OnSFXVolumeChanged(float value)
     {
         AudioHub.Instance.SetSFXVolume(value);
-        PlayerPrefs.SetFloat("SFXVolume", value);
-        UpdateSoundLabels();
-    }
-
-    private void UpdateSoundLabels()
-    {
-        masterLabel.text = Mathf.RoundToInt(masterSlider.value * 100) + "%";
-        musicLabel.text = Mathf.RoundToInt(musicSlider.value * 100) + "%";
-        sfxLabel.text = Mathf.RoundToInt(sfxSlider.value * 100) + "%";
+        SaveSystem.GameData.settings.sfxVolume = value;
     }
 
     private void ResetSoundSettings()
@@ -178,8 +173,6 @@ public class SettingsPanel : BasePanel
         OnMusicVolumeChanged(1f);
         OnSFXVolumeChanged(1f);
 
-        PlayerPrefs.Save();
-
-        AudioHub.Instance.PlayGlobal("click_confirm"); // 可选：播放音效
+        AudioHub.Instance.PlayGlobal("click_confirm"); 
     }
 }

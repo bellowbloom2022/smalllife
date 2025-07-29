@@ -395,14 +395,14 @@ PrefabInstance:
     - target: {fileID: 7005033361092034513, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 733924205}
+      objectReference: {fileID: 76711163}
     - target: {fileID: 7005033361092034513, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361092034513, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361108573138, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -411,14 +411,14 @@ PrefabInstance:
     - target: {fileID: 7005033361108573138, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 733924205}
+      objectReference: {fileID: 76711163}
     - target: {fileID: 7005033361108573138, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361108573138, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361621954004, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_IsActive
@@ -447,14 +447,14 @@ PrefabInstance:
     - target: {fileID: 7005033361890525982, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 733924205}
+      objectReference: {fileID: 76711163}
     - target: {fileID: 7005033361890525982, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361890525982, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7005033361891162061, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -477,6 +477,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dad43186314bd41bf916d7fbcce480f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &76711163 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7170376476906204332, guid: 1f8c80a86259fec41a54c4a5dfb879dc, type: 3}
+  m_PrefabInstance: {fileID: 76711160}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &83462308
@@ -1945,12 +1956,15 @@ MonoBehaviour:
     currentLevel: 0
     settings:
       masterVolume: 1
-      bgmVolume: 1
+      musicVolume: 1
       sfxVolume: 1
       dragMode: RightClick
-      displayMode: Fullscreen
-      resolution: 1920x1080
-      tone: PureWhite
+      displayModeIndex: 0
+      resolutionIndex: 0
+      overlayColorIndex: 0
+      language: System Language
+    serializedGoalList: []
+    serializedStarList: []
 --- !u!1 &657686862
 GameObject:
   m_ObjectHideFlags: 0
@@ -2037,7 +2051,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.2
-  m_Text: "\u6211\u4EEC\u603B\u662F\u80FD\u5728\u5C0F\u533A\u91CC\uFF0C\u770B\u5230\u8FD9\u6837\u7684\u4E00\u7FA4\u8001\u592A\u592A\u4EEC\u3002"
+  m_Text: We can always spot a group of grandmas like this in the neighborhood.
 --- !u!222 &657686866
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2240,7 +2254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -2367,7 +2381,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5730\u70B90 \u5E02\u533A\u67D0\u8001\u5EFA\u7B51"
+  m_Text: Spot0 An Old Building Somewhere in the City
 --- !u!114 &741071711
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3183,12 +3197,15 @@ MonoBehaviour:
     currentLevel: 0
     settings:
       masterVolume: 1
-      bgmVolume: 1
+      musicVolume: 1
       sfxVolume: 1
       dragMode: RightClick
-      displayMode: Fullscreen
-      resolution: 1920x1080
-      tone: PureWhite
+      displayModeIndex: 0
+      resolutionIndex: 0
+      overlayColorIndex: 0
+      language: System Language
+    serializedGoalList: []
+    serializedStarList: []
 --- !u!1 &1143743115
 GameObject:
   m_ObjectHideFlags: 0

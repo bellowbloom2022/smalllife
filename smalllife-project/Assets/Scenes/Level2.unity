@@ -1502,6 +1502,8 @@ MonoBehaviour:
   - {fileID: 2127815648}
   dialogueAnchorsPostAnim2:
   - {fileID: 213839887}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &65988853
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10308,6 +10310,8 @@ MonoBehaviour:
   - {fileID: 529444897}
   dialogueAnchorsPostAnim2:
   - {fileID: 862155914}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &766106011
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15731,7 +15735,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E0A\u6D77\u897F\u8FB9\u4E00\u6761\u8001\u8857\u9644\u8FD1\u7684\u70E7\u997C\u5E97"
+  m_Text: A bakery near an old street in the west of Shanghai
 --- !u!1 &1167733976
 GameObject:
   m_ObjectHideFlags: 0
@@ -17241,6 +17245,8 @@ MonoBehaviour:
   - {fileID: 1172180711}
   dialogueAnchorsPostAnim2:
   - {fileID: 438509050}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1252689153
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -20531,7 +20537,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5730\u70B92 \u6728\u6876\u70E7\u997C\u5E97"
+  m_Text: Spot 2 Cask Biscuit Shop
 --- !u!1 &1514300960
 GameObject:
   m_ObjectHideFlags: 0
@@ -20985,6 +20991,8 @@ MonoBehaviour:
   - {fileID: 1696116561}
   dialogueAnchorsPostAnim2:
   - {fileID: 834783230}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!82 &1533161506
 AudioSource:
   m_ObjectHideFlags: 0
@@ -26415,7 +26423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: 
   saveLoad: 1
@@ -28596,6 +28604,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1787295364}
     m_Modifications:
+    - target: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: leanLocalization
+      value: 
+      objectReference: {fileID: 1919619069}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
@@ -28603,14 +28615,14 @@ PrefabInstance:
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1919619069}
+      objectReference: {fileID: 2067695323}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -28619,14 +28631,14 @@ PrefabInstance:
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1919619069}
+      objectReference: {fileID: 2067695323}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -28635,14 +28647,14 @@ PrefabInstance:
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1919619069}
+      objectReference: {fileID: 2067695323}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8160777576010035178, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: backgroundUIElements.Array.size
@@ -28876,6 +28888,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a4d1d443a4c14bfeb964fa0ba1d0336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2067695323 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 2067695320}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2070762253

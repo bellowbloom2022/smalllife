@@ -8600,7 +8600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: 
   saveLoad: 1
@@ -9397,6 +9397,8 @@ MonoBehaviour:
   - {fileID: 362236638}
   - {fileID: 1512480386}
   - {fileID: 210378901}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &211113253
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23200,7 +23202,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5730\u70B93  \u4E0A\u6D77\u67D0\u9547\u5E02\u6C11\u6587\u5316\u5E7F\u573A"
+  m_Text: Spot 3 Citizen Cultural Square of a town in Shanghai
 --- !u!1 &570440538
 GameObject:
   m_ObjectHideFlags: 0
@@ -26542,7 +26544,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u653F\u5E9C\u5927\u95E8\u6B63\u5BF9\u7740\u7684\u4E00\u4E2A\u5C0F\u516C\u56ED"
+  m_Text: A small park directly across from the government gate
 --- !u!1001 &661179194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -27429,6 +27431,8 @@ MonoBehaviour:
   - {fileID: 1830553661}
   - {fileID: 992402052}
   - {fileID: 25989399}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &682731218
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40085,6 +40089,8 @@ MonoBehaviour:
   - {fileID: 347337756}
   dialogueAnchorsPostAnim2:
   - {fileID: 114859839}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1058677816
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -40425,6 +40431,8 @@ MonoBehaviour:
   - {fileID: 370629622}
   dialogueAnchorsPostAnim2:
   - {fileID: 1664813649}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1064481415
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -57846,6 +57854,8 @@ MonoBehaviour:
   dialogueAnchorsPostAnim2:
   - {fileID: 365081058}
   - {fileID: 1428537148}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1562656936
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70618,6 +70628,8 @@ MonoBehaviour:
   - {fileID: 1197860330}
   dialogueAnchorsPostAnim2:
   - {fileID: 716138179}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!65 &1973079794
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -71736,6 +71748,8 @@ MonoBehaviour:
   - {fileID: 1000359876}
   - {fileID: 1157838506}
   - {fileID: 763552159}
+  step1Completed: 0
+  step2Completed: 0
 --- !u!82 &1987013173
 AudioSource:
   m_ObjectHideFlags: 0
@@ -76598,6 +76612,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 691033871}
     m_Modifications:
+    - target: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: leanLocalization
+      value: 
+      objectReference: {fileID: 195682340}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 5
@@ -76605,14 +76623,14 @@ PrefabInstance:
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 195682340}
+      objectReference: {fileID: 8160777576627066400}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916599984558486, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -76621,14 +76639,14 @@ PrefabInstance:
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 195682340}
+      objectReference: {fileID: 8160777576627066400}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600035063189, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -76637,14 +76655,14 @@ PrefabInstance:
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 195682340}
+      objectReference: {fileID: 8160777576627066400}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_CurrentLanguage
+      value: SetLanguage
       objectReference: {fileID: 0}
     - target: {fileID: 3345916600261930329, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Lean.Localization.LeanLocalization, LeanLocalization
+      value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7735771071658296234, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: FallbackText
@@ -76933,6 +76951,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1a4d1d443a4c14bfeb964fa0ba1d0336, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8160777576627066400 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3232386870256108267, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 8160777576627066398}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &8454296229657849486

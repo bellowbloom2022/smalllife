@@ -40,6 +40,12 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
+        // 设置当前关卡索引为 lastLevelIndex
+        if (SaveSystem.GameData.lastLevelIndex != currentLevelIndex){
+            SaveSystem.GameData.lastLevelIndex = currentLevelIndex;
+            SaveSystem.SaveGame();
+        }
+
         // 注册按钮点击事件 + 播放音效
         if (mBtnNext != null)
             mBtnNext.onClick.AddListener(OnBtnNextClicked);
