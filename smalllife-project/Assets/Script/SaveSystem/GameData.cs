@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [System.Serializable]
 public class GameData
 {
-    public string version = "0.1.0"; // 存档对应的游戏版本号
+    public string version = "0.0.6"; // 存档对应的游戏版本号
     public int currentLevel = 0;
     public int lastLevelIndex = -1; // -1 表示尚未开始任何游戏
 
@@ -80,7 +80,7 @@ public class GameSettings
     public int displayModeIndex = 0;
     public int resolutionIndex = 0;
     public int overlayColorIndex = 0; // 色调选项
-    public string language = "English";
+    public string language = "Chinese";
 }
 
 // --------- 为 Dictionary 提供序列化包装 -----------

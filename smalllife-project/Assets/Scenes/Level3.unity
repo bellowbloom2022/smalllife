@@ -6997,8 +6997,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   zoomSpeed: 3
-  zoomRange: {x: 5, y: 10}
-  moveRange: {x: 10, y: 10}
+  zoomRange: {x: 5, y: 15}
+  moveRange: {x: 20, y: 20}
 --- !u!114 &154833580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7011,8 +7011,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8df59ffeee3c47558eea6bf87bc7933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragSpeed: 10
-  moveBounds: {x: 10, y: 10}
+  dragSpeed: 3
+  moveBounds: {x: 20, y: 20}
 --- !u!1001 &155020092
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8600,7 +8600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: English
+  currentLanguage: Chinese
   detectLanguage: 1
   defaultLanguage: 
   saveLoad: 1
@@ -23202,7 +23202,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Spot 3 Citizen Cultural Square of a town in Shanghai
+  m_Text: "\u5730\u70B93  \u4E0A\u6D77\u67D0\u9547\u5E02\u6C11\u6587\u5316\u5E7F\u573A"
 --- !u!1 &570440538
 GameObject:
   m_ObjectHideFlags: 0
@@ -26544,7 +26544,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: A small park directly across from the government gate
+  m_Text: "\u653F\u5E9C\u5927\u95E8\u6B63\u5BF9\u7740\u7684\u4E00\u4E2A\u5C0F\u516C\u56ED"
 --- !u!1001 &661179194
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64532,8 +64532,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_AnchoredPosition: {x: 20.9685, y: 9.6779}
+  m_SizeDelta: {x: 2252.27, y: 1402.5918}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &1754845799
 CanvasGroup:
@@ -67463,8 +67463,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -640275409
-  m_SortingLayer: 8
+  m_SortingLayerID: -1035316931
+  m_SortingLayer: 10
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -76664,6 +76664,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 6645295892441018490, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: colorOverlayImage
+      value: 
+      objectReference: {fileID: 1754845800}
     - target: {fileID: 7735771071658296234, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: FallbackText
       value: "\u8FD4\u56DE\u83DC\u5355"

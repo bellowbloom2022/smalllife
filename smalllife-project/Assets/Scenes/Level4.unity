@@ -292,6 +292,90 @@ Transform:
   m_Father: {fileID: 1024983940}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5578698
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5578699}
+  - component: {fileID: 5578700}
+  m_Layer: 0
+  m_Name: GameObject (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5578699
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5578698}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.00279, y: -0.115417, z: 0}
+  m_LocalScale: {x: 0.17809483, y: 0.2910213, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1839349122}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 24.855}
+--- !u!212 &5578700
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5578698}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -82185235
+  m_SortingLayer: 17
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 21300000, guid: 714fad464e3231e449167b050dda4343, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.74, y: 0.7}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &7644035
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,8 +550,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cedac718fd395d47a4436ab6980068c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ripplePrefab: {fileID: 1939076190212190942, guid: 544a8ca0c95038f428af8cba253e199e, type: 3}
-  poolKey: Ripple
+  ripplePrefab: {fileID: 189616155927097281, guid: a8ee772c53bfeda42a932eddd6ff76cc, type: 3}
+  poolKey: GrassClickAni
 --- !u!60 &8858384
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -2266,6 +2350,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: LanguageSettingsController, Assembly-CSharp
       objectReference: {fileID: 0}
+    - target: {fileID: 6645295892441018490, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: colorOverlayImage
+      value: 
+      objectReference: {fileID: 724636857}
     - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 0
@@ -5742,7 +5830,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ripplePrefab: {fileID: 7807836947522989864, guid: e86431da5e015674097527b0bb6ee94d, type: 3}
-  poolKey: Ripple
+  poolKey: TreeClickAni
 --- !u!60 &150886678
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -14614,8 +14702,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8df59ffeee3c47558eea6bf87bc7933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragSpeed: 10
-  moveBounds: {x: 10, y: 10}
+  dragSpeed: 3
+  moveBounds: {x: 60, y: 45}
 --- !u!114 &354310943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14630,8 +14718,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 10
   zoomSpeed: 3
-  zoomRange: {x: 5, y: 10}
-  moveRange: {x: 10, y: 10}
+  zoomRange: {x: 8, y: 40}
+  moveRange: {x: 60, y: 45}
 --- !u!1 &361202564
 GameObject:
   m_ObjectHideFlags: 0
@@ -16684,9 +16772,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: There are many villages around downtown Shanghai. The villages have local
-    residents as well as many migrant workers from other regions. Near this village,
-    there is also a fishing spot.
+  m_Text: "\u4E0A\u6D77\u5E02\u533A\u5468\u8FB9\u6709\u8BB8\u591A\u6751\uFF0C\u6751\u4E2D\u6709\u672C\u5730\u4EBA\uFF0C\u4E5F\u6709\u5F88\u591A\u662F\u5916\u5730\u6765\u7684\u6253\u5DE5\u8005\uFF0C\u8FD9\u4E2A\u6751\u9644\u8FD1\u8FD8\u6709\u4E2A\u9493\u9C7C\u573A\u3002"
 --- !u!222 &397618963
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -22592,12 +22678,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535332864}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0027897176, y: -0.3323996, z: 0}
-  m_LocalScale: {x: 0.17809483, y: 0.14588249, z: 1}
+  m_LocalPosition: {x: 0.00279, y: -0.304945, z: 0}
+  m_LocalScale: {x: 0.17809483, y: 0.16424677, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1839349122}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 24.855}
 --- !u!212 &535332866
 SpriteRenderer:
@@ -23645,11 +23731,11 @@ MonoBehaviour:
   dialogueAnchorsPreAnim1:
   - {fileID: 1414733723}
   collidersPostAnim1:
-  - {fileID: 298150036}
+  - {fileID: 217511078}
   dialogueSpritesPostAnim1:
   - {fileID: 686966690}
   dialogueAnchorsPostAnim1:
-  - {fileID: 298150035}
+  - {fileID: 591757339}
   collidersPostAnim2:
   - {fileID: 217511078}
   - {fileID: 1947821299}
@@ -29703,7 +29789,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7844224260878193082, guid: 77912b1d3a2d04092a0d93e7c3f17900, type: 3}
       propertyPath: m_Text
-      value: "\u201C\u80A5\u6599\u4E0D\u591F\uFF0C\u53F6\u5B50\u90FD\u9EC4\u4E86\u3002\u771F\u770B\u4E0D\u4E0B\u53BB\u3002\u201D"
+      value: "\u201C\u4F60\u8FD9\u53F6\u5B50\u90FD\u9EC4\u4E86\uFF0C\u8981\u4E0D\u8981\u6211\u5E2E\u4F60\u5F04\u5F04\uFF1F\u201D"
       objectReference: {fileID: 0}
     - target: {fileID: 7844224260878193083, guid: 77912b1d3a2d04092a0d93e7c3f17900, type: 3}
       propertyPath: FallbackText
@@ -30588,7 +30674,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ripplePrefab: {fileID: 8893162898735885047, guid: 50b6e1d23ae4880438984f9f9fb8410c, type: 3}
-  poolKey: Ripple
+  poolKey: WaitanWaterAni
 --- !u!60 &699352996
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -31948,8 +32034,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1920, y: 1080}
+  m_AnchoredPosition: {x: 22.5815, y: 8.0648}
+  m_SizeDelta: {x: 2403.888, y: 1463.8845}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &724636856
 CanvasGroup:
@@ -34100,7 +34186,8 @@ MonoBehaviour:
   minVolume: 0.2
   maxVolume: 1
   ambientSources: []
-  goalInteractionSources: []
+  goalInteractionSources:
+  - {fileID: 2144839176}
 --- !u!1 &793279034
 GameObject:
   m_ObjectHideFlags: 0
@@ -45715,7 +45802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: English
+  currentLanguage: Chinese
   detectLanguage: 1
   defaultLanguage: 
   saveLoad: 1
@@ -48475,7 +48562,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Spot 4 An isolated village north of Shanghai, separated by rivers and bridges
+  m_Text: "\u5730\u70B94 \u5728\u4E0A\u6D77\u5E02\u5317\u8FB9\u88AB\u6CB3\u6D41\u548C\u5927\u6865\u9694\u5F00\u7684\u4E00\u4E2A\u72EC\u7ACB\u6751\u843D"
 --- !u!222 &1199064271
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -70213,6 +70300,7 @@ Transform:
   m_LocalScale: {x: 110.598785, y: 79.737175, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 5578699}
   - {fileID: 535332865}
   m_Father: {fileID: 856891574}
   m_RootOrder: 1
@@ -70266,7 +70354,7 @@ SpriteRenderer:
   m_Size: {x: 0.74, y: 0.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1841627675
@@ -74391,8 +74479,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 168808559
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 183b36f4ec96a864ca78ff8e98981cfb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -78722,7 +78810,7 @@ SpriteRenderer:
   m_Size: {x: 0.74, y: 0.7}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &2060004383
