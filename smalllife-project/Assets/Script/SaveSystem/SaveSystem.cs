@@ -4,7 +4,7 @@ using System;
 
 public class SaveSystem : MonoBehaviour
 {
-    public const string CURRENT_SAVE_VERSION = "0.1.0";
+    public const string CURRENT_SAVE_VERSION = "0.0.6";
     public static SaveSystem Instance;
     private static string savePath;
     public static GameData GameData { get; private set; }

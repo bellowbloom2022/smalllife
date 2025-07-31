@@ -25,7 +25,9 @@ public class MainMenuController : MonoBehaviour
     void Start()
     {
         bool hasSavedGame = SaveSystem.GameData != null && SaveSystem.GameData.lastLevelIndex >= 0;
+
         continueButton.gameObject.SetActive(hasSavedGame);
+        backgroundRect.gameObject.SetActive(hasSavedGame);
 
         SetupNewGameButton(hasSavedGame);
         SetupContinueButton(hasSavedGame);

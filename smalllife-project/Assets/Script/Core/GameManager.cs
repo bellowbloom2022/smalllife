@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
@@ -20,6 +20,11 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+
+        // 强制锁定帧率
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;// 可选：关闭垂直同步以避免影响帧率锁定
+
         // 在游戏启动时加载保存的数据
         LoadGameData();
     }
