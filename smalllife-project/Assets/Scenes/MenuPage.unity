@@ -729,6 +729,7 @@ GameObject:
   m_Component:
   - component: {fileID: 117690232}
   - component: {fileID: 117690233}
+  - component: {fileID: 117690234}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -784,6 +785,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &117690234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117690231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbca8880a2a248698be9426b0dd1ecd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelScrollController: {fileID: 650091816}
+  rightPanelUI: {fileID: 1093198632}
 --- !u!1 &216652620
 GameObject:
   m_ObjectHideFlags: 0
@@ -2860,9 +2875,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1167927315}
   m_Father: {fileID: 1439549265}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -3330,6 +3346,7 @@ GameObject:
   - component: {fileID: 1167927315}
   - component: {fileID: 1167927317}
   - component: {fileID: 1167927316}
+  - component: {fileID: 1167927318}
   m_Layer: 5
   m_Name: SelectorIcon
   m_TagString: Untagged
@@ -3350,7 +3367,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1437087549}
-  m_Father: {fileID: 1439549265}
+  m_Father: {fileID: 920944852}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
@@ -3396,6 +3413,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1167927314}
   m_CullTransparentMesh: 1
+--- !u!114 &1167927318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1167927314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 1
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1184602019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4141,7 +4178,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1167927315}
   - {fileID: 920944852}
   m_Father: {fileID: 650091812}
   m_RootOrder: 0
