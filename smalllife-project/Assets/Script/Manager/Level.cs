@@ -125,6 +125,17 @@ public class Level : MonoBehaviour
             mBtnNext.gameObject.SetActive(false);
         if (mBtnNext1 != null)
             mBtnNext1.gameObject.SetActive(true);
+            
+        // ✅ 添加 checkmark 记录逻辑
+        string levelID = SceneManager.GetActiveScene().name;
+        var data = SaveSystem.GameData;
+
+        if (!data.newlyCompletedLevelIDs.Contains(levelID))
+        {
+            data.newlyCompletedLevelIDs.Add(levelID);
+            SaveSystem.SaveGame();
+            Debug.Log($"✅ 记录该关卡 {levelID} 为新通关，用于主菜单显示勾选");
+        }
     }
 
     public void OnBtnNextClicked()

@@ -7,6 +7,7 @@ public class GameData
     public string version = "0.0.6"; // 存档对应的游戏版本号
     public int currentLevel = 0;
     public int lastLevelIndex = -1; // -1 表示尚未开始任何游戏
+    public List<string> newlyCompletedLevelIDs = new List<string>();
 
     // 设置项存储
     public GameSettings settings = new();

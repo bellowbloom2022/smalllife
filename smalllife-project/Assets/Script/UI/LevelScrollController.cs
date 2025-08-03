@@ -57,6 +57,9 @@ public class LevelScrollController : MonoBehaviour
 
         //延迟调用 UpdateSelectorPosition() 确保 layout 完成后再移动 selector
         StartCoroutine(DelayUpdateSelectorPosition(indexToSelect));
+
+        // ✅ 显示 checkmark
+        UpdateCheckMarkStatus();
     }
 
     // 玩家点击关卡按钮时调用
@@ -100,5 +103,23 @@ public class LevelScrollController : MonoBehaviour
 
         rightPanel.UpdateContent(levelItems[index].data, index);
         currentSelected = levelItems[index];
+    }
+
+    private void UpdateCheckMarkStatus()
+    {
+        // 从 GameData 中获取新完成的 levelIDs
+        var completedIDs = SaveSystem.GameData.newlyCompletedLevelIDs;
+
+        foreach (var item in levelItems)
+        {
+            if (completedIDs.Contains(item.data.levelID))
+            {
+                item.ShowCheckMark(true);
+            }
+            else
+            {
+                item.ShowCheckMark(false);
+            }
+        }
     }
 }
