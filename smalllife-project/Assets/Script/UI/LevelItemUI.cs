@@ -7,6 +7,8 @@ public class LevelItemUI : MonoBehaviour
     public LeanLocalizedText titleText;
     public RectTransform selectorAnchor; // 在 Unity 编辑器中绑定
     public GameObject checkMark;
+    public GameObject lockedMask; // 遮罩层 UI
+    private bool isUnlocked = false;
 
     [HideInInspector] public LevelDataAsset data;
     [HideInInspector] public int levelIndex; //用于查找存档数据比如第几关
@@ -35,12 +37,18 @@ public class LevelItemUI : MonoBehaviour
         if (checkMark != null)
             checkMark.SetActive(false);
     }
-    
+
     public void ShowCheckMark(bool show)
     {
         if (checkMark != null)
         {
             checkMark.SetActive(show);
         }
+    }
+    public void UpdateLockStatus(bool unlocked)
+    {
+        isUnlocked = unlocked;
+        if (lockedMask != null)
+            lockedMask.SetActive(!unlocked);
     }
 }

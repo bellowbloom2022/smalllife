@@ -95,14 +95,32 @@ public class Level : MonoBehaviour
         ++mCount;
         UpdateGoalHint(mCount, TotalCount);
 
-        if (mCount >= requiredCount){
-            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name,1);
+        if (mCount >= requiredCount)
+        {
+            // 改为使用 GameData 标记关卡通关状态
+            string sceneName = SceneManager.GetActiveScene().name;
+            LevelDataAsset data = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneName}");
+            if (data == null)
+            {
+                Debug.LogError($"未找到对应的 LevelDataAsset: {sceneName}");
+                return;
+            }
+            string levelID = data.levelID;
+            Debug.Log($"[Save] Saving Completed LevelID: {levelID}");
+
+            if (!SaveSystem.GameData.completedLevels.ContainsKey(levelID))
+            {
+                SaveSystem.GameData.completedLevels[levelID] = true;
+                SaveSystem.SaveGame();  // 立即保存
+            }
 
             //当目标数为1且requireCount也是1时，直接显示AllGoals反馈
-            if (TotalCount == 1 && requiredCount == 1){
+            if (TotalCount == 1 && requiredCount == 1)
+            {
                 ShowAllGoalsFoundFeedback();
             }
-            else{
+            else
+            {
                 ShowNextButton();
             }
         }
@@ -117,6 +135,16 @@ public class Level : MonoBehaviour
     {
         if (mBtnNext != null)
             mBtnNext.gameObject.SetActive(true);
+        //通关时存入完成的关卡ID
+        string sceneName = SceneManager.GetActiveScene().name;
+        LevelDataAsset data = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneName}");
+
+        string levelID = SceneManager.GetActiveScene().name;
+        SaveSystem.GameData.completedLevels[levelID] = true;
+        SaveSystem.SaveGame();
+        
+        bool isCompleted = SaveSystem.GameData.completedLevels.ContainsKey(levelID)
+            && SaveSystem.GameData.completedLevels[levelID];
     }
 
     private void ShowAllGoalsFoundFeedback()
