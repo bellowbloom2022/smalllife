@@ -128,7 +128,6 @@ public class Goal : MonoBehaviour
 
     void OnAnim1End()
     {
-        Debug.Log("OnAnim1End called!");
         //当Goal对象的第一个动画（Anim1）播放完毕时，关闭Goal对象上的所有boxcollider组件。
         this.GetComponent<Animator>().ResetTrigger("click");
         BoxCollider[] clis = this.GetComponents<BoxCollider>();
@@ -163,7 +162,6 @@ public class Goal : MonoBehaviour
             {
                 cameraController.MoveCameraToPosition(mCamPosB.transform.position, mCamMoveSpeedB);
             }
-            Debug.Log("goal get");
             mIsTriggered = true;
 
             //根据 mNovelPosStart 对应的位置，在 Canvas 中的坐标系中计算出小说对象 mGameObjectNovel 的起始位置
@@ -192,7 +190,6 @@ public class Goal : MonoBehaviour
                     Level.ins.AddCount();
                     isFound = true;
                     Debug.Log($"Goal ID {goalID} marked has found.");
-                    Debug.Log("找到一个goal了");
                     //标记step1+step2都完成
                     GameDataUtils.SetGoalStep(SaveSystem.GameData, Level.ins.currentLevelIndex, goalID, true, true);
 

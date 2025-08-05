@@ -13,7 +13,7 @@ public class LevelScrollController : MonoBehaviour
 
     public RightPanelUI rightPanel;// 右边信息面板脚本
     public GameData gameData;
-
+    public LevelItemUI LastSelectedLevel => currentSelected;
     private LevelItemUI currentSelected;
     private List<LevelItemUI> levelItems = new List<LevelItemUI>();
 
@@ -43,6 +43,12 @@ public class LevelScrollController : MonoBehaviour
             itemUI.Init(data, i, this);// 把控制器也传给它，方便点击回调
             levelItems.Add(itemUI);
         }
+
+        // ✅ 显示 checkmark
+        UpdateCheckMarkStatus();
+        //刷新每个关卡的解锁状态
+        UpdateLockStatus(); 
+        
         // 根据 lastLevelIndex 初始化 SelectorIcon 位置
         int indexToSelect = SaveSystem.GameData.lastLevelIndex;
 
@@ -53,13 +59,11 @@ public class LevelScrollController : MonoBehaviour
         }
         // 设置 currentSelected 以避免首次点击再次触发
         currentSelected = levelItems[indexToSelect];
-        rightPanel.UpdateContent(currentSelected.data, indexToSelect);
+        bool unlocked = IsUnlocked(indexToSelect);
+        rightPanel.UpdateContent(currentSelected.data, indexToSelect, unlocked);
 
         //延迟调用 UpdateSelectorPosition() 确保 layout 完成后再移动 selector
         StartCoroutine(DelayUpdateSelectorPosition(indexToSelect));
-
-        // ✅ 显示 checkmark
-        UpdateCheckMarkStatus();
     }
 
     // 玩家点击关卡按钮时调用
@@ -79,8 +83,9 @@ public class LevelScrollController : MonoBehaviour
         DOTween.Kill(selectorIcon); // 避免叠加动画
         selectorIcon.DOLocalMoveY(localPoint.y, 0.25f).SetEase(Ease.OutCubic);
 
-        // 更新右边的详情面板?调用 UpdateContent 时，传入 levelIndex
-        rightPanel.UpdateContent(clickedItem.data, clickedItem.levelIndex);
+        // 更新右边的详情面板?调用 UpdateContent 时，传入 levelIndex传入解锁状态
+        bool unlocked = IsUnlocked(clickedItem.levelIndex);
+        rightPanel.UpdateContent(clickedItem.data, clickedItem.levelIndex, unlocked);   
     }
 
     private void UpdateSelectorPosition(int index)
@@ -101,7 +106,8 @@ public class LevelScrollController : MonoBehaviour
 
         UpdateSelectorPosition(index);
 
-        rightPanel.UpdateContent(levelItems[index].data, index);
+        bool unlocked = IsUnlocked(index);
+        rightPanel.UpdateContent(levelItems[index].data, index, unlocked);
         currentSelected = levelItems[index];
     }
 
@@ -121,5 +127,33 @@ public class LevelScrollController : MonoBehaviour
                 item.ShowCheckMark(false);
             }
         }
+    }
+
+    private void UpdateLockStatus()
+    {
+        for (int i = 0; i < levelItems.Count; i++)
+        {
+            var item = levelItems[i];
+            bool unlocked = IsUnlocked(i);
+            item.UpdateLockStatus(unlocked);
+        }
+
+        // 确保刷新当前选中项的右侧内容
+        if (currentSelected != null && rightPanel != null)
+        {
+            int idx = levelItems.IndexOf(currentSelected);
+            bool unlocked = IsUnlocked(idx);
+            rightPanel.UpdateContent(currentSelected.data, idx, unlocked);
+        }
+    }
+
+    private bool IsUnlocked(int levelIndex)
+    {
+        if (levelIndex == 0) return true;
+
+        string prevLevelID = levelItems[levelIndex - 1].data.levelID;
+
+        return SaveSystem.GameData.completedLevels.ContainsKey(prevLevelID)
+            && SaveSystem.GameData.completedLevels[prevLevelID];
     }
 }

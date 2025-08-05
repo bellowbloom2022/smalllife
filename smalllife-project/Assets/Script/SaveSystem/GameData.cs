@@ -25,10 +25,19 @@ public class GameData
     [SerializeField]
     private List<SerializableStarEntry> serializedStarList = new();
 
+    // 每关通关状态（统一替代 PlayerPrefs）
+    [System.NonSerialized]
+    public Dictionary<string, bool> completedLevels = new();
+
+    [SerializeField]
+    private List<SerializableCompletedLevelEntry> serializedCompletedLevels = new();
+
     //保存前调用（将 Dictionary 转为 List）
-    public void SerializeGoalData(){
+    public void SerializeGoalData()
+    {
         serializedGoalList.Clear();
-        foreach (var kvp in goalProgressMap){
+        foreach (var kvp in goalProgressMap)
+        {
             serializedGoalList.Add(new SerializableGoalEntry
             {
                 key = kvp.Key,
@@ -45,8 +54,18 @@ public class GameData
                 starCount = kvp.Value
             });
         }
+
+        serializedCompletedLevels.Clear();
+        foreach (var kvp in completedLevels)
+        {
+            serializedCompletedLevels.Add(new SerializableCompletedLevelEntry
+            {
+                levelID = kvp.Key,
+                isCompleted = kvp.Value
+            });
+        }
     }
-    
+
     // 读取后调用（将 List 转回 Dictionary）
     public void DeserializeGoalData()
     {
@@ -60,6 +79,12 @@ public class GameData
         foreach (var entry in serializedStarList)
         {
             levelStars[entry.levelIndex] = entry.starCount;
+        }
+
+        completedLevels.Clear();
+        foreach (var entry in serializedCompletedLevels)
+        {
+            completedLevels[entry.levelID] = entry.isCompleted;
         }
     }
 }
@@ -98,4 +123,11 @@ public class SerializableStarEntry
 {
     public int levelIndex;
     public int starCount;
+}
+
+[System.Serializable]
+public class SerializableCompletedLevelEntry
+{
+    public string levelID;
+    public bool isCompleted;
 }

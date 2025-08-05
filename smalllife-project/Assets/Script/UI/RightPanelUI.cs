@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class RightPanelUI : MonoBehaviour
 {
+    private string currentLevelID;
     public Image previewImage;
+    public GameObject previewLockMask;
     public LeanLocalizedText descriptionLocalizedText;
     public LeanLocalizedText titleLocalizedText;
     public Transform starParent;       // 星星的容器（空物体）
@@ -21,15 +23,18 @@ public class RightPanelUI : MonoBehaviour
 
     private string currentSceneToLoad;
 
-    private void Start(){
+    private void Start()
+    {
         previewImageButton.onClick.AddListener(OnPreviewImageButtonClicked);
         buttonCancel.onClick.AddListener(ClosePopup);
         buttonEnter.onClick.AddListener(LoadScene);
         confirmPopup.SetActive(false);
     }
 
-    public void UpdateContent(LevelDataAsset data, int levelIndex)
+    public void UpdateContent(LevelDataAsset data, int levelIndex, bool isUnlocked)
     {
+        string levelID = data.levelID;
+        currentLevelID = levelID;
         // --- 1. 本地化标题和描述 ---
         titleLocalizedText.TranslationName = data.titleKey;
         descriptionLocalizedText.TranslationName = data.descriptionKey;
@@ -38,8 +43,8 @@ public class RightPanelUI : MonoBehaviour
         // --- 3. 设置当前待加载的关卡名 ---
         currentSceneToLoad = data.sceneToLoad;
         // --- 4. 先调用加载然后获取数据
-        SaveSystem.LoadGame(); 
-        gameData = SaveSystem.GameData; 
+        SaveSystem.LoadGame();
+        gameData = SaveSystem.GameData;
         // --- 5. 清除旧星星 ---
         foreach (var star in starPool)
         {
@@ -62,11 +67,22 @@ public class RightPanelUI : MonoBehaviour
         // --- 9. 更新星星状态，只有新完成的才播放 FillStar 动画 ---
         UIUtils.UpdateStarsUI(starParent.gameObject, previousGoalsFound, currentGoalsFound, data.goalTotal);
         Debug.Log($"[UI检查] 调用了 UpdateStarsUI，更新动画：{previousGoalsFound} → {currentGoalsFound}");
+        // --- 10. 控制预览图上的遮罩是否显示 ---
+        previewLockMask.SetActive(!isUnlocked);
+        Debug.Log($"[UpdateContent] LevelID: {data.levelID}, Unlocked: {isUnlocked}");
     }
-        
+
     private void OnPreviewImageButtonClicked()
     {
-        confirmPopup.SetActive(true);
+        if (!previewLockMask.activeSelf)
+        {
+            confirmPopup.SetActive(true); // ✅ 已解锁才弹出确认
+        }
+        else
+        {
+            Debug.Log("当前关卡未解锁，不能开始游戏");
+            // 可加提示UI（Toast / 对话框等）
+        }
     }
 
     private void ClosePopup()
