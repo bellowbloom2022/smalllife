@@ -18,10 +18,15 @@ public class DisplaySettingsController : MonoBehaviour
 
     private Dictionary<Toggle, Color> colorMap;
     private const string KEY_COLOR_INDEX = "Display_ColorIndex";
-
-    private Resolution[] resolutions;
+    private List<Vector2Int> commonResolutions = new List<Vector2Int>()
+    {
+        new Vector2Int(1280, 720),
+        new Vector2Int(1366, 768),
+        new Vector2Int(1600, 900),
+        new Vector2Int(1920, 1080), // 可选但非默认
+    };
     private int defaultResolutionIndex = 0;
-    private int defaultModeIndex = 1; // 0: windowed, 1: fullscreen
+    private int defaultModeIndex = 0; // 0: fullscreen, 1: windowed
 
     private const string PREF_RES_INDEX = "Display_ResIndex";
     private const string PREF_MODE_INDEX = "Display_ModeIndex";
@@ -57,18 +62,17 @@ public class DisplaySettingsController : MonoBehaviour
     void PopulateResolutionDropdown()
     {
         resolutionDropdown.ClearOptions();
-        resolutions = Screen.resolutions;
 
         List<string> options = new List<string>();
         int currentResIndex = 0;
 
-        for (int i = 0; i < resolutions.Length; i++)
+        for (int i = 0; i < commonResolutions.Count; i++)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height;
+            var res = commonResolutions[i];
+            string option = res.x + " x " + res.y;
             options.Add(option);
 
-            if (resolutions[i].width == Screen.currentResolution.width &&
-                resolutions[i].height == Screen.currentResolution.height)
+            if (res.x == Screen.currentResolution.width && res.y == Screen.currentResolution.height)
             {
                 currentResIndex = i;
             }
@@ -90,14 +94,41 @@ public class DisplaySettingsController : MonoBehaviour
         int resIndex = resolutionDropdown.value;
         int modeIndex = modeDropdown.value;
 
-        Resolution selectedRes = resolutions[resIndex];
         FullScreenMode screenMode = (modeIndex == 0) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+        Vector2Int selected;
 
-        Screen.SetResolution(selectedRes.width, selectedRes.height, screenMode);
+        // ? 全屏模式 → 使用屏幕原生分辨率
+        if (screenMode == FullScreenMode.FullScreenWindow)
+        {
+            selected = new Vector2Int(Screen.currentResolution.width, Screen.currentResolution.height);
+        }
+        else
+        {
+            selected = commonResolutions[resIndex];
+        }
+
+        Screen.SetResolution(selected.x, selected.y, screenMode);
+
+        // UI状态刷新
+        UpdateResolutionUIState();
 
         // 保存设置
         SaveSystem.GameData.settings.resolutionIndex = resIndex;
         SaveSystem.GameData.settings.displayModeIndex = modeIndex;
+    }
+
+    void UpdateResolutionUIState()
+    {
+        bool isFullscreen = (modeDropdown.value == 0);
+
+        resolutionDropdown.interactable = !isFullscreen;
+
+        if (resolutionDropdown.captionText != null)
+        {
+            resolutionDropdown.captionText.color = isFullscreen
+                ? new Color(0.8f, 0.8f, 0.8f) // 灰色
+                : Color.black;
+        }
     }
 
     public void LoadSavedSettings()
@@ -105,13 +136,14 @@ public class DisplaySettingsController : MonoBehaviour
         int savedRes = SaveSystem.GameData.settings.resolutionIndex;
         int savedMode = SaveSystem.GameData.settings.displayModeIndex;
 
-        resolutionDropdown.value = Mathf.Clamp(savedRes, 0, resolutions.Length - 1);
+        resolutionDropdown.value = Mathf.Clamp(savedRes, 0, commonResolutions.Count - 1);
         modeDropdown.value = savedMode;
 
         resolutionDropdown.RefreshShownValue();
         modeDropdown.RefreshShownValue();
 
         ApplyDisplaySettings();
+        UpdateResolutionUIState(); // 确保初始化时UI也变灰
     }
     
     private void LoadSavedOverlayColor()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Lean.Localization;
@@ -6,10 +7,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Text), typeof(AudioSource))]
 public class LocalizedTypewriterEffect : MonoBehaviour
 {
+    [Header("Typing")]
     public float delayBetweenCharacters = 0.05f;
-    public string phraseName = "YourPhraseName";//The phrase name you set in Lean.Localization for this text
+    [Tooltip("Lean.Localization 的词条名；Play时会被覆盖为传入的key")]
+    public string phraseName = "YourPhraseName";
     public AudioClip typingSound;
     public int playSoundEveryNCharacters = 1;
+
+    [Header("Lifecycle")]
+    [SerializeField] private bool autoPlayOnEnable = false;
 
     private Text textComponent;
     private AudioSource audioSource;
@@ -19,68 +25,131 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private LayoutGroup layoutGroup;
     private ContentSizeFitter contentSizeFitter;
 
+    private Action onFinishedCallback;
+
+    public bool IsTyping => typingCoroutine != null;
+
     private void Awake()
     {
         textComponent = GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
-
-        //获取上层TextContainer，用于控制自适应大小
         layoutGroup = GetComponentInParent<LayoutGroup>();
         contentSizeFitter = GetComponentInParent<ContentSizeFitter>();
     }
 
     private void OnEnable()
     {
-        LeanLocalization.OnLocalizationChanged += UpdateLocalizationAndRestart;
-        RestartTypewriter();
+        LeanLocalization.OnLocalizationChanged += UpdateLocalizationAndMaybeRestart;
+        if (autoPlayOnEnable && !string.IsNullOrEmpty(phraseName))
+        {
+            Play(phraseName);
+        }
     }
 
     private void OnDisable()
     {
-        LeanLocalization.OnLocalizationChanged -= UpdateLocalizationAndRestart;
+        LeanLocalization.OnLocalizationChanged -= UpdateLocalizationAndMaybeRestart;
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+        onFinishedCallback = null;
     }
 
-    private void RestartTypewriter(){
-        if(typingCoroutine != null)
-           StopCoroutine(typingCoroutine);
+    // 对外：播放指定 key 的打字机，并在完成时回调
+    public void Play(string key, Action onComplete = null, bool instant = false)
+    {
+        phraseName = key;
+        onFinishedCallback = onComplete;
 
-        textComponent.text = "";
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
         fullText = GetLocalizedText(phraseName);
+
+        if (instant)
+        {
+            textComponent.text = fullText;
+            ForceRelayout();
+            FinishTyping();
+            return;
+        }
+
+        textComponent.text = string.Empty;
         typingCoroutine = StartCoroutine(ShowTextWithTypewriterEffect());
-        Debug.Log($"[RestartTypewriter] phraseName: {phraseName}, fullText: {GetLocalizedText(phraseName)}");
     }
 
-    private void UpdateLocalizationAndRestart(){
-        RestartTypewriter();
+    // 对外：跳过到全文
+    public void SkipToEnd()
+    {
+        if (fullText == null) return;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        textComponent.text = fullText;
+        ForceRelayout();
+        FinishTyping();
+    }
+
+    private void UpdateLocalizationAndMaybeRestart()
+    {
+        // 语言切换时刷新当前词条；如果正在打字，就重新用当前 key 播放
+        if (string.IsNullOrEmpty(phraseName)) return;
+        bool wasTyping = IsTyping;
+        Play(phraseName, onFinishedCallback, instant: !wasTyping);
     }
 
     private IEnumerator ShowTextWithTypewriterEffect()
     {
-        Debug.Log($"[TypewriterEffect] Starting typing coroutine...");
-        for (int i = 0; i < fullText.Length; i++){
+        for (int i = 0; i < fullText.Length; i++)
+        {
             textComponent.text += fullText[i];
 
-            if (typingSound != null && audioSource != null && i % playSoundEveryNCharacters == 0){
-                audioSource.pitch = Random.Range(0.95f, 1.05f);
+            if (typingSound != null && audioSource != null && playSoundEveryNCharacters > 0 && (i % playSoundEveryNCharacters == 0))
+            {
+                audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
                 audioSource.PlayOneShot(typingSound);
             }
 
-            //每次加字后，重新触发Layout（关键步骤）
-            LayoutRebuilder.ForceRebuildLayoutImmediate(textComponent.rectTransform);
-            if (layoutGroup != null)
-                LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
-
+            ForceRelayout();
             yield return new WaitForSeconds(delayBetweenCharacters);
         }
+
+        typingCoroutine = null;
+        FinishTyping();
     }
 
-    private string GetLocalizedText(string phraseName)
+    private void FinishTyping()
     {
-        var translation = LeanLocalization.GetTranslation(phraseName);
+        // 确保最终一次布局刷新
+        ForceRelayout();
 
+        var cb = onFinishedCallback;
+        onFinishedCallback = null;
+        cb?.Invoke();
+    }
+
+    private void ForceRelayout()
+    {
+        LayoutRebuilder.ForceRebuildLayoutImmediate(textComponent.rectTransform);
+        if (layoutGroup != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(layoutGroup.GetComponent<RectTransform>());
+    }
+
+    private string GetLocalizedText(string key)
+    {
+        var translation = LeanLocalization.GetTranslation(key);
         if (translation != null && translation.Data is string str)
             return str;
-        
+
         return textComponent.text;
     }
 }

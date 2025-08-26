@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+#if !UNITY_EDITOR && !DEVELOPMENT_BUILD
+        Debug.unityLogger.logEnabled = false;
+#endif
         if (instance == null)
         {
             instance = this;

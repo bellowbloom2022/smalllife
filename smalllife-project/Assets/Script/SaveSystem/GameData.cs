@@ -4,35 +4,116 @@ using System.Collections.Generic;
 [System.Serializable]
 public class GameData
 {
-    public string version = "0.0.6"; // 存档对应的游戏版本号
+    // 存档版本号（用于未来升级）
+    public string version = "0.0.8"; 
+
+    // 基础游戏进度字段
     public int currentLevel = 0;
     public int lastLevelIndex = -1; // -1 表示尚未开始任何游戏
     public List<string> newlyCompletedLevelIDs = new List<string>();
 
-    // 设置项存储
+    // 设置项（子结构）
     public GameSettings settings = new();
-    // 游戏目标进度（序列化支持）: "levelIndex_goalID"
+
+    // ========== 可扩展结构：目标进度 ==========
     [System.NonSerialized]
     public Dictionary<string, GoalProgress> goalProgressMap = new();
 
     [SerializeField]
     private List<SerializableGoalEntry> serializedGoalList = new();
 
-    // 每关星星数统计（可用于菜单页显示）
+    // ========== 可扩展结构：每关星数统计 ==========
     [System.NonSerialized]
     public Dictionary<int, int> levelStars = new();
 
     [SerializeField]
     private List<SerializableStarEntry> serializedStarList = new();
 
-    // 每关通关状态（统一替代 PlayerPrefs）
+    // ========== 可扩展结构：通关状态 ==========
     [System.NonSerialized]
     public Dictionary<string, bool> completedLevels = new();
 
     [SerializeField]
     private List<SerializableCompletedLevelEntry> serializedCompletedLevels = new();
 
-    //保存前调用（将 Dictionary 转为 List）
+    // ========== 可扩展结构：未来预留字段 ==========
+    //首次触发提示或首次操作记录
+    [System.NonSerialized]
+    public HashSet<string> seenHints = new();
+    [SerializeField]
+    private List<string> serializedSeenHints = new();
+    // 玩家见过的最大关卡ID（用于动态解锁、避免重复提示）
+    [SerializeField]
+    public int maxLevelIDSeen = 0;
+    // 已完成目标（例如剧情任务、可选任务）
+    [System.NonSerialized]
+    public HashSet<string> completedGoals = new();
+    [SerializeField]
+    private List<string> serializedCompletedGoals = new();
+    // 收藏夹（如收藏角色、彩蛋）
+    public List<string> favoriteIDs = new();
+    // 已阅读文本记录（剧情防重复播放）
+    [System.NonSerialized]
+    public HashSet<string> viewedDialogIDs = new();
+    [SerializeField]
+    private List<string> serializedViewedDialogIDs = new();
+
+    // ========== 序列化函数 ==========保存前调用（将 Dictionary 转为 List）
+
+    public void SerializeAll()
+    {
+        // ✅ 完成目标列表
+        serializedCompletedGoals.Clear();
+        foreach (var id in completedGoals)
+        {
+            serializedCompletedGoals.Add(id);
+        }
+
+        // ✅ 已阅对白ID
+        serializedViewedDialogIDs.Clear();
+        foreach (var id in viewedDialogIDs)
+        {
+            serializedViewedDialogIDs.Add(id);
+        }
+
+        // ✅ 已显示提示
+        serializedSeenHints.Clear();
+        foreach (var id in seenHints)
+        {
+            serializedSeenHints.Add(id);
+        }
+
+        // ✅ 其余已有数据结构也调用（如目标进度、星星数等）
+        SerializeGoalData(); // 你现有的老函数
+    }
+
+    public void DeserializeAll()
+    {
+        // ✅ 完成目标列表
+        completedGoals.Clear();
+        foreach (var id in serializedCompletedGoals)
+        {
+            completedGoals.Add(id);
+        }
+
+        // ✅ 已阅对白ID
+        viewedDialogIDs.Clear();
+        foreach (var id in serializedViewedDialogIDs)
+        {
+            viewedDialogIDs.Add(id);
+        }
+
+        // ✅ 已显示提示
+        seenHints.Clear();
+        foreach (var id in serializedSeenHints)
+        {
+            seenHints.Add(id);
+        }
+
+        // ✅ 其余已有数据结构也调用（如目标进度、星星数等）
+        DeserializeGoalData(); // 你现有的老函数
+    }
+
     public void SerializeGoalData()
     {
         serializedGoalList.Clear();
@@ -89,6 +170,7 @@ public class GameData
     }
 }
 
+// ========== 子结构定义 ==========
 [System.Serializable]
 public class GoalProgress
 {
@@ -109,7 +191,7 @@ public class GameSettings
     public string language = "Chinese";
 }
 
-// --------- 为 Dictionary 提供序列化包装 -----------
+// ========== 字典包装结构 ==========
 
 [System.Serializable]
 public class SerializableGoalEntry
