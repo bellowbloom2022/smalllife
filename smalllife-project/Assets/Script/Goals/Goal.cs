@@ -203,7 +203,6 @@ public class Goal : MonoBehaviour
             currentStage = Stage.PostAnim2;
             // 自动显示 PostAnim2 阶段的第一个对话框
             ShowFirstDialogueOfCurrentStage();
-
         }
     }
 
