@@ -44,7 +44,6 @@ public class GoalManager : MonoBehaviour
                 }
             }
         }
-
         // 没有点击任何目标时关闭对话框（如有）
         DialogueManager.Instance.HideDialogue();
     }
