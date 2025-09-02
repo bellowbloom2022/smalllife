@@ -106,13 +106,12 @@ public class HowToPlayPanel : BasePanel
             seq.Join(panelRect.DOScale(0.1f, 0.3f).SetEase(Ease.InBack));
             seq.OnComplete(() =>
             {
-                // 飞完角落后销毁面板
-                Destroy(gameObject);
+                base.Hide();
+                gameObject.SetActive(false);
             });
         }
         else
         {
-            // 普通 PausePanel 直接隐藏
             base.Hide();
         }
     }
