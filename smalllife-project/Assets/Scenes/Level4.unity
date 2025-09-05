@@ -23643,17 +23643,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1645068807810190560, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
   m_PrefabInstance: {fileID: 542377528}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &542377530 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1645068806337140313, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
-  m_PrefabInstance: {fileID: 542377528}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &542377531 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1645068807864520392, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
@@ -23665,11 +23654,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &542377532 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1645068807810190561, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
-  m_PrefabInstance: {fileID: 542377528}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &542377533 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1645068807864520397, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
@@ -39955,6 +39939,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4046114721411824533, guid: 43f7feefc86ca1149985e5caef8fdb19, type: 3}
   m_PrefabInstance: {fileID: 4046114721273770126}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &946235722
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 946235723}
+  - component: {fileID: 946235724}
+  m_Layer: 0
+  m_Name: APARTMENT
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &946235723
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946235722}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1117080944}
+  m_RootOrder: 66
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &946235724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 946235722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Back to Hostel
+    Object: {fileID: 0}
+  - Language: Chinese
+    Text: "\u56DE\u4F4F\u5904"
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u5BBF\u306B\u623B\u308B"
+    Object: {fileID: 0}
 --- !u!1001 &947822383
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -45917,6 +45956,7 @@ Transform:
   - {fileID: 396806414}
   - {fileID: 1356258470}
   - {fileID: 2133718135}
+  - {fileID: 946235723}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -47736,9 +47776,8 @@ MonoBehaviour:
   currentLevelIndex: 4
   mBtnNext: {fileID: 248611424}
   mBtnNext1: {fileID: 1208471981}
-  continueButton: {fileID: 542377530}
+  apartmentButton: {fileID: 0}
   proceedButton: {fileID: 542377531}
-  CongratulatePanel_ConfirmPrefab: {fileID: 542377532}
   CongratulatePanel_CelebratePrefab: {fileID: 1976177993}
   TotalCount: 11
   requiredCount: 7
@@ -47756,6 +47795,9 @@ MonoBehaviour:
   - {fileID: 304030060}
   - {fileID: 547461420}
   - {fileID: 2070763552}
+  panelStartDelay: 1
+  stepDelay: 0.15
+  scaleFactor: 1.2
 --- !u!1 &1166375186
 GameObject:
   m_ObjectHideFlags: 0
