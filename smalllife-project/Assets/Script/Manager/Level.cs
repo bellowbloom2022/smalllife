@@ -219,10 +219,13 @@ public class Level : MonoBehaviour
 
         foreach (GameObject goal in goals){
             Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null && goalComponent.GoalID != -1 && goalComponent.isFound){
+            if (goalComponent != null && goalComponent.GoalID != -1 && goalComponent.isFound)
+            {
                 string key = currentLevelIndex + "_" + goalComponent.GoalID;
 
-                GameDataUtils.SetGoalStep(data, currentLevelIndex, goalComponent.GoalID, true, true);
+                //使用 goalComponent 的实际 step 状态，避免把 only-step1 的目标误标为 step2Completed
+                GameDataUtils.SetGoalStep(data, currentLevelIndex, goalComponent.GoalID,
+                    goalComponent.step1Completed, goalComponent.step2Completed);
             }
         }
         data.currentLevel = currentLevelIndex;
