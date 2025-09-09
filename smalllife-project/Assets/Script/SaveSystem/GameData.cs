@@ -57,6 +57,8 @@ public class GameData
     public HashSet<string> viewedDialogIDs = new();
     [SerializeField]
     private List<string> serializedViewedDialogIDs = new();
+    // 公寓里的已放置物品
+    public List<ApartmentController.PlacedItemData> apartmentPlacedItems = new List<ApartmentController.PlacedItemData>();
 
     // ========== 序列化函数 ==========保存前调用（将 Dictionary 转为 List）
 
