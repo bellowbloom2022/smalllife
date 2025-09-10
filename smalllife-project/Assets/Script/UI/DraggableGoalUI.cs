@@ -22,12 +22,27 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private PlacedItem draggingItem; // 正在拖拽的世界物件实例
     private Vector3 originalPosition;     // 若放置失败，回退用
     private PlacementArea currentPreviewArea; // 当前吸附的区域
+    private Transform dragRoot;          // 拖拽 UI 的全局根节点
+    private Image dragPreviewUI;         // 临时预览 UI
 
 
     private void Awake()
     {
         rect = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
+        // 自动寻找 DragRoot
+        if (dragRoot == null)
+        {
+            var dragRootObj = GameObject.Find("DragRoot");
+            if (dragRootObj != null)
+            {
+                dragRoot = dragRootObj.transform;
+            }
+            else
+            {
+                Debug.LogError("[DraggableGoalUI] 场景里缺少 DragRoot 节点！");
+            }
+        }
     }
 
     // isTemplate: true 表示这是侧栏里保留的 template（不会被移动/销毁）
@@ -50,14 +65,14 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         interactable = value;
 
         // 改透明度
-        if (icon != null) 
+        if (icon != null)
         {
             var c = icon.color;
             c.a = value ? 1f : 0.4f;   // 不可交互时半透明
             icon.color = c;
         }
 
-        if (label != null) 
+        if (label != null)
         {
             var c = label.color;
             c.a = value ? 1f : 0.4f;
@@ -75,6 +90,17 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (controller == null || !interactable) return;
+        // 在 DragRoot 下创建一个临时 UI Image
+        GameObject previewGO = new GameObject("DragPreview", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        previewGO.transform.SetParent(dragRoot, false);
+
+        dragPreviewUI = previewGO.GetComponent<Image>();
+        dragPreviewUI.sprite = icon.sprite;              // 使用 sidebar icon
+        dragPreviewUI.raycastTarget = false;             // 避免挡住事件
+        //dragPreviewUI.color = new Color(1, 1, 1, 0.7f);  // 半透明
+        dragPreviewUI.rectTransform.sizeDelta = icon.rectTransform.sizeDelta;
+
+        UpdatePreviewPosition(eventData);
 
         // 第一次拖拽时生成 PlacedItem
         if (draggingItem == null)
@@ -100,6 +126,8 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnDrag(PointerEventData eventData)
     {
         if (draggingItem == null) return;
+        if (dragPreviewUI != null)
+            UpdatePreviewPosition(eventData);
         Camera cam = Camera.main;
         if (cam == null) return;
 
@@ -124,6 +152,11 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         {
             //InputRouter.Instance?.UnlockInput();
             return;
+        }
+        if (dragPreviewUI != null)
+        {
+            Destroy(dragPreviewUI.gameObject); // 拖完销毁
+            dragPreviewUI = null;
         }
 
         bool placed = false;
@@ -165,5 +198,16 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
         currentPreviewArea = null;
         draggingItem = null;
+    }
+    private void UpdatePreviewPosition(PointerEventData eventData)
+    {
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            dragRoot as RectTransform,
+            eventData.position,
+            eventData.pressEventCamera,
+            out pos
+        );
+        dragPreviewUI.rectTransform.anchoredPosition = pos;
     }
 }
