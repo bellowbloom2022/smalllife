@@ -11,8 +11,10 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     [Header("UI")]
     public Image icon;
     public Text label;
+    [SerializeField] private GameObject highlightNew;
 
     [HideInInspector] public bool interactable = true; // 是否可拖拽
+    private bool isNewItem = false;
     private ApartmentController controller;
     [HideInInspector] public int goalID;
 
@@ -24,6 +26,8 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     private PlacementArea currentPreviewArea; // 当前吸附的区域
     private Transform dragRoot;          // 拖拽 UI 的全局根节点
     private Image dragPreviewUI;         // 临时预览 UI
+
+    public bool IsNewItemActive => isNewItem;
 
 
     private void Awake()
@@ -46,13 +50,20 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
 
     // isTemplate: true 表示这是侧栏里保留的 template（不会被移动/销毁）
-    public void SetData(int id, string displayKey, Sprite sprite, ApartmentController ctrl)
+    public void SetData(int id, string displayKey, Sprite sprite, ApartmentController ctrl, bool isNew = false)
     {
         goalID = id;
         controller = ctrl;
 
         if (icon != null) icon.sprite = sprite;
         if (label != null) label.text = displayKey;
+
+        SetNewItem(isNew);
+    }
+    public void SetNewItem(bool val)
+    {
+        isNewItem = val;
+        if (highlightNew != null) highlightNew.SetActive(val);
     }
     // 绑定 controller
     public void BindController(ApartmentController ctrl)
@@ -90,6 +101,12 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (controller == null || !interactable) return;
+        // 如果是新获得 → 第一次拖拽就清除提示
+        if (isNewItem)
+        {
+            SetNewItem(false);
+            controller.NotifyItemUsed(goalID); // 通知控制器
+        }
         // 在 DragRoot 下创建一个临时 UI Image
         GameObject previewGO = new GameObject("DragPreview", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         previewGO.transform.SetParent(dragRoot, false);

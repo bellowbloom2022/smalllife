@@ -16,7 +16,7 @@ public class CelebratePanelController : MonoBehaviour
     public float scaleFactor = 1.5f;
 
     [Header("Apartment Highlight")]
-    public Color apartmentHighlightColor = new Color(1f, 0.95f, 0.5f, 1f);
+    public Color apartmentHighlightColor = new Color(1f, 0.6f, 0.6f, 1f);
     private Coroutine apartmentHighlightCoroutine;
     [SerializeField] private UnityEngine.UI.Graphic apartmentGraphic; // 可在 Inspector 指定（更通用）
     private Color apartmentOriginalColor;
