@@ -43,6 +43,7 @@ public class ApartmentController : MonoBehaviour
     #endregion
 
     #region === Inspector 配置 ===
+    
     [Header("Sidebar UI")]
     [SerializeField] private Transform sidebarParent;               // ScrollView Content
     [SerializeField] private GameObject sidebarItemPrefab;          // 里头挂 DraggableGoalUI
@@ -122,15 +123,37 @@ public class ApartmentController : MonoBehaviour
         var ui = go.GetComponent<DraggableGoalUI>();
         if (ui != null)
         {
-            // 让 UI 知道 controller + 数据
-            ui.SetData(goalID, meta.displayKey, meta.icon, this);
-            ui.BindController(this);
-
             // 如果该 goal 已经有实例在场景，Sidebar 直接置灰
             bool alreadyPlaced = placedItems.Any(p => p.goalID == goalID);
+            bool isNew = !alreadyPlaced && !HasEverAppearedInSidebar(goalID);
+            // 让 UI 知道 controller + 数据
+            ui.SetData(goalID, meta.displayKey, meta.icon, this, isNew);
+            ui.BindController(this);
+
             if (alreadyPlaced) ui.SetInteractable(false);
 
             sidebarItems.Add(ui);
+            if (isNew)
+            {
+                BagButtonController.Instance?.SetHighlight(true);
+            }
+        }
+    }
+    // 记录一下：这个 goal 是否曾经生成过 Sidebar
+    private HashSet<int> appearedSidebarGoals = new HashSet<int>();
+    private bool HasEverAppearedInSidebar(int goalID)
+    {
+        if (appearedSidebarGoals.Contains(goalID)) return true;
+        appearedSidebarGoals.Add(goalID);
+        return false;
+    }
+    // DraggableGoalUI 通知过来的回调
+    public void NotifyItemUsed(int goalID)
+    {
+        // 如果 Sidebar 中没有任何高亮新物品，就关闭 bag 高亮
+        if (!sidebarItems.Any(x => x.IsNewItemActive))
+        {
+            BagButtonController.Instance?.SetHighlight(false);
         }
     }
     public PlacedItem SpawnPlacedItem(int goalID, Vector3 position, string zoneId, float rotation)
@@ -170,7 +193,7 @@ public class ApartmentController : MonoBehaviour
         });
         SaveSystem.GameData.apartmentPlacedItems = placedItems;
         SaveSystem.SaveGame();
-        
+
         // 灰掉 Sidebar（只能生成一次）
         SetSidebarInteractable(goalID, false);
 
