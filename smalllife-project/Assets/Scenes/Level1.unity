@@ -4017,6 +4017,61 @@ MonoBehaviour:
   - Language: Japanese
     Text: "\u898B\u3064\u3051\u3066\u307F\u3066\u304F\u3060\u3055\u3044\u3001\u3059\u308B\u3068\u4F55\u4EBA\u304B\u306E\u4EBA\u3005\u304C\u7570\u306A\u308B\u3088\u3046\u306B\u898B\u3048\u308B\u304B\u3082\u3057\u308C\u307E\u305B\u3093\u3002"
     Object: {fileID: 0}
+--- !u!1 &700280844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 700280845}
+  - component: {fileID: 700280846}
+  m_Layer: 0
+  m_Name: TravelBook
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &700280845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700280844}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1984408689}
+  m_RootOrder: 34
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &700280846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700280844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Travel book
+    Object: {fileID: 0}
+  - Language: Chinese
+    Text: "\u65C5\u884C\u624B\u5E10"
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u65C5\u884C\u306E\u624B\u5E16"
+    Object: {fileID: 0}
 --- !u!1 &724642178
 GameObject:
   m_ObjectHideFlags: 0
@@ -10274,9 +10329,29 @@ PrefabInstance:
       propertyPath: colorOverlayImage
       value: 
       objectReference: {fileID: 472270604}
+    - target: {fileID: 7955722253282814629, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: apartmentButton
+      value: 
+      objectReference: {fileID: 1833825439}
     - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1833825438}
+    - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ChangeScene
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: SceneChanger, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8160777576010035178, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
       propertyPath: backgroundUIElements.Array.size
@@ -10549,6 +10624,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4484c49e27c84429f97b97d5e21acfad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1833825438 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4710869448555714293, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 1833825434}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5d7007f1c8fd4f4fa9d2e6f0f309461, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1833825439 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8160777575030270441, guid: 7b4e6f7408a384e40bc2c3e3a652015e, type: 3}
+  m_PrefabInstance: {fileID: 1833825434}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1855448655
@@ -11146,13 +11243,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6445266539629010917, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
+      propertyPath: apartmentHighlightColor.b
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445266539629010917, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
+      propertyPath: apartmentHighlightColor.g
+      value: 0.6
+      objectReference: {fileID: 0}
     - target: {fileID: 7795680271526776024, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
       propertyPath: useBGMFadeOut
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7795680271526776024, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
       propertyPath: targetSceneName
-      value: MenuPage
+      value: Level2
       objectReference: {fileID: 0}
     - target: {fileID: 8177501935533894325, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
       propertyPath: m_Colors.m_DisabledColor.a
@@ -11383,6 +11488,7 @@ Transform:
   - {fileID: 1198349008}
   - {fileID: 36716093}
   - {fileID: 1685535061}
+  - {fileID: 700280845}
   m_Father: {fileID: 1855448657}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

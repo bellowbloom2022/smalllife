@@ -1,18 +1,39 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using Lean.Localization;
 
 public class GameManager : MonoBehaviour
 {
     private bool isPaused = false;
     public static GameManager instance;
     private GameData gameData; // 添加这个字段来存储当前的游戏数据
+    [SerializeField] private string defaultLanguage = "Chinese";
 
     private void Awake()
     {
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD
         Debug.unityLogger.logEnabled = false;
 #endif
+        // 初始化本地化系统
+        var localization = FindObjectOfType<LeanLocalization>();
+
+        if (localization != null)
+        {
+            if (string.IsNullOrEmpty(localization.CurrentLanguage))
+            {
+                localization.SetCurrentLanguage(defaultLanguage);
+                Debug.Log($"[GameManager] 语言未设置，强制设为 {defaultLanguage}");
+            }
+            else
+            {
+                Debug.Log($"[GameManager] 当前语言: {localization.CurrentLanguage}");
+            }
+        }
+        else
+        {
+            Debug.LogError("[GameManager] 没找到 LeanLocalization 组件，请确认场景里挂了这个脚本。");
+        }
         if (instance == null)
         {
             instance = this;
