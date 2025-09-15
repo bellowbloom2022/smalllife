@@ -7,14 +7,13 @@ public class PausePanel : BasePanel
     public Button resumeButton;
     public Button settingButton;
     public Button howToPlayButton;
-    public Button achievementButton;
+    public Button apartmentButton;
     public Button backToMenuButton;
     public Button backToTitleButton;
 
     [Header("Panels")]
     public HowToPlayPanel howToPlayPanel;
     public SettingsPanel settingsPanel;
-    public BasePanel achievementPanel;
 
     [Header("Scene Changer")]
     public SceneChanger backToMenuChanger;
@@ -25,7 +24,6 @@ public class PausePanel : BasePanel
         resumeButton.onClick.AddListener(OnResumeClicked);
         settingButton.onClick.AddListener(OnSettingClicked);
         howToPlayButton.onClick.AddListener(OnHowToPlayClicked);
-        achievementButton.onClick.AddListener(OnAchievementClicked);
         backToMenuButton.onClick.AddListener(OnBackToMenuClicked);
         backToTitleButton.onClick.AddListener(OnBackToTitleClicked);
     }
@@ -44,12 +42,6 @@ public class PausePanel : BasePanel
     private void OnHowToPlayClicked()
     {
         howToPlayPanel.Show();
-    }
-
-    private void OnAchievementClicked()
-    {
-        AudioHub.Instance.PlayGlobal("click_confirm");
-        // TODO: ??????????
     }
 
     private void OnBackToMenuClicked()
