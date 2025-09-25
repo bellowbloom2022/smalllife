@@ -15,6 +15,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
     [HideInInspector] public bool interactable = true; // 是否可拖拽
     private bool isNewItem = false;
+    public bool IsNewItem { get; private set; } = false;
     private ApartmentController controller;
     [HideInInspector] public int goalID;
 
@@ -177,6 +178,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
 
         bool placed = false;
+        PlacedItem placedItem = null;
 
         // 优先使用当前 preview area（我们已经找到最近的）
         if (currentPreviewArea != null && !currentPreviewArea.isOccupied)
@@ -193,20 +195,26 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
         //InputRouter.Instance?.UnlockInput();
 
-        if (!placed)
+        if (placed)
         {
-            // 放置失败 → 回到 Sidebar
-            Debug.Log("[DraggableGoalUI] 放置失败，回到 Sidebar");
-            draggingItem.ReturnToSidebar();
-            AudioHub.Instance.PlayGlobal("cancel");
-        }
-        else
-        {
+            //获取刚生成的场景物体
+            placedItem = controller.GetLastPlacedItem(draggingItem.persistId);
+            if (placedItem != null)
+            {
+                // 更新存档
+                ApartmentController.Instance.UpdatePlacedItem(placedItem);
+            }
             Debug.Log("[DraggableGoalUI] 放置成功，调用 SetInteractable(false)");
             SetInteractable(false);
             AudioHub.Instance.PlayGlobal("click_confirm");
         }
-
+        else
+        {
+            // 放置失败，回到 sidebar
+            Debug.Log("[DraggableGoalUI] 放置失败，回到 sidebar");
+            draggingItem.ReturnToSidebar();
+            AudioHub.Instance.PlayGlobal("click_cancel");
+        }
         // 清理所有高亮/预览
         foreach (var area in controller.areas)
         {
@@ -226,5 +234,13 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             out pos
         );
         dragPreviewUI.rectTransform.anchoredPosition = pos;
+    }
+    public void OnPlacedOrReturned()
+    {
+        // 放置或返回时，将红点隐藏
+        SetNewItem(false);
+
+        // 通知 Controller
+        controller?.NotifyItemUsed(goalID);
     }
 }

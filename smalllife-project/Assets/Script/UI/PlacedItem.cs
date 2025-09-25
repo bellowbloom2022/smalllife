@@ -13,6 +13,7 @@ public class PlacedItem : MonoBehaviour
     [Header("可选")]
     public Animator animator;         // 可选动画控制
 
+
     /// <summary>初始化（生成时调用）</summary>
     public void Init(int id, string savedId = null)
     {
@@ -41,19 +42,6 @@ public class PlacedItem : MonoBehaviour
         // 对齐位置
         transform.position = currentArea.GetSnapPosition();
         Debug.Log($"[PlacedItem] 绑定到区域 zoneId={area.zoneId}, goalID={goalID}");
-        // ---- 可选：自动更新存档 ----
-        var controller = ApartmentController.Instance;
-        if (controller != null)
-        {
-            var data = controller.placedItems.Find(d => d.id == persistId);
-            if (data != null)
-            {
-                data.zoneId = area.zoneId;
-                data.position = area.GetSnapPosition();
-                SaveSystem.GameData.apartmentPlacedItems = controller.placedItems;
-                SaveSystem.SaveGame();
-            }
-        }
     }
 
     /// <summary>释放当前绑定的放置区域</summary>

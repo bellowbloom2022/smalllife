@@ -3,13 +3,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Lean.Localization;
-
 /// <summary>
-/// Apartment 场景控制器：
-/// - 生成 Sidebar（根据 step1 完成且 step2 未完成的 goals）
-/// - 统一处理放置/回收/存档恢复
-/// - 只允许每个 goal 放置一个实例；放置成功后 Sidebar 灰掉；已放置实例可在不同 PlacementArea 之间移动；
-///   若拖到空白区域则回到 Sidebar（删除实例，清档）
+/// Apartment 场景控制器：生成 Sidebar（根据 step1 完成且 step2 未完成的 goals），统一处理放置/回收/存档恢复。
+/// 只允许每个 goal 放置一个实例；放置成功后 Sidebar 灰掉；已放置实例可在不同 PlacementArea 之间移动；若拖到空白区域则回到 Sidebar（删除实例，清档）
 /// </summary>
 public class ApartmentController : MonoBehaviour
 {
@@ -39,11 +35,11 @@ public class ApartmentController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        appearedSidebarGoals = new HashSet<int>(SaveSystem.GameData.apartmentSidebarAppearedGoals ?? new List<int>());
     }
     #endregion
 
     #region === Inspector 配置 ===
-    
     [Header("Sidebar UI")]
     [SerializeField] private Transform sidebarParent;               // ScrollView Content
     [SerializeField] private GameObject sidebarItemPrefab;          // 里头挂 DraggableGoalUI
@@ -113,19 +109,16 @@ public class ApartmentController : MonoBehaviour
     private void SpawnSidebarForGoal(int goalID)
     {
         var meta = knownGoals.Find(m => m.goalID == goalID);
-        if (meta == null)
-        {
-            Debug.LogWarning($"[ApartmentController] missing GoalMeta for id {goalID}");
-            return;
-        }
+        if (meta == null) return;
 
         GameObject go = Instantiate(sidebarItemPrefab, sidebarParent);
         var ui = go.GetComponent<DraggableGoalUI>();
         if (ui != null)
         {
-            // 如果该 goal 已经有实例在场景，Sidebar 直接置灰
+            // 是否已经生成场景内的 item
             bool alreadyPlaced = placedItems.Any(p => p.goalID == goalID);
-            bool isNew = !alreadyPlaced && !HasEverAppearedInSidebar(goalID);
+            // ✅ 只有没有生成过且第一次出现才算新
+            bool isNew = !alreadyPlaced && !appearedSidebarGoals.Contains(goalID);
             // 让 UI 知道 controller + 数据
             ui.SetData(goalID, meta.displayKey, meta.icon, this, isNew);
             ui.BindController(this);
@@ -133,30 +126,51 @@ public class ApartmentController : MonoBehaviour
             if (alreadyPlaced) ui.SetInteractable(false);
 
             sidebarItems.Add(ui);
+            // ✅ 只有真正新物品时触发 Bag 高亮
             if (isNew)
             {
                 BagButtonController.Instance?.SetHighlight(true);
             }
         }
     }
-    // 记录一下：这个 goal 是否曾经生成过 Sidebar
+    // 内存 HashSet，表示 sidebar 中曾出现过的 goalID
     private HashSet<int> appearedSidebarGoals = new HashSet<int>();
+    // 检查某个 goal 是否已经在 sidebar 出现过
     private bool HasEverAppearedInSidebar(int goalID)
     {
-        if (appearedSidebarGoals.Contains(goalID)) return true;
+        // ✅ 先查存档
+        if (SaveSystem.GameData.apartmentSidebarAppearedGoals.Contains(goalID))
+            return true;
+        // ✅ 内存 HashSet 兜底（运行时记录第一次出现）
+        if (appearedSidebarGoals.Contains(goalID))
+            return true;
+        // 第一次出现 → 加到 HashSet
         appearedSidebarGoals.Add(goalID);
+        SaveSystem.GameData.apartmentSidebarAppearedGoals.Add(goalID); // 保存到存档
+        SaveSystem.SaveGame();
+
         return false;
     }
-    // DraggableGoalUI 通知过来的回调
+    // DraggableGoalUI 通知 item 已使用（放置或返回 Sidebar）
     public void NotifyItemUsed(int goalID)
     {
-        // 如果 Sidebar 中没有任何高亮新物品，就关闭 bag 高亮
-        if (!sidebarItems.Any(x => x.IsNewItemActive))
+        // 玩家放置或返回 sidebar 后，隐藏红点
+        var ui = sidebarItems.FirstOrDefault(x => x.goalID == goalID);
+        if (ui != null) ui.SetNewItem(false);
+
+        // 内存 HashSet 移除，存档同步
+        if (appearedSidebarGoals.Contains(goalID))
         {
-            BagButtonController.Instance?.SetHighlight(false);
+            appearedSidebarGoals.Remove(goalID);
+            SaveSystem.GameData.apartmentSidebarAppearedGoals = appearedSidebarGoals.ToList();
+            SaveSystem.SaveGame();
         }
+
+        // 检查 sidebar 是否还有未处理的新 item
+        bool hasNew = sidebarItems.Any(x => x.IsNewItem);
+        BagButtonController.Instance?.SetHighlight(hasNew);
     }
-    public PlacedItem SpawnPlacedItem(int goalID, Vector3 position, string zoneId, float rotation)
+    public PlacedItem SpawnPlacedItem(int goalID, Vector3 position, string zoneId, float rotation, bool isRestore = false, string persistId = null)
     {
         var meta = knownGoals.Find(m => m.goalID == goalID);
         if (meta == null || meta.worldPrefab == null)
@@ -167,7 +181,7 @@ public class ApartmentController : MonoBehaviour
 
         GameObject go = Instantiate(meta.worldPrefab, placedItemsParent);
         var placed = go.GetComponent<PlacedItem>();
-        placed.Init(goalID);
+        placed.Init(goalID, persistId);
 
         // 如果指定了 zoneId，优先直接绑定到对应区域
         if (!string.IsNullOrEmpty(zoneId))
@@ -182,17 +196,21 @@ public class ApartmentController : MonoBehaviour
             go.transform.position = position;
         }
 
-        // 存档（只在第一次生成时写入）
-        placedItems.Add(new PlacedItemData
+        if (!isRestore) // ✅ 新放置时才写入存档
         {
-            id = placed.persistId,
-            goalID = placed.goalID,
-            zoneId = zoneId,
-            position = go.transform.position,
-            rotation = 0f
-        });
-        SaveSystem.GameData.apartmentPlacedItems = placedItems;
-        SaveSystem.SaveGame();
+            placedItems.Add(new PlacedItemData
+            {
+                id = placed.persistId,
+                goalID = placed.goalID,
+                zoneId = zoneId,
+                position = go.transform.position,
+                rotation = rotation
+            });
+            appearedSidebarGoals.Add(goalID);
+            SaveSystem.GameData.apartmentSidebarAppearedGoals = appearedSidebarGoals.ToList();
+            SaveSystem.GameData.apartmentPlacedItems = placedItems;
+            SaveSystem.SaveGame();
+        }
 
         // 灰掉 Sidebar（只能生成一次）
         SetSidebarInteractable(goalID, false);
@@ -253,6 +271,30 @@ public class ApartmentController : MonoBehaviour
         placedItem.ReleaseFromArea();
         // 绑定到新区域
         placedItem.BindToArea(targetArea);
+        // 🔥 这里立刻更新存档
+        var data = SaveSystem.GameData.apartmentPlacedItems
+            .FirstOrDefault(d => d.id == placedItem.persistId);
+
+        if (data != null)
+        {
+            data.zoneId = targetArea.zoneId;
+            data.position = placedItem.transform.position;
+            data.rotation = placedItem.transform.rotation.eulerAngles.z;
+            Debug.Log($"[TryPlaceAtArea] 已更新存档 id={data.id}, zoneId={data.zoneId}, pos={data.position}");
+        }
+        else
+        {
+            Debug.LogWarning($"[TryPlaceAtArea] 未找到已保存的 PlacedItemData，尝试新建");
+            SaveSystem.GameData.apartmentPlacedItems.Add(new PlacedItemData {
+                id = placedItem.persistId,
+                goalID = placedItem.goalID,
+                zoneId = targetArea.zoneId,
+                position = placedItem.transform.position,
+                rotation = placedItem.transform.rotation.eulerAngles.z
+            });
+        }
+
+        SaveSystem.SaveGame();
 
         return true;
     }
@@ -269,13 +311,27 @@ public class ApartmentController : MonoBehaviour
     #endregion
 
     #region === 恢复 ===
+    /// <summary>
+    /// 获取最近生成的 PlacedItem 实例
+    /// 支持同一个 goal 多实例，通过 persistId 匹配
+    /// </summary>
+    public PlacedItem GetLastPlacedItem(string persistId)
+    {
+        if (string.IsNullOrEmpty(persistId)) return null;
+
+        // 从父物体下的所有 PlacedItem 中寻找匹配 persistId
+        return placedItemsParent
+            .GetComponentsInChildren<PlacedItem>(true)
+            .FirstOrDefault(p => p.persistId == persistId);
+    }
+    
     /// <summary>进入场景时，从存档恢复已放置的物品。</summary>
     public void RestorePlacedItems(IEnumerable<PlacedItemData> saved)
     {
         foreach (var d in saved)
         {
             // 用 SpawnPlacedItem 统一生成逻辑
-            var placed = SpawnPlacedItem(d.goalID, new Vector3(d.position.x, d.position.y, 0f), d.zoneId, d.rotation);
+            var placed = SpawnPlacedItem(d.goalID, new Vector3(d.position.x, d.position.y, 0f), d.zoneId, d.rotation, isRestore: true, persistId: d.id);
             if (placed == null) continue;
 
             // 优先按 zoneId 还原
@@ -293,6 +349,38 @@ public class ApartmentController : MonoBehaviour
             // 恢复后把对应 Sidebar 项置灰（限制一件）
             SetSidebarInteractable(d.goalID, false);
         }
+    }
+    public void UpdatePlacedItem(PlacedItem item)
+    {
+        if (item == null) return;
+        // 先在存档里找对应 id
+        var data = placedItems.Find(d => d.id == item.persistId);
+        if (data != null)
+        {
+            // 更新已有
+            data.zoneId = item.currentArea != null ? item.currentArea.zoneId : "";
+            data.position = item.transform.position;
+            data.rotation = item.transform.eulerAngles.z;
+        }
+        else
+        {
+            // 没找到就新增
+            data = new PlacedItemData
+            {
+                id = item.persistId,
+                goalID = item.goalID,
+                zoneId = item.currentArea != null ? item.currentArea.zoneId : "",
+                position = item.transform.position,
+                rotation = item.transform.eulerAngles.z
+            };
+            placedItems.Add(data);
+        }
+
+        // 存档
+        SaveSystem.GameData.apartmentPlacedItems = placedItems;
+        SaveSystem.SaveGame();
+
+        Debug.Log($"[ApartmentController] UpdatePlacedItem: persistId={item.persistId}, zoneId={data.zoneId}, pos={data.position}");
     }
     #endregion
 

@@ -59,6 +59,10 @@ public class GameData
     private List<string> serializedViewedDialogIDs = new();
     // 公寓里的已放置物品
     public List<ApartmentController.PlacedItemData> apartmentPlacedItems = new List<ApartmentController.PlacedItemData>();
+    // 已在 sidebar 显示过的 goalID
+    public HashSet<int> appearedSidebarGoals = new HashSet<int>();
+    // ✅ 记录 sidebar 中已出现过的 goalID
+    public List<int> apartmentSidebarAppearedGoals = new List<int>();
 
     // ========== 序列化函数 ==========保存前调用（将 Dictionary 转为 List）
 
