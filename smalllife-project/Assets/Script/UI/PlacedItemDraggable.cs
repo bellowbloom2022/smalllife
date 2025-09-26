@@ -33,7 +33,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
         placedItem.ReleaseFromArea();
 
         // 显示所有可用区域高亮
-        foreach (var area in controller.areas)
+        foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())
             area.ShowHighlight(!area.isOccupied);
     }
 
@@ -49,7 +49,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
         Debug.Log($"[PlacedItemDraggable] {gameObject.name} dragging at {pos}, alpha={canvasGroup.alpha}");
 
         // 计算最近可用区域（带 Preview）
-        var nearest = controller.FindNearestFreeArea(pos, maxDistance: 1.5f);
+        var nearest = ApartmentDragHandler.Instance.FindNearestFreeArea(pos, 1.5f);
         if (nearest != currentPreviewArea)
         {
             if (currentPreviewArea != null) currentPreviewArea.SetPreview(false);
@@ -68,7 +68,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
         if (currentPreviewArea != null && !currentPreviewArea.isOccupied)
         {
             Debug.Log($"[PlacedItemDraggable] Drop on area {currentPreviewArea.zoneId}");
-            placed = controller.TryPlaceAtArea(currentPreviewArea, placedItem);
+            placed = ApartmentDragHandler.Instance.TryPlaceAtArea(currentPreviewArea, placedItem);
         }
         else
         {
@@ -81,7 +81,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
             transform.position = startPosition;
         }
         // 清理所有高亮/预览
-        foreach (var area in controller.areas)
+        foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())
         {
             area.ShowHighlight(false);
             area.SetPreview(false);
