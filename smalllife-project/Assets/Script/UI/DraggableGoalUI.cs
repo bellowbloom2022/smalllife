@@ -106,7 +106,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (isNewItem)
         {
             SetNewItem(false);
-            controller.NotifyItemUsed(goalID); // 通知控制器
+            ApartmentUIController.Instance.NotifyItemUsed(goalID);
         }
         // 在 DragRoot 下创建一个临时 UI Image
         GameObject previewGO = new GameObject("DragPreview", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
@@ -126,7 +126,14 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             var meta = controller.knownGoals.Find(m => m.goalID == goalID);
             if (meta == null || meta.worldPrefab == null) return;
 
-            draggingItem = controller.SpawnPlacedItem(goalID, Vector3.zero, null, 0f);
+            draggingItem = controller.SpawnPlacedItem(
+                goalID,
+                System.Guid.NewGuid().ToString(),  // persistId 随机生成一个
+                null,                              // zoneId
+                Vector3.zero,                      // position
+                Quaternion.identity,               // rotation
+                false                              // isRestore
+            );
         }
         else
         {
@@ -135,10 +142,8 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         }
 
         // 显示所有放置区域高亮（只显示可放置）
-        foreach (var area in controller.areas)
+        foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())
             area.ShowHighlight(!area.isOccupied);
-
-        //InputRouter.Instance?.LockInput();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -155,7 +160,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         draggingItem.transform.position = worldPos;
 
         // 计算最近可用区域并预览
-        var nearest = controller.FindNearestFreeArea(worldPos, maxDistance: 1.5f);
+        var nearest = ApartmentDragHandler.Instance.FindNearestFreeArea(worldPos, 1.5f);
         if (nearest != currentPreviewArea)
         {
             if (currentPreviewArea != null) currentPreviewArea.SetPreview(false);
@@ -184,13 +189,13 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         if (currentPreviewArea != null && !currentPreviewArea.isOccupied)
         {
             Debug.Log($"[DraggableGoalUI] 尝试放置到区域 {currentPreviewArea.zoneId}");
-            placed = controller.TryPlaceAtArea(currentPreviewArea, draggingItem);
+            placed = ApartmentDragHandler.Instance.TryPlaceAtArea(currentPreviewArea, draggingItem);
         }
         else
         {
             // 兜底：根据鼠标位置再尝试一次（可能用户放在区域边缘）
             Debug.Log("[DraggableGoalUI] 没有预览区域，尝试按屏幕坐标放置");
-            placed = controller.TryPlaceAtScreenPosition(eventData.position, draggingItem);
+            placed = ApartmentDragHandler.Instance.TryPlaceAtScreenPosition(eventData.position, draggingItem);
         }
 
         //InputRouter.Instance?.UnlockInput();
@@ -216,7 +221,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             AudioHub.Instance.PlayGlobal("click_cancel");
         }
         // 清理所有高亮/预览
-        foreach (var area in controller.areas)
+        foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())
         {
             area.ShowHighlight(false);
             area.SetPreview(false);
@@ -239,8 +244,6 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     {
         // 放置或返回时，将红点隐藏
         SetNewItem(false);
-
-        // 通知 Controller
-        controller?.NotifyItemUsed(goalID);
+        ApartmentUIController.Instance.NotifyItemUsed(goalID);
     }
 }
