@@ -1,11 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public class GameData
 {
     // 存档版本号（用于未来升级）
-    public string version = "0.0.8"; 
+    public string version = "0.0.8";
 
     // 基础游戏进度字段
     public int currentLevel = 0;
@@ -61,11 +62,13 @@ public class GameData
     public List<ApartmentController.PlacedItemData> apartmentPlacedItems = new List<ApartmentController.PlacedItemData>();
     // 已在 sidebar 显示过的 goalID
     public HashSet<int> appearedSidebarGoals = new HashSet<int>();
-    // ✅ 记录 sidebar 中已出现过的 goalID
+    // 记录 sidebar 中已出现过的 goalID
     public List<int> apartmentSidebarAppearedGoals = new List<int>();
+    // 日记贴纸存档支持模块
+    [Header("Diary Sticker Book")]
+    public List<DiaryStickerEntry> diaryStickers;
 
     // ========== 序列化函数 ==========保存前调用（将 Dictionary 转为 List）
-
     public void SerializeAll()
     {
         // ✅ 完成目标列表
@@ -174,9 +177,27 @@ public class GameData
             completedLevels[entry.levelID] = entry.isCompleted;
         }
     }
+
+    // 查询某目标步骤是否完成
+    public bool IsGoalStep1Completed(string levelID, int goalIndex)
+    {
+        var goal = serializedGoalList.FirstOrDefault(g => g.key == $"{levelID}_{goalIndex}");
+        return goal.value != null && goal.value.step1Completed;
+    }
+
+    public bool IsGoalStep2Completed(string levelID, int goalIndex)
+    {
+        if (string.IsNullOrEmpty(levelID) || serializedGoalList == null) return false;
+
+        var goal = serializedGoalList.FirstOrDefault(g => g.key == $"{levelID}_{goalIndex}");
+        if (goal == null || goal.value == null) return false;
+
+        return goal.value.step2Completed;
+    }
 }
 
 // ========== 子结构定义 ==========
+// 目标进度
 [System.Serializable]
 public class GoalProgress
 {
@@ -184,6 +205,7 @@ public class GoalProgress
     public bool step2Completed = false;
 }
 
+// 设置项
 [System.Serializable]
 public class GameSettings
 {
