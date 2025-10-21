@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2125621583676727611}
   - component: {fileID: 7799749406407444358}
   - component: {fileID: 4094340424402832291}
+  - component: {fileID: 740627225100777029}
   m_Layer: 5
   m_Name: StickerSlot
   m_TagString: Untagged
@@ -54,6 +55,8 @@ MonoBehaviour:
   goalKey: 
   slotImage: {fileID: 4094340424402832291}
   slotIndex: -1
+  slotId: 
+  controller: {fileID: 0}
 --- !u!222 &7799749406407444358
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -82,7 +85,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c32097531729d4bfc83a951c02569f93, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -92,3 +95,15 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &740627225100777029
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4163942432514524986}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

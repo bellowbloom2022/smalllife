@@ -42,6 +42,7 @@ public class DiaryStickerService : MonoBehaviour
         if (string.IsNullOrEmpty(goalKey) || string.IsNullOrEmpty(slotId)) return;
 
         int index = ParseSlotId(slotId); // 将 Slot0/Slot1 → 0/1
+        Debug.Log($"[Service] PlaceSticker {goalKey} -> slotIndex={index}");
 
         var entry = diaryStickers.Find(e => e.goalKey == goalKey);
         if (entry == null)

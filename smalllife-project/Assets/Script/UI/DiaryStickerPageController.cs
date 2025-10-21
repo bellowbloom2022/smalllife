@@ -24,9 +24,11 @@ public class DiaryStickerPageController : MonoBehaviour
     [Header("Sticker Library")]
     public Transform stickerLibraryParent;   // 右上父物体（UI）
     public GameObject stickerDraggablePrefab; // 可拖拽 prefab (Image + CanvasGroup + StickerDraggable)
-
     private int currentPage = 0;
     private int maxSlots => Mathf.Min(leftSlots.Count, 14);
+    //临时列表，用于记录哪些贴纸需要播放动画
+    private List<(int index, DiaryStickerEntry entry, LevelDataAsset levelData)> pendingAnimations 
+        = new List<(int, DiaryStickerEntry, LevelDataAsset)>();
 
     void Start()
     {
@@ -40,11 +42,18 @@ public class DiaryStickerPageController : MonoBehaviour
         if (pageIndex < 0 || pageIndex >= allLevels.Length) return;
         currentPage = pageIndex;
         var levelData = allLevels[currentPage];
+        // --- 1️⃣ 清空所有 slot 状态，防止翻页残留 ---
+        for (int i = 0; i < maxSlots; i++)
+        {
+            if (i < leftSlots.Count) leftSlots[i].Clear();
+            if (i < rightSlots.Count) rightSlots[i].Clear();
+            if (i < diaryTextSlots.Count) diaryTextSlots[i].Clear();
+        }
 
-        // title: localized name 
+        // --- 2️⃣ 设置标题 ---
         pageTitleText.text = $"{LeanLocalization.GetTranslationText(levelData.titleKey)}";
 
-        // fill slots according to levelData.goalTotal (1..14)
+        // --- 3️⃣ 填充本页 slot ---
         int displayCount = Mathf.Min(levelData.goalIDs.Length, maxSlots);
         for (int i = 0; i < displayCount; i++)
         {
@@ -62,11 +71,11 @@ public class DiaryStickerPageController : MonoBehaviour
             diaryTextSlots[i].Clear();
         }
         // 👉真正开始处理存档状态
-        // restore already placed stickers for this level
+        // --- 4️⃣ 恢复存档状态（已放置贴纸） ---
         LoadPlacedStickersForLevel(levelData);
-        // prepare sticker library (unlocked & not placed)
+        // --- 5️⃣ 准备贴纸库（未放置贴纸） ---
         RefreshStickerLibrary(levelData);
-
+        // --- 6️⃣ 翻页按钮 ---
         prevButton.interactable = currentPage > 0;
         nextButton.interactable = currentPage < allLevels.Length - 1;
     }
@@ -132,7 +141,6 @@ public class DiaryStickerPageController : MonoBehaviour
         if (gd == null || gd.diaryStickers == null || gd.diaryStickers.Count == 0) return;//无贴纸数据时直接结束，避免报错
 
         int displayCount = Mathf.Min(levelData.goalTotal, maxSlots);
-        //var service = DiaryStickerService.Instance;
 
         for (int i = 0; i < displayCount; i++)
         {
@@ -155,12 +163,11 @@ public class DiaryStickerPageController : MonoBehaviour
                     i < levelData.diaryKeys.Length ? levelData.diaryKeys[i] : null);
                 if (!entry.animationPlayed)
                 {
-                    // Coroutine 顺序播放动画
-                    StartCoroutine(PlayPlacedAnimation(i, entry, levelData));
+                    // 不直接播放动画，先加入待办列表
+                    pendingAnimations.Add((i, entry, levelData));
                 }
                 else
                 {
-                    // 直接显示
                     leftSlots[i].ForcePlaced();
                     rightSlots[i].ForceUnlocked(
                         i < levelData.sketchImages.Length ? levelData.sketchImages[i] : null);
@@ -169,21 +176,34 @@ public class DiaryStickerPageController : MonoBehaviour
             }
         }
     }
+
+    private IEnumerator PlayPendingAnimationsAfterUI()
+    {
+        yield return null; // 等待一帧，确保界面完全渲染
+
+        foreach (var item in pendingAnimations)
+        {
+            yield return StartCoroutine(PlayPlacedAnimation(item.index, item.entry, item.levelData));
+        }
+        pendingAnimations.Clear();
+    }
+ 
     private IEnumerator PlayPlacedAnimation(int index, DiaryStickerEntry entry, LevelDataAsset levelData)
     {
+        Debug.Log($"[PlayPlacedAnimation] START index={index}, goalKey={entry.goalKey}");
         // 1️⃣ 左页贴纸动画
         leftSlots[index].ForcePlaced();
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.3f);
 
         // 2️⃣ 右页 sketch 动画
         rightSlots[index].ForceUnlocked(
-            index < levelData.sketchImages.Length ? levelData.sketchImages[index] : null);
+            index < levelData.sketchImages.Length ?levelData.sketchImages[index] : null);
         yield return new WaitForSeconds(1f);
 
         // 3️⃣ 日记文字动画显示
         diaryTextSlots[index].ShowText();
+        Debug.Log($"[PlayPlacedAnimation] END index={index}, goalKey={entry.goalKey}");
 
-        // 记录动画已播放，避免翻页重复
         entry.animationPlayed = true;
     }
 
@@ -193,23 +213,67 @@ public class DiaryStickerPageController : MonoBehaviour
         return DiaryStickerService.Instance.IsPlaced(goalKey);
     }
 
+    // 辅助：在 leftSlots / rightSlots / diaryTextSlots 中找到对应 goalKey 的 slot 索引
+    private int FindSlotIndexByGoalKey(string goalKey)
+    {
+        if (string.IsNullOrEmpty(goalKey)) return -1;
+
+        for (int i = 0; i < leftSlots.Count; i++)
+        {
+            // leftSlots 是 StickerSlot 类型，goalKey 为 BaseDiarySlot.goalKey（public/hidden）
+            if (leftSlots[i] != null && leftSlots[i].goalKey == goalKey)
+                return i;
+        }
+        return -1;
+    }
+
     // 贴上一个贴纸
     public void ApplySticker(string goalKey, string slotId)
     {
-        // 调用 Service 处理存档
+        Debug.Log($"[ApplySticker] goalKey={goalKey}, slotId={slotId}");
+        if (string.IsNullOrEmpty(goalKey))
+        {
+            Debug.LogWarning("[ApplySticker] empty goalKey");
+            return;
+        }
+
+        // 1) 调用 Service 存档
         DiaryStickerService.Instance.PlaceSticker(goalKey, slotId);
 
-        int goalIndex = GetGoalIndexFromKey(goalKey);
-        if (goalIndex >= 0 && goalIndex < rightSlots.Count)
+        // 2) 找到在当前页面对应的 slotIndex（以 leftSlots 列表为基准）
+        int localSlotIndex = FindSlotIndexByGoalKey(goalKey);
+        if (localSlotIndex >= 0 && localSlotIndex < leftSlots.Count)
         {
-            // 左页贴纸显示彩色
-            leftSlots[goalIndex].ForcePlaced();
+            // ✅ 手动触发动画协程，而不是直接 ForcePlaced / ForceUnlocked / ShowText
+            var levelData = allLevels[currentPage];
+            var entry = DiaryStickerService.Instance.GetEntry(goalKey);
+            if (entry != null)
+            {
+                Debug.Log($"[ApplySticker] Starting PlayPlacedAnimation for {goalKey} -> slot#{localSlotIndex}");
+                StartCoroutine(PlayPlacedAnimation(localSlotIndex, entry, levelData));
+            }
+            else
+            {
+                Debug.LogWarning($"[ApplySticker] DiaryStickerEntry not found for {goalKey}, falling back to instant display");
 
-            // 右页 sketch 显示
-            rightSlots[goalIndex].ForceUnlocked();
+                // fallback: 直接显示
+                leftSlots[localSlotIndex].ForcePlaced();
 
-            // 日记文字显示
-            diaryTextSlots[goalIndex].gameObject.SetActive(true);
+                Sprite sketchSprite = null;
+                if (levelData != null && localSlotIndex < levelData.sketchImages.Length)
+                    sketchSprite = levelData.sketchImages[localSlotIndex];
+
+                if (localSlotIndex < rightSlots.Count)
+                    rightSlots[localSlotIndex].ForceUnlocked(sketchSprite);
+
+                if (localSlotIndex < diaryTextSlots.Count)
+                    diaryTextSlots[localSlotIndex].ShowText();
+            }
+        }
+        else
+        {
+            // 如果在当前页面没找到（说明 goalKey belongs to other page），仍然保存到 Service，但不做 UI 立即更新
+            Debug.LogWarning($"[ApplySticker] Could not find local slot for {goalKey}. Saved to service; UI update deferred.");
         }
     }
 
