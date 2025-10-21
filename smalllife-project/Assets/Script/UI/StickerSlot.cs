@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// 继承 BaseDiarySlot：负责显示灰/彩贴纸，并作为 Drop 目标
@@ -22,18 +23,18 @@ public class StickerSlot : BaseDiarySlot, IDropHandler
     public bool IsPlaced() => isPlaced; // 加一个 getter
 
     // static frame-level flag used by draggable to know if any slot accepted drop
-    public static bool dropSuccessThisFrame = false;
+    public static bool dropSuccessThisFrame = false; 
 
-    // Setup with sprites and key
     public void Setup(string key, Sprite icon, Sprite gray, int uislotIndex)
     {
+        Debug.Log($"[Setup Slot] key={key}, index={uislotIndex}");
+        this.goalKey = key; 
         iconSprite = icon;
         graySprite = gray;
         slotIndex = uislotIndex;
         slotId = "Slot" + uislotIndex;// 保存给 DiaryStickerEntry 使用
         isPlaced = false;
         base.Setup(key);// 会调用 IsUnlocked(key) → unlocked
-        //Refresh();
     }
 
     public void Clear()
@@ -85,30 +86,55 @@ public class StickerSlot : BaseDiarySlot, IDropHandler
     // Drop handling: accept StickerDraggable if goalKey matches
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log($"[OnDrop] Triggered on slot {slotId}, goalKey={goalKey}");
         var drag = eventData.pointerDrag?.GetComponent<StickerDraggable>();
-        if (drag == null) return;
+        if (drag == null)
+        {
+            Debug.Log("[OnDrop] drag=null !!");
+            return;
+        }
 
         string draggedGoalKey = drag.stickerId;   // 拖入的贴纸
+        Debug.Log($"[OnDrop] drag.goalKey={draggedGoalKey}, slot.goalKey={goalKey}");
 
-        // ✅ 改用 goalKey 比较
+        // 比较 goalKey
+        if (string.IsNullOrEmpty(goalKey))
+        {
+            Debug.LogWarning("[OnDrop] slot.goalKey is empty — make sure slot was Setup()");
+        }
+
         if (draggedGoalKey == goalKey)
         {
+            Debug.Log("[OnDrop] Goal match! Placing sticker");
+            // UI 状态更新
             isPlaced = true;
             unlocked = true;
             Refresh();
 
-            // 标记成功，避免回弹
+            // 标记成功，避免draggable 回弹
             dropSuccessThisFrame = true;
-
-            // 删除拖拽对象
-            Destroy(drag.gameObject);
 
             // 通知 Controller 保存 slotIndex
             var ctrl = FindObjectOfType<DiaryStickerPageController>();
-            if (ctrl != null)
-            {
-                ctrl.ApplySticker(draggedGoalKey, slotId);// slotId = "Slot" + slotIndex
-            }
+            ctrl?.ApplySticker(draggedGoalKey, slotId);// slotId = "Slot" + slotIndex
+            // 最后销毁 draggable（slot 已经处理显示）
+            // 注意：先销毁 draggable，再保存，会保证 next frame draggable 不再阻挡事件
+            if (drag.gameObject != null)
+                Destroy(drag.gameObject);
         }
+        else
+        {
+            Debug.Log("[OnDrop] GoalKey mismatch, ignoring");
+        }
+    }
+    public void AnimatePlaced()
+    {
+        CanvasGroup cg = GetComponent<CanvasGroup>();
+        if (!cg) cg = gameObject.AddComponent<CanvasGroup>();
+        cg.alpha = 0f;
+        transform.localScale = Vector3.one * 0.8f;
+
+        cg.DOFade(1f, 0.4f);
+        transform.DOScale(1f, 0.4f).SetEase(Ease.OutBack);
     }
 }
