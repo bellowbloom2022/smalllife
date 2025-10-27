@@ -9,6 +9,8 @@ public class Level : MonoBehaviour
 {
     public static Level ins;
     public int currentLevelIndex;
+    [Header("关卡数据")]
+    public LevelDataAsset levelDataAsset;
 
     [Header("UI Buttons")]
     public Button mBtnNext;     // 找到部分目标后显示的按钮
@@ -26,7 +28,10 @@ public class Level : MonoBehaviour
     public int requiredCount;
     public string NextLevelName;
     public TextMeshProUGUI goalText;
+
+    [Header("目标列表")]
     public List<GameObject> goals;
+    private List<Goal> goalComponents = new(); // ✅ 缓存组件引用
 
     [Header("Animation Settings")]
     public float panelStartDelay = 1f;       // 弹窗显示后等待时间
@@ -44,11 +49,12 @@ public class Level : MonoBehaviour
     private void Start()
     {
         // 设置当前关卡索引为 lastLevelIndex
-        if (SaveSystem.GameData.lastLevelIndex != currentLevelIndex){
+        if (SaveSystem.GameData.lastLevelIndex != currentLevelIndex)
+        {
             SaveSystem.GameData.lastLevelIndex = currentLevelIndex;
             SaveSystem.SaveGame();
         }
-        
+
         // 注册按钮点击事件 + 播放音效
         if (mBtnNext != null)
             mBtnNext.onClick.AddListener(OnBtnNextClicked);
@@ -57,11 +63,32 @@ public class Level : MonoBehaviour
         if (proceedButton != null)
             proceedButton.onClick.AddListener(OnProceedButtonClicked);
 
+        // 初始化目标缓存 & 注入 levelData
+        CacheGoals();
+
         // 初始化目标和进度
         LoadGameData();
         LoadAllGoalStates();
+
         if (goalText != null) goalText.text = $"{mCount}/{TotalCount}";
         UpdateLevelGoals();
+    }
+    
+    //  缓存所有 Goal 脚本引用 & 自动注入关卡数据
+    private void CacheGoals()
+    {
+        goalComponents.Clear();
+        foreach (GameObject goalObj in goals)
+        {
+            if (goalObj == null) continue;
+
+            Goal goal = goalObj.GetComponent<Goal>();
+            if (goal != null)
+            {
+                goal.levelData = this.levelDataAsset;
+                goalComponents.Add(goal);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -82,20 +109,23 @@ public class Level : MonoBehaviour
         Debug.Log("Game data loaded successfully.");
     }
 
-    private void LoadAllGoalStates(){
+    private void LoadAllGoalStates()
+    {
         var data = SaveSystem.GameData;
         int foundCount = 0;
 
-        foreach (GameObject goal in goals){
-            Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null){
-                string key = $"{currentLevelIndex}_{goalComponent.GoalID}";
-                if (data.goalProgressMap.TryGetValue(key, out var progress)){
-                    goalComponent.ApplySavedProgress(progress);// 调用 Goal 脚本中的统一加载方法
+        foreach (var goal in goalComponents)
+        {
+            if (goal == null) continue;
+            string key = $"{currentLevelIndex}_{goal.GoalID}";
+                
+            if (data.goalProgressMap.TryGetValue(key, out var progress))
+            {
+                goal.ApplySavedProgress(progress);// 调用 Goal 脚本中的统一加载方法
 
-                    if (progress.step1Completed && progress.step2Completed){
-                        foundCount++;
-                    }
+                if (progress.step1Completed && progress.step2Completed)
+                {
+                    foundCount++;
                 }
             }
         }
@@ -217,15 +247,18 @@ public class Level : MonoBehaviour
     {
         var data = SaveSystem.GameData;
 
-        foreach (GameObject goal in goals){
-            Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null && goalComponent.GoalID != -1 && goalComponent.isFound)
+        foreach (var goal in goalComponents)
+        {
+            if (goal == null || goal.GoalID == -1 || !goal.isFound) continue;
             {
-                string key = currentLevelIndex + "_" + goalComponent.GoalID;
-
                 //使用 goalComponent 的实际 step 状态，避免把 only-step1 的目标误标为 step2Completed
-                GameDataUtils.SetGoalStep(data, currentLevelIndex, goalComponent.GoalID,
-                    goalComponent.step1Completed, goalComponent.step2Completed);
+                GameDataUtils.SetGoalStep(
+                    data,
+                    currentLevelIndex,
+                    goal.GoalID,
+                    goal.step1Completed,
+                    goal.step2Completed
+                );
             }
         }
         data.currentLevel = currentLevelIndex;
@@ -237,22 +270,20 @@ public class Level : MonoBehaviour
         var data = SaveSystem.GameData;
         int foundCount = 0;
 
-        foreach (GameObject goal in goals)
+        foreach (var goal in goalComponents)
         {
-            Goal goalComponent = goal.GetComponent<Goal>();
-            if (goalComponent != null)
+            if (goal == null) continue;
+            string key = $"{currentLevelIndex}_{goal.GoalID}";
+            //string key = currentLevelIndex + "_" + goalComponent.GoalID;
+            if (data.goalProgressMap.TryGetValue(key, out var progress) &&
+                progress.step1Completed && progress.step2Completed)
             {
-                string key = currentLevelIndex + "_" + goalComponent.GoalID;
-                if (data.goalProgressMap.TryGetValue(key, out var progress) && progress.step1Completed && progress.step2Completed)
-                {
-                    UpdateGoalUI(goal);
-                    foundCount++;
-                }
+                UpdateGoalUI(goal.gameObject);
+                foundCount++;
             }
         }
 
         mCount = foundCount;
-
         if (mCount >= requiredCount)
         {
             ShowNextButton();

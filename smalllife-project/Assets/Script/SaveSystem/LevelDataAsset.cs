@@ -19,4 +19,8 @@ public class LevelDataAsset : ScriptableObject
     [Header("速写 & 日记")]
     public Sprite[] sketchImages; // 每个 goal 对应的速写图
     public string[] diaryKeys;          // 每个目标解锁一句日记，对应 LeanLocalization key
+
+    [Header("相册 / Album")]
+    public Sprite[] photoImages;        // 每个 goal 对应的相册照片
+    public string[] photoMonologueKeys; // 每张照片对应的角色碎碎念 (Lean Key)
 }

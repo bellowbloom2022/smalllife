@@ -65,8 +65,9 @@ public class GameData
     // 记录 sidebar 中已出现过的 goalID
     public List<int> apartmentSidebarAppearedGoals = new List<int>();
     // 日记贴纸存档支持模块
-    [Header("Diary Sticker Book")]
     public List<DiaryStickerEntry> diaryStickers;
+    // phoneAlbumpanel 相册数据
+    public PhoneAlbumData phoneAlbum = new PhoneAlbumData();
 
     // ========== 序列化函数 ==========保存前调用（将 Dictionary 转为 List）
     public void SerializeAll()
