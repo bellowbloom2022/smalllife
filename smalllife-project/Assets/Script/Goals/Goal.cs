@@ -4,6 +4,7 @@ using DG.Tweening;
 
 public class Goal : MonoBehaviour
 {
+    public LevelDataAsset levelData;
     [SerializeField] private int goalID; // 唯一标识符
     public int GoalID => goalID;
     public bool isFound;     // 是否已找到
@@ -159,6 +160,17 @@ public class Goal : MonoBehaviour
         AudioHub.Instance.PlayGlobal("goal_found");
         currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
         ShowFirstDialogueOfCurrentStage();
+        if (markStep2)// ✅ 只在真正完成 step2 时才解锁相册
+        {
+            string photoID = $"{levelData.levelID}_{goalID}";
+            SaveSystem.GameData.phoneAlbum.UnlockPhoto(photoID);
+            SaveSystem.SaveGame();
+            Debug.Log($"📱 解锁照片：{photoID}");
+            Debug.Log($"当前相册解锁数：{SaveSystem.GameData.phoneAlbum.unlockedPhotos.Count}");
+            // 🔔 通知 UI 刷新红点
+            Debug.Log("📣 调用 HudManager.RefreshPhoneRedDot()");
+            HudManager.Instance.RefreshPhoneRedDot();
+        }
     }
 
     protected void OnAnim1End()

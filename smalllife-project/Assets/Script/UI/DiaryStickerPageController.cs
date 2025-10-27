@@ -98,7 +98,7 @@ public class DiaryStickerPageController : MonoBehaviour
             bool unlocked = IsGoalUnlocked(levelData.levelID, levelData.goalIDs[i]);
             // ✅ 使用 slotIndex 判断已放置
             bool placed = DiaryStickerService.Instance.GetEntry(goalKey)?.slotIndex >= 0;
-            Debug.Log($"[RefreshStickerLibrary] goal {goalKey}, unlocked={unlocked}, placed={placed}");
+            //Debug.Log($"[RefreshStickerLibrary] goal {goalKey}, unlocked={unlocked}, placed={placed}");
 
             if (unlocked && !placed)
             {
