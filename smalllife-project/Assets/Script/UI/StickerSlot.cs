@@ -126,6 +126,8 @@ public class StickerSlot : BaseDiarySlot, IDropHandler
         {
             Debug.Log("[OnDrop] GoalKey mismatch, ignoring");
         }
+        AudioHub.Instance.PlayGlobal("sticker-put-on");
+        AudioHub.Instance.PlayGlobal("sticker-writing");
     }
     public void AnimatePlaced()
     {

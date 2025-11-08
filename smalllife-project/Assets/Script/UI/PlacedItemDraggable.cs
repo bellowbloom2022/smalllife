@@ -22,6 +22,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
     public void OnBeginDrag(PointerEventData eventData)
     {
         Debug.Log($"[PlacedItemDraggable] OnBeginDrag alpha=0.7, name={gameObject.name}");
+        AudioHub.Instance.PlayGlobal("onlyclick");
 
         startPosition = transform.position;
         startParent = transform.parent;
@@ -79,6 +80,7 @@ public class PlacedItemDraggable : MonoBehaviour, IBeginDragHandler, IDragHandle
         {
             // 回到原位
             transform.position = startPosition;
+            AudioHub.Instance.PlayGlobal("back_confirm");
         }
         // 清理所有高亮/预览
         foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())

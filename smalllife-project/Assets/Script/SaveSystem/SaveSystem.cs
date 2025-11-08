@@ -55,7 +55,6 @@ public class SaveSystem : MonoBehaviour
         try
         {
             GameData.SerializeGoalData(); // 转换 Dictionary 为 List
-
             GameData.version = CURRENT_SAVE_VERSION;
             string json = JsonUtility.ToJson(GameData, true);//true: 格式化输出，便于调试
             File.WriteAllText(savePath, json);
@@ -78,7 +77,6 @@ public class SaveSystem : MonoBehaviour
                 string json = File.ReadAllText(savePath);
                 gameData = JsonUtility.FromJson<GameData>(json);
                 gameData = SaveDataUpdater.UpdateSaveData(gameData);
-
                 gameData.DeserializeGoalData(); // 转换 List 为 Dictionary
                 Debug.Log("Game data loaded successfully.");
             }
@@ -112,19 +110,40 @@ public class SaveSystem : MonoBehaviour
     }
 
     //只有目标数增加时才更新存档
-    public static void UpdateLevelStar(int levelIndex, int newValue){
-        if(gameData == null)
-           LoadGame();
+    public static void UpdateLevelStar(int levelIndex, int newValue)
+    {
+        if (gameData == null)
+            LoadGame();
 
-        if (gameData.levelStars.ContainsKey(levelIndex)){
-            if(gameData.levelStars[levelIndex] < newValue){
+        if (gameData.levelStars.ContainsKey(levelIndex))
+        {
+            if (gameData.levelStars[levelIndex] < newValue)
+            {
                 gameData.levelStars[levelIndex] = newValue;
                 SaveGame();
             }
         }
-        else{
+        else
+        {
             gameData.levelStars[levelIndex] = newValue;
             SaveGame();
         }
+    }
+    public static void MarkNewDiaryContent(bool val)
+    {
+        if (GameData == null)
+            LoadGame();
+
+        GameData.hasNewDiaryContent = val;
+        Debug.Log($"[SaveSystem] Diary highlight set to: {val}");
+        SaveGame();
+    }
+
+    public static bool HasNewDiaryContent()
+    {
+        if (GameData == null)
+            LoadGame();
+
+        return GameData.hasNewDiaryContent;
     }
 }
