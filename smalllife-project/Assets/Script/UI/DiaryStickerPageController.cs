@@ -32,11 +32,31 @@ public class DiaryStickerPageController : MonoBehaviour
 
     void Start()
     {
-        prevButton.onClick.AddListener(() => LoadPage(currentPage - 1));
-        nextButton.onClick.AddListener(() => LoadPage(currentPage + 1));
+        prevButton.onClick.AddListener(OnPrevButtonClicked);
+        nextButton.onClick.AddListener(OnNextButtonClicked);
         LoadPage(0);
     }
+    
+        private void OnPrevButtonClicked()
+    {
+        int targetPage = currentPage - 1;
+        if (targetPage >= 0)
+        {
+            AudioHub.Instance.PlayGlobal("howtoplay-bookflip"); // 🔊 播放翻页音效
+            LoadPage(targetPage);
+        }
+    }
 
+    private void OnNextButtonClicked()
+    {
+        int targetPage = currentPage + 1;
+        if (targetPage < allLevels.Length)
+        {
+            AudioHub.Instance.PlayGlobal("howtoplay-bookflip"); // 🔊 播放翻页音效
+            LoadPage(targetPage);
+        }
+    }
+    
     public void LoadPage(int pageIndex)
     {
         if (pageIndex < 0 || pageIndex >= allLevels.Length) return;

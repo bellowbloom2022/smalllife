@@ -17,9 +17,8 @@ public class BGMController : MonoBehaviour
     void Awake()
     {
         //¥” PlayerPrefs ∂¡»° BGM “Ù¡ø
-        originalVolume = PlayerPrefs.GetFloat("Volume_BGM", 1f);
         audioSource = GetComponent<AudioSource>();
-        originalVolume = audioSource.volume;
+        originalVolume = PlayerPrefs.GetFloat("Volume_BGM", audioSource.volume);
 
         if (playOnAwakeWithFadeIn)
         {

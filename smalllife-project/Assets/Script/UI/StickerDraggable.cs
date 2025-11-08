@@ -37,6 +37,7 @@ public class StickerDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        AudioHub.Instance.PlayGlobal("sticker-lift");
         // save original parent & pos
         originalParent = rect.parent;
         originalAnchoredPos = rect.anchoredPosition;

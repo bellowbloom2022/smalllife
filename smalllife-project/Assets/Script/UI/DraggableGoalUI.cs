@@ -101,6 +101,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
     }
     public void OnBeginDrag(PointerEventData eventData)
     {
+        AudioHub.Instance.PlayGlobal("onlyclick");
         if (controller == null || !interactable) return;
         // 如果是新获得 → 第一次拖拽就清除提示
         if (isNewItem)
@@ -218,7 +219,7 @@ public class DraggableGoalUI : MonoBehaviour, IBeginDragHandler, IDragHandler, I
             // 放置失败，回到 sidebar
             Debug.Log("[DraggableGoalUI] 放置失败，回到 sidebar");
             draggingItem.ReturnToSidebar();
-            AudioHub.Instance.PlayGlobal("click_cancel");
+            AudioHub.Instance.PlayGlobal("back_confirm");
         }
         // 清理所有高亮/预览
         foreach (var area in ApartmentDragHandler.Instance.GetAllAreas())

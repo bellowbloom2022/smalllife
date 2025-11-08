@@ -64,6 +64,8 @@ public class GameData
     public HashSet<int> appearedSidebarGoals = new HashSet<int>();
     // 记录 sidebar 中已出现过的 goalID
     public List<int> apartmentSidebarAppearedGoals = new List<int>();
+    // 用于保存日记本高亮状态
+    public bool hasNewDiaryContent; 
     // 日记贴纸存档支持模块
     public List<DiaryStickerEntry> diaryStickers;
     // phoneAlbumpanel 相册数据
