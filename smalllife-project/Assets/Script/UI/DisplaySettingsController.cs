@@ -23,7 +23,12 @@ public class DisplaySettingsController : MonoBehaviour
         new Vector2Int(1280, 720),
         new Vector2Int(1366, 768),
         new Vector2Int(1600, 900),
+        new Vector2Int(1728, 1117),
         new Vector2Int(1920, 1080), // 可选但非默认
+        new Vector2Int(2336, 1460),
+        new Vector2Int(2560, 1600),
+        new Vector2Int(2992, 1870),
+        new Vector2Int(3456, 2160),
     };
     private int defaultResolutionIndex = 0;
     private int defaultModeIndex = 0; // 0: fullscreen, 1: windowed
