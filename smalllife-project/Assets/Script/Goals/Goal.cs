@@ -5,6 +5,9 @@ using DG.Tweening;
 public class Goal : MonoBehaviour
 {
     public LevelDataAsset levelData;
+    [Header("Step Config")]
+    public StepConfig step1Config;
+    public StepConfig step2Config;
     [SerializeField] private int goalID; // 唯一标识符
     public int GoalID => goalID;
     public bool isFound;     // 是否已找到
@@ -12,14 +15,8 @@ public class Goal : MonoBehaviour
     public GameObject mNovelPosStart;
     public GameObject mNovelPosMid;
     public GameObject mNovelPos;
-    public GameObject mCamPosA;
-    public GameObject mCamPosB;
     public Canvas mCanvas;
     private bool mIsTriggered;
-    public bool mMoveCamera;
-    public float mCamMoveSpeedA = 1f;
-    public float mCamMoveSpeedB = 1f;
-
     private CameraController cameraController;
 
     // 三个阶段的交互配置
@@ -38,9 +35,10 @@ public class Goal : MonoBehaviour
     protected enum Stage { PreAnim1, PostAnim1, PostAnim2 }
     protected Stage currentStage;
 
-    private Animator animator;
-    public bool step1Completed;
-    public bool step2Completed;
+    [Header("Animator")]
+    [SerializeField] private Animator animator;
+    public bool step1Completed = false;
+    public bool step2Completed = false;
 
 
     protected virtual void Start()
@@ -48,6 +46,23 @@ public class Goal : MonoBehaviour
         cameraController = FindObjectOfType<CameraController>();
         currentStage = Stage.PreAnim1;
         SFXZone.TryRegister(GetComponent<AudioSource>());
+    }
+    public void OnClicked()
+    {
+        // 防止 Step2 期间重复点击（可选但推荐）
+        if (step2Completed)
+            return;
+
+        if (!step1Completed)
+        {
+            PlayStep1();
+            return;
+        }
+        else if (!step2Completed)
+        {
+            PlayStep2();
+            return;
+        }
     }
 
     public void ApplySavedProgress(GoalProgress progress)
@@ -173,36 +188,135 @@ public class Goal : MonoBehaviour
             HudManager.Instance.RefreshPhoneRedDot();
         }
     }
-
-    protected void OnAnim1End()
+    private void PlayStep1()
     {
-        this.GetComponent<Animator>().ResetTrigger("click");
+        if (animator == null)
+        {
+            Debug.LogError("[PlayStep1] Animator is null");
+            return;
+        }
+        Debug.Log("[PlayStep1]");
+        animator.ResetTrigger("step2");
+        if (animator != null)
+            animator.SetTrigger("step1");
+
+        BeginStep1(); // 你已有的方法：镜头 / 聚焦 / InputLock
+    }
+
+    private void PlayStep2()
+    {
+        if (animator == null)
+        {
+            Debug.LogError("[PlayStep2] Animator is null");
+            return;
+        }
+        Debug.Log("[PlayStep2]");
+        animator.ResetTrigger("step1");
+
+        if (animator != null)
+            animator.SetTrigger("step2");
+
+        BeginStep2();
+    }
+
+    public void BeginStep1()
+    {
+        ExecuteStep(step1Config);
+    }
+
+    public void BeginStep2()
+    {
+        ExecuteStep(step2Config);
+    }
+    protected void ExecuteStep(StepConfig config)
+    {
+        if (config == null) return;
+
+        if (config.lockInput)
+            InputRouter.Instance.LockInput();
+
+        if (config.useFocus && config.focusTarget != null)
+        {
+            FocusMaskController.Instance.Show(
+                config.focusTarget,
+                config.focusRadius,
+                config.focusShowDuration
+            );
+        }
+
+        if (config.moveCamera && config.cameraTarget != null)
+        {
+            DOVirtual.DelayedCall(config.cameraDelay, () =>
+            {
+                Camera.main
+                    .GetComponent<CameraController>()
+                    .MoveCameraToPositionByDuration(
+                        config.cameraTarget.position,
+                        config.cameraDuration
+                    );
+            });
+        }
+    }
+    public void OnAnimEnd()
+    {
+        // Step1 动画刚播完
+        if (!step1Completed)
+        {
+            HandleStep1AnimEnd();
+            return;
+        }
+
+        // Step2 动画刚播完
+        if (step1Completed && !step2Completed)
+        {
+            HandleStep2AnimEnd();
+            return;
+        }
+    }  
+
+    protected void EndStep(StepConfig config)
+    {
+        if (config == null) return;
+
+        if (config.useFocus)
+            FocusMaskController.Instance.Hide(config.focusHideDuration);
+
+        if (config.lockInput)
+            InputRouter.Instance.UnlockInput();
+    }
+
+    protected void HandleStep1AnimEnd()
+    {
+        EndStep(step1Config);
+        //this.GetComponent<Animator>().ResetTrigger("click");
+        Animator anim = GetComponent<Animator>();
+        anim.ResetTrigger("step1"); // 对齐 Step 系统
         foreach (BoxCollider cli in this.GetComponents<BoxCollider>())
         {
             cli.enabled = !cli.enabled;
         }
-
-        if (cameraController != null && mMoveCamera)
-        {
-            cameraController.MoveCameraToPosition(mCamPosA.transform.position, mCamMoveSpeedA);
-        }
         AudioHub.Instance.PlayGlobal("goal_step1");
+        step1Completed = true;
 
         currentStage = Stage.PostAnim1;
-        GameDataUtils.SetGoalStep(SaveSystem.GameData, Level.ins.currentLevelIndex, goalID, true, false);
+
+        GameDataUtils.SetGoalStep(
+            SaveSystem.GameData, 
+            Level.ins.currentLevelIndex, 
+            goalID, 
+            true, 
+            false
+        );
         SaveSystem.SaveGame();
 
         ShowFirstDialogueOfCurrentStage();
     }
 
-    protected void OnAnim2End()
+    protected void HandleStep2AnimEnd()
     {
+        EndStep(step2Config);
         if (!mIsTriggered)
         {
-            if (cameraController != null && mMoveCamera)
-            {
-                cameraController.MoveCameraToPosition(mCamPosB.transform.position, mCamMoveSpeedB);
-            }
             mIsTriggered = true;
             TriggerCollectAnimation(true);
         }

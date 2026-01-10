@@ -75,4 +75,25 @@ public class CameraController : MonoBehaviour
 
         transform.position = targetPos;
     }
+    public void MoveCameraToPositionByDuration(Vector3 targetPos, float duration)
+    {
+        StopAllCoroutines();
+        StartCoroutine(MoveCameraByDurationCoroutine(targetPos, duration));
+    }
+
+    IEnumerator MoveCameraByDurationCoroutine(Vector3 targetPos, float duration)
+    {
+        Vector3 start = transform.position;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / duration;
+            float eased = Mathf.SmoothStep(0f, 1f, t);
+            transform.position = Vector3.Lerp(start, targetPos, eased);
+            yield return null;
+        }
+
+        transform.position = targetPos;
+    }
 }

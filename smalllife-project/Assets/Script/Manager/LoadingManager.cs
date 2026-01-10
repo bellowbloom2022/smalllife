@@ -19,7 +19,7 @@ public class LoadingManager : MonoBehaviour
             AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
             operation.allowSceneActivation = false;
 
-            yield return new WaitForSeconds(2f); // 强制等待 2 秒
+            yield return new WaitForSeconds(5f); // 强制等待 2 秒
 
             operation.allowSceneActivation = true; // 激活目标场景
         }
