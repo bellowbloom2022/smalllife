@@ -23,36 +23,49 @@ public class SelectController : MonoBehaviour
     
     void HandleClick(Vector3 screenPos)
     {
-        // ��Ļ����ת����
         cameraRay = Camera.main.ScreenPointToRay(screenPos);
         Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.red, 10);
 
         if (Physics.Raycast(cameraRay, out cameraHit, 1000))
         {
-            GameObject go = cameraHit.transform.gameObject;
-            Animator anim = go.GetComponent<Animator>();
+            GameObject hitObj = cameraHit.transform.gameObject;
+
+            // ===== ① 优先处理 Goal（新增）=====
+            Goal goal = hitObj.GetComponentInParent<Goal>();
+            if (goal != null)
+            {
+                Debug.Log(hitObj.name + " Goal Click");
+                goal.OnClicked();
+
+                // 👉 保留你原有的点击计数逻辑
+                interactAnimationsClickedCount++;
+                if (interactAnimationsClickedCount >= 2)
+                    interactAnimationsClickedCount = 2;
+
+                // 👉 保留 HintMark 隐藏
+                HintMarkController hintMark = hitObj.GetComponentInChildren<HintMarkController>();
+                if (hintMark != null) hintMark.HideHint();
+
+                return; // ⚠️ 非常重要：Goal 不再往下走 Animator
+            }
+
+            // ===== ② 普通物体（原逻辑，基本不动）=====
+            Animator anim = hitObj.GetComponent<Animator>();
             if (anim)
             {
-                if (anim.GetCurrentAnimatorStateInfo(0).IsName("A0_lunchbox_loop"))
-                {
-                    Debug.Log(go.name + "click1");
-                    anim.SetTrigger("click1");
-                }
-                else
-                {
-                    Debug.Log(go.name + "click");
-                    anim.SetTrigger("click");
-                }
+                Debug.Log(hitObj.name + " click");
+                anim.SetTrigger("click");
 
                 interactAnimationsClickedCount++;
                 if (interactAnimationsClickedCount >= 2)
                     interactAnimationsClickedCount = 2;
 
-                HintMarkController hintMark = go.GetComponentInChildren<HintMarkController>();
+                HintMarkController hintMark = hitObj.GetComponentInChildren<HintMarkController>();
                 if (hintMark != null) hintMark.HideHint();
             }
         }
     }
+
 
     public bool InteractAnimationsClicked
     {

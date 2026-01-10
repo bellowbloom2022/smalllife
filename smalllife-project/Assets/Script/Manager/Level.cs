@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -8,37 +7,28 @@ using UnityEngine.UI;
 public class Level : MonoBehaviour
 {
     public static Level ins;
+
+    [Header("Level Info")]
     public int currentLevelIndex;
-    [Header("关卡数据")]
-    public LevelDataAsset levelDataAsset;
-
-    [Header("UI Buttons")]
-    public Button mBtnNext;     // 找到部分目标后显示的按钮
-    public Button mBtnNext1;    // 找到全部目标后显示的按钮
-    public Button apartmentButton; // “跳转到公寓界面”按钮
-    public Button proceedButton;  // “确认跳转下一关”按钮
-
-    [Header("congrats panel prefabs")]
-    public GameObject CongratulatePanel_CelebratePrefab; 
-    private BasePanel celebratePanelInstance;
-    private CelebratePanelController celebrateController;
-
-    [Header("Game Logic")]
-    public int TotalCount;
-    public int requiredCount;
-    public string NextLevelName;
-    public TextMeshProUGUI goalText;
-
-    [Header("目标列表")]
+    
+    [Header("Goals")]
     public List<GameObject> goals;
     private List<Goal> goalComponents = new(); // ✅ 缓存组件引用
 
-    [Header("Animation Settings")]
-    public float panelStartDelay = 1f;       // 弹窗显示后等待时间
-    public float stepDelay = 0.15f;          // 每次数字间隔
-    public float scaleFactor = 1.2f;         // 放大倍率
+    [Header("关卡数据")]
+    public LevelDataAsset levelDataAsset;
 
+    [Header("UI")]
+    public Button nextButton;    // 找到全部目标后显示的按钮
+    public TextMeshProUGUI goalText;
+
+    [Header("Count")]
+    public int TotalCount;
     private int mCount = 0;
+
+    [Header("Scene")]
+    public SceneChanger sceneChanger;
+
     private GameData currentGameData;
 
     private void Awake()
@@ -55,29 +45,27 @@ public class Level : MonoBehaviour
             SaveSystem.SaveGame();
         }
 
-        // 注册按钮点击事件 + 播放音效
-        if (mBtnNext != null)
-            mBtnNext.onClick.AddListener(OnBtnNextClicked);
-        if (mBtnNext1 != null)
-            mBtnNext1.onClick.AddListener(OnBtnNextClicked);
-        if (proceedButton != null)
-            proceedButton.onClick.AddListener(OnProceedButtonClicked);
-
         // 初始化目标缓存 & 注入 levelData
         CacheGoals();
-
         // 初始化目标和进度
         LoadGameData();
         LoadAllGoalStates();
+        UpdateGoalText();
+        nextButton.gameObject.SetActive(false);
+        nextButton.onClick.AddListener(OnNextButtonClicked);
 
-        if (goalText != null) goalText.text = $"{mCount}/{TotalCount}";
         UpdateLevelGoals();
+    }
+    private void OnDestroy()
+    {
+        nextButton.onClick.RemoveListener(OnNextButtonClicked);
     }
     
     //  缓存所有 Goal 脚本引用 & 自动注入关卡数据
     private void CacheGoals()
     {
         goalComponents.Clear();
+
         foreach (GameObject goalObj in goals)
         {
             if (goalObj == null) continue;
@@ -91,17 +79,6 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
-    {
-        // 注销按钮点击事件，防止内存泄漏
-        if (mBtnNext != null)
-            mBtnNext.onClick.RemoveListener(OnBtnNextClicked);
-        if (mBtnNext1 != null)
-            mBtnNext1.onClick.RemoveListener(OnBtnNextClicked);
-        if (proceedButton != null)
-            proceedButton.onClick.RemoveListener(OnProceedButtonClicked);
-    }
-
     private void LoadGameData()
     {
         SaveSystem.LoadGame(); // 仅调用加载方法
@@ -111,32 +88,29 @@ public class Level : MonoBehaviour
 
     private void LoadAllGoalStates()
     {
-        var data = SaveSystem.GameData;
-        int foundCount = 0;
+        int found = 0;
 
         foreach (var goal in goalComponents)
         {
-            if (goal == null) continue;
             string key = $"{currentLevelIndex}_{goal.GoalID}";
-                
-            if (data.goalProgressMap.TryGetValue(key, out var progress))
+
+            if (SaveSystem.GameData.goalProgressMap.TryGetValue(key, out var progress))
             {
-                goal.ApplySavedProgress(progress);// 调用 Goal 脚本中的统一加载方法
+                goal.ApplySavedProgress(progress);
 
                 if (progress.step1Completed && progress.step2Completed)
-                {
-                    foundCount++;
-                }
+                    found++;
             }
         }
-        mCount = foundCount;
+
+        mCount = found;
     }
 
     public void AddCount()
     {
         ++mCount;
 
-        if (mCount >= requiredCount)
+        if (mCount >= TotalCount)
         {
             // 改为使用 GameData 标记关卡通关状态
             string sceneName = SceneManager.GetActiveScene().name;
@@ -154,28 +128,21 @@ public class Level : MonoBehaviour
                 SaveSystem.GameData.completedLevels[levelID] = true;
                 SaveSystem.SaveGame();  // 立即保存
             }
-
-            //当目标数为1且requireCount也是1时，直接显示AllGoals反馈
-            if (TotalCount == 1 && requiredCount == 1)
-            {
-                ShowAllGoalsFoundFeedback();
-            }
-            else
-            {
-                ShowNextButton();
-            }
+            nextButton.gameObject.SetActive(true);
         }
-
-        if (mCount == TotalCount){
-            ShowAllGoalsFoundFeedback();
-        }
-        StartCoroutine(DelaySave());
+        SaveLevelData();
+        ShowAllGoalsFoundFeedback();
+    }
+    private void UpdateGoalText()
+    {
+        if (goalText != null)
+            goalText.text = $"{mCount}/{TotalCount}";
     }
 
     private void ShowNextButton()
     {
-        if (mBtnNext != null)
-            mBtnNext.gameObject.SetActive(true);
+        if (nextButton != null)
+            nextButton.gameObject.SetActive(true);
         //通关时存入完成的关卡ID
         string sceneName = SceneManager.GetActiveScene().name;
         LevelDataAsset data = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneName}");
@@ -189,12 +156,7 @@ public class Level : MonoBehaviour
     }
 
     private void ShowAllGoalsFoundFeedback()
-    {
-        if (mBtnNext != null)
-            mBtnNext.gameObject.SetActive(false);
-        if (mBtnNext1 != null)
-            mBtnNext1.gameObject.SetActive(true);
-            
+    {   
         // ✅ 添加 checkmark 记录逻辑
         string levelID = SceneManager.GetActiveScene().name;
         var data = SaveSystem.GameData;
@@ -207,40 +169,14 @@ public class Level : MonoBehaviour
         }
     }
 
-    public void OnBtnNextClicked()
+    public void OnNextButtonClicked()
     {
-        AudioHub.Instance.PlayGlobal("click_confirm");
-        if (celebrateController == null)
+        if (sceneChanger == null)
         {
-            GameObject obj = Instantiate(CongratulatePanel_CelebratePrefab, GameObject.Find("Canvas").transform);
-            celebratePanelInstance = obj.GetComponent<BasePanel>();
-            celebrateController = obj.GetComponent<CelebratePanelController>();
-            if (celebrateController != null)
-            {
-                celebrateController.panelStartDelay = panelStartDelay;
-                celebrateController.stepDelay = stepDelay;
-                celebrateController.scaleFactor = scaleFactor;
-            }
+            Debug.LogError("SceneChanger not assigned in Level.");
+            return;
         }
-        if (celebratePanelInstance != null)
-        {
-            celebratePanelInstance.Show();
-            celebrateController.ShowAndPlay(mCount, TotalCount);
-        }
-    }
-    public void OnProceedButtonClicked()
-    {
-        AudioHub.Instance.PlayGlobal("click_confirm");
-        SceneManager.LoadScene(NextLevelName);
-    }
-    public void OnApartmentButtonClicked()
-    {
-        AudioHub.Instance.PlayGlobal("click_confirm");
-    }
-    private IEnumerator DelaySave()
-    {
-        yield return new WaitForEndOfFrame();
-        SaveLevelData();
+        sceneChanger.ChangeScene();
     }
 
     public void SaveLevelData()
@@ -274,7 +210,6 @@ public class Level : MonoBehaviour
         {
             if (goal == null) continue;
             string key = $"{currentLevelIndex}_{goal.GoalID}";
-            //string key = currentLevelIndex + "_" + goalComponent.GoalID;
             if (data.goalProgressMap.TryGetValue(key, out var progress) &&
                 progress.step1Completed && progress.step2Completed)
             {
@@ -282,9 +217,8 @@ public class Level : MonoBehaviour
                 foundCount++;
             }
         }
-
         mCount = foundCount;
-        if (mCount >= requiredCount)
+        if (mCount >= TotalCount)
         {
             ShowNextButton();
         }

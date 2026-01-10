@@ -12,7 +12,7 @@ public class SceneChanger : MonoBehaviour
 
     [Header("BGM Fade Settings")]
     public bool useBGMFadeOut = false;      // 是否使用音乐淡出
-    private float fadeOutDuration = 2f;   // 音乐淡出时间
+    private float fadeOutDuration = 0.5f;   // 音乐淡出时间
 
     public void ChangeScene()
     {
