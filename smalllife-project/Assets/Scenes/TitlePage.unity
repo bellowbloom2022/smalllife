@@ -1842,6 +1842,61 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &465173833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 465173834}
+  - component: {fileID: 465173835}
+  m_Layer: 0
+  m_Name: control-hint2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &465173834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465173833}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 822914499}
+  m_RootOrder: 30
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &465173835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 465173833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Zoom in and out of the canvas
+    Object: {fileID: 0}
+  - Language: Chinese
+    Text: "\u653E\u5927\u7F29\u5C0F"
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u30AD\u30E3\u30F3\u30D0\u30B9\u3092\u62E1\u5927\u307E\u305F\u306F\u7E2E\u5C0F"
+    Object: {fileID: 0}
 --- !u!1 &523630665
 GameObject:
   m_ObjectHideFlags: 0
@@ -2733,6 +2788,9 @@ Transform:
   - {fileID: 1769911624}
   - {fileID: 1366199756}
   - {fileID: 1645534183}
+  - {fileID: 1593621710}
+  - {fileID: 465173834}
+  - {fileID: 1155654836}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3892,6 +3950,61 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1155654835
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1155654836}
+  - component: {fileID: 1155654837}
+  m_Layer: 0
+  m_Name: control-hint3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1155654836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155654835}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 822914499}
+  m_RootOrder: 31
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1155654837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155654835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Move canvas
+    Object: {fileID: 0}
+  - Language: Chinese
+    Text: "\u79FB\u52A8\u753B\u5E03"
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u30AD\u30E3\u30F3\u30D0\u30B9\u3092\u79FB\u52D5"
+    Object: {fileID: 0}
 --- !u!1 &1161583031
 GameObject:
   m_ObjectHideFlags: 0
@@ -4629,13 +4742,13 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: 'SmallLife-SH v0.0.10 (Build: 2025.12.19)'
+    Text: 'SmallLife-SH v0.0.12 (Build: 2026.01.22)'
     Object: {fileID: 0}
   - Language: Chinese
-    Text: 'SmallLife-SH v0.0.10 (Build: 2025.12.19)'
+    Text: 'SmallLife-SH v0.0.12 (Build: 2026.01.22)'
     Object: {fileID: 0}
   - Language: Japanese
-    Text: 'SmallLife-SH v0.0.10 (Build: 2025.12.19)'
+    Text: 'SmallLife-SH v0.0.12 (Build: 2026.01.22)'
     Object: {fileID: 0}
 --- !u!1 &1297002801
 GameObject:
@@ -5671,6 +5784,61 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1593621709
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1593621710}
+  - component: {fileID: 1593621711}
+  m_Layer: 0
+  m_Name: control-hint1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1593621710
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593621709}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 822914499}
+  m_RootOrder: 29
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1593621711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1593621709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb15fa0e7301ff849bf4d6dcede7c12b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: 0
+  entries:
+  - Language: English
+    Text: Interact with objects
+    Object: {fileID: 0}
+  - Language: Chinese
+    Text: "\u4E0E\u7269\u4F53\u4E92\u52A8"
+    Object: {fileID: 0}
+  - Language: Japanese
+    Text: "\u4EBA\u7269\u3084\u7269\u3068\u30A4\u30F3\u30BF\u30E9\u30AF\u30C6\u30A3\u30D6"
+    Object: {fileID: 0}
 --- !u!1 &1640965545
 GameObject:
   m_ObjectHideFlags: 0
@@ -7141,7 +7309,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'SmallLife-SH v0.0.10 (Build: 2025.12.19)'
+  m_Text: 'SmallLife-SH v0.0.12 (Build: 2026.01.22)'
 --- !u!1 &1953289980
 GameObject:
   m_ObjectHideFlags: 0
@@ -7609,6 +7777,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 523630667}
     m_Modifications:
+    - target: {fileID: 1495728261125660832, guid: 8fa1ad58a2cfa4d4bba0462aa91548a0, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 83edcd71188644086b36e49be8ca139d, type: 3}
     - target: {fileID: 1495728261125660834, guid: 8fa1ad58a2cfa4d4bba0462aa91548a0, type: 3}
       propertyPath: m_Name
       value: BGM
