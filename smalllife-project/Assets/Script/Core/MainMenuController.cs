@@ -98,7 +98,7 @@ public class MainMenuController : MonoBehaviour
     public void ConfirmStartNewGame()
     {
         SaveSystem.ClearData();
-        SceneManager.LoadScene("IntroScene");
+        SceneManager.LoadScene("IntroScene2");
     }
 
     public void CancelStartNewGame()
@@ -108,7 +108,7 @@ public class MainMenuController : MonoBehaviour
 
     void StartNewGame()
     {
-        SceneManager.LoadScene("IntroScene");
+        SceneManager.LoadScene("IntroScene2");
     }
 
     void ContinueGame()

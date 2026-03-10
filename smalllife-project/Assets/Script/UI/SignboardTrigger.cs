@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class SignboardTrigger : MonoBehaviour
 {
-    public HowToPlayPanel howToPlayPanel; // 拖入 Canvas 中的 howToPlayPanel
+    public InfoPanelController infoPanel; // 拖入 Canvas 中的 InfoPanel
 
     private void OnMouseUp()
     {
-        if (howToPlayPanel != null && !howToPlayPanel.IsShown)
+        if (infoPanel != null && !infoPanel.IsShown)
         {
-            howToPlayPanel.Show();
+            infoPanel.Show();
         }
     }
 }
