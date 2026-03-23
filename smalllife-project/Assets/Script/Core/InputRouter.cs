@@ -15,6 +15,9 @@ public class InputRouter : MonoBehaviour
 
     private string dragMode = "right"; // "left" or "right"
     public bool InputLocked { get; private set; } = false;
+    
+    // 本次拖拽是否从 UI 区域开始；如果是，则不转发场景拖拽
+    private bool dragStartedOverUI = false;
 
 
     void Awake()
@@ -34,13 +37,24 @@ public class InputRouter : MonoBehaviour
         // === 拖拽检测 ===
         int dragBtn = dragMode == "left" ? 0 : 1;
         if (Input.GetMouseButtonDown(dragBtn))
+        {
             lastMousePos = Input.mousePosition;
+            dragStartedOverUI = UIBlockChecker.IsPointerOverUI();
+        }
 
         if (Input.GetMouseButton(dragBtn))
         {
             Vector3 delta = Input.mousePosition - lastMousePos;
             lastMousePos = Input.mousePosition;
+
+            // 只有拖拽起点不在 UI 上，才允许驱动场景拖拽
+            if (!dragStartedOverUI)
             OnDrag?.Invoke(delta);
+        }
+        
+        if (Input.GetMouseButtonUp(dragBtn))
+        {
+            dragStartedOverUI = false;
         }
 
         // === 点击检测 ===
@@ -48,15 +62,13 @@ public class InputRouter : MonoBehaviour
         {
             lastClickTime = now;
 
-            // 检查是否点在 UI 上
+            // 点在 UI 上：不向场景派发点击，避免穿透
             bool isOverUI = UIBlockChecker.IsPointerOverUI();
+            if (isOverUI)
+                return;
 
-            if (!isOverUI)
-                OnBlankClick?.Invoke(); // 通知：点击空白区域
-
+            OnBlankClick?.Invoke(); // 点击空白区域（非 UI）
             OnClick?.Invoke(Input.mousePosition);
-
-            //Debug.Log("click!");
         }
     }
 

@@ -129,21 +129,4 @@ public class SaveSystem : MonoBehaviour
             SaveGame();
         }
     }
-    public static void MarkNewDiaryContent(bool val)
-    {
-        if (GameData == null)
-            LoadGame();
-
-        GameData.hasNewDiaryContent = val;
-        Debug.Log($"[SaveSystem] Diary highlight set to: {val}");
-        SaveGame();
-    }
-
-    public static bool HasNewDiaryContent()
-    {
-        if (GameData == null)
-            LoadGame();
-
-        return GameData.hasNewDiaryContent;
-    }
 }

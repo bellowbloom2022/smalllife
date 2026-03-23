@@ -17,6 +17,13 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     [Header("Lifecycle")]
     [SerializeField] private bool autoPlayOnEnable = false;
 
+    [Header("Trigger Visual")]
+    [SerializeField] private Color normalTextColor = Color.black;
+    [SerializeField] private Color triggerAccentColor = new Color32(0xCC, 0x66, 0x66, 0xFF);
+    [SerializeField] private bool resetToNormalColorOnFinish = true;
+    [SerializeField] private bool boldOnTriggerFinished = true;
+    [SerializeField] private bool italicOnTriggerFinished = false;
+
     private Text textComponent;
     private AudioSource audioSource;
     private string fullText;
@@ -26,8 +33,19 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private ContentSizeFitter contentSizeFitter;
 
     private Action onFinishedCallback;
+    private FontStyle baseFontStyle;
+    private bool useTriggerVisual;
 
     public bool IsTyping => typingCoroutine != null;
+
+    public void ConfigureTriggerVisual(Color normalColor, Color accentColor, bool resetColorOnFinish, bool finalBold, bool finalItalic)
+    {
+        normalTextColor = normalColor;
+        triggerAccentColor = accentColor;
+        resetToNormalColorOnFinish = resetColorOnFinish;
+        boldOnTriggerFinished = finalBold;
+        italicOnTriggerFinished = finalItalic;
+    }
 
     private void Awake()
     {
@@ -35,6 +53,7 @@ public class LocalizedTypewriterEffect : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         layoutGroup = GetComponentInParent<LayoutGroup>();
         contentSizeFitter = GetComponentInParent<ContentSizeFitter>();
+        baseFontStyle = textComponent.fontStyle;
     }
 
     private void OnEnable()
@@ -58,10 +77,11 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     }
 
     // 对外：播放指定 key 的打字机，并在完成时回调
-    public void Play(string key, Action onComplete = null, bool instant = false)
+    public void Play(string key, Action onComplete = null, bool instant = false, bool enableTriggerVisual = false)
     {
         phraseName = key;
         onFinishedCallback = onComplete;
+        useTriggerVisual = enableTriggerVisual;
 
         if (typingCoroutine != null)
         {
@@ -70,6 +90,8 @@ public class LocalizedTypewriterEffect : MonoBehaviour
         }
 
         fullText = GetLocalizedText(phraseName);
+
+        PrepareVisualBeforePlay();
 
         if (instant)
         {
@@ -113,6 +135,9 @@ public class LocalizedTypewriterEffect : MonoBehaviour
         {
             textComponent.text += fullText[i];
 
+            if (useTriggerVisual)
+                UpdateTypingColorByProgress(i, fullText.Length);
+
             if (typingSound != null && audioSource != null && playSoundEveryNCharacters > 0 && (i % playSoundEveryNCharacters == 0))
             {
                 audioSource.pitch = UnityEngine.Random.Range(0.95f, 1.05f);
@@ -129,6 +154,8 @@ public class LocalizedTypewriterEffect : MonoBehaviour
 
     private void FinishTyping()
     {
+        ApplyFinalVisualStyle();
+
         // 确保最终一次布局刷新
         ForceRelayout();
 
@@ -151,5 +178,57 @@ public class LocalizedTypewriterEffect : MonoBehaviour
             return str;
 
         return textComponent.text;
+    }
+
+    private void PrepareVisualBeforePlay()
+    {
+        if (!useTriggerVisual)
+        {
+            textComponent.fontStyle = baseFontStyle;
+            return;
+        }
+
+        textComponent.color = normalTextColor;
+        textComponent.fontStyle = FontStyle.Normal;
+    }
+
+    private void UpdateTypingColorByProgress(int index, int totalLength)
+    {
+        if (totalLength <= 1)
+        {
+            textComponent.color = triggerAccentColor;
+            return;
+        }
+
+        float t = index / (float)(totalLength - 1);
+        float upThenDown = 1f - Mathf.Abs(2f * t - 1f);
+        textComponent.color = Color.Lerp(normalTextColor, triggerAccentColor, upThenDown);
+    }
+
+    private void ApplyFinalVisualStyle()
+    {
+        if (useTriggerVisual)
+        {
+            if (resetToNormalColorOnFinish)
+                textComponent.color = normalTextColor;
+
+            textComponent.fontStyle = ResolveFinalStyle();
+
+            return;
+        }
+
+        textComponent.fontStyle = baseFontStyle;
+    }
+
+    private FontStyle ResolveFinalStyle()
+    {
+        if (boldOnTriggerFinished && italicOnTriggerFinished)
+            return FontStyle.BoldAndItalic;
+        if (boldOnTriggerFinished)
+            return FontStyle.Bold;
+        if (italicOnTriggerFinished)
+            return FontStyle.Italic;
+
+        return baseFontStyle;
     }
 }
