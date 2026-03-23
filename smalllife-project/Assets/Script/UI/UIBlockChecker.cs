@@ -4,19 +4,18 @@ using System.Collections.Generic;
 
 public static class UIBlockChecker
 {
-    static PointerEventData pointerData = new PointerEventData(EventSystem.current);
-    static List<RaycastResult> raycastResults = new List<RaycastResult>();
-
     public static bool IsPointerOverUI()
     {
-        pointerData.position = Input.mousePosition;
-        raycastResults.Clear();
-        EventSystem.current.RaycastAll(pointerData, raycastResults);
+        if (EventSystem.current == null)
+            return false;
 
-        foreach (var result in raycastResults)
+        var pointerData = new PointerEventData(EventSystem.current)
         {
-            Debug.Log($"UI Hit: {result.gameObject.name}");
-        }
+            position = Input.mousePosition
+        };
+
+        var raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, raycastResults);
 
         return raycastResults.Count > 0;
     }

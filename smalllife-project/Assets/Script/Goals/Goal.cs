@@ -170,23 +170,18 @@ public class Goal : MonoBehaviour
 
                 int completedGoals = GameDataUtils.GetCompletedGoalCount(SaveSystem.GameData, Level.ins.currentLevelIndex);
                 SaveSystem.UpdateLevelStar(Level.ins.currentLevelIndex, completedGoals);
+
+                if (markStep2)
+                {
+                    SaveSystem.SaveGame();
+                    GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step2);
+                }
             };
         };
 
         AudioHub.Instance.PlayGlobal("goal_found");
         currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
         ShowFirstDialogueOfCurrentStage();
-        if (markStep2)// ✅ 只在真正完成 step2 时才解锁相册，和通知日记本按钮
-        {
-            SaveSystem.MarkNewDiaryContent(true);
-            string photoID = $"{levelData.levelID}_{goalID}";
-            SaveSystem.GameData.phoneAlbum.UnlockPhoto(photoID);
-            SaveSystem.SaveGame();
-            Debug.Log($"📱 解锁照片：{photoID}");
-            //Debug.Log($"当前相册解锁数：{SaveSystem.GameData.phoneAlbum.unlockedPhotos.Count}");
-            // 通知 UI 刷新红点
-            HudManager.Instance.RefreshPhoneRedDot();
-        }
     }
     private void PlayStep1()
     {
@@ -308,6 +303,8 @@ public class Goal : MonoBehaviour
             false
         );
         SaveSystem.SaveGame();
+        if (levelData != null)
+            GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step1);
 
         ShowFirstDialogueOfCurrentStage();
     }
