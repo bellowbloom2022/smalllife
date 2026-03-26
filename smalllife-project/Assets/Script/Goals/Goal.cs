@@ -40,11 +40,21 @@ public class Goal : MonoBehaviour
     public bool step1Completed = false;
     public bool step2Completed = false;
 
+    [Header("Clickable 3D Colliders")]
+    [SerializeField] private BoxCollider[] step1ClickableColliders;
+    [SerializeField] private BoxCollider[] step2ClickableColliders;
+
+    private BoxCollider[] allGoalBoxColliders;
+    private int inputLockVersion;
+    private const float MinInputUnlockFallbackDelay = 0.4f;
+
 
     protected virtual void Start()
     {
         cameraController = FindObjectOfType<CameraController>();
         currentStage = Stage.PreAnim1;
+        InitializeClickableColliderConfig();
+        ApplyClickableCollidersByStepState();
         SFXZone.TryRegister(GetComponent<AudioSource>());
     }
     public void OnClicked()
@@ -70,7 +80,63 @@ public class Goal : MonoBehaviour
         step1Completed = progress.step1Completed;
         step2Completed = progress.step2Completed;
         isFound = step1Completed && step2Completed;
+        ApplyClickableCollidersByStepState();
         PlayLoopAnimationAccordingToStep();
+    }
+
+    private void InitializeClickableColliderConfig()
+    {
+        allGoalBoxColliders = GetComponents<BoxCollider>();
+
+        // Backward compatibility: if no explicit config is set in inspector,
+        // infer step1/step2 clickables from current enabled state.
+        if ((step1ClickableColliders == null || step1ClickableColliders.Length == 0) &&
+            (step2ClickableColliders == null || step2ClickableColliders.Length == 0) &&
+            allGoalBoxColliders != null && allGoalBoxColliders.Length > 0)
+        {
+            System.Collections.Generic.List<BoxCollider> step1List = new System.Collections.Generic.List<BoxCollider>();
+            System.Collections.Generic.List<BoxCollider> step2List = new System.Collections.Generic.List<BoxCollider>();
+
+            foreach (BoxCollider collider in allGoalBoxColliders)
+            {
+                if (collider == null) continue;
+                if (collider.enabled) step1List.Add(collider);
+                else step2List.Add(collider);
+            }
+
+            step1ClickableColliders = step1List.ToArray();
+            step2ClickableColliders = step2List.ToArray();
+        }
+    }
+
+    private void ApplyClickableCollidersByStepState()
+    {
+        // Step1 complete but Step2 not complete => switch to step2 click area.
+        bool useStep2Clickable = step1Completed && !step2Completed;
+        SetClickableColliders(useStep2Clickable ? step2ClickableColliders : step1ClickableColliders);
+    }
+
+    private void SetClickableColliders(BoxCollider[] activeColliders)
+    {
+        if (allGoalBoxColliders == null || allGoalBoxColliders.Length == 0)
+            allGoalBoxColliders = GetComponents<BoxCollider>();
+
+        if (allGoalBoxColliders == null || allGoalBoxColliders.Length == 0)
+            return;
+
+        foreach (BoxCollider collider in allGoalBoxColliders)
+        {
+            if (collider != null)
+                collider.enabled = false;
+        }
+
+        if (activeColliders == null) return;
+
+        foreach (BoxCollider collider in activeColliders)
+        {
+            if (collider != null)
+                collider.enabled = true;
+        }
     }
 
     public void PlayLoopAnimationAccordingToStep()
@@ -228,7 +294,11 @@ public class Goal : MonoBehaviour
         if (config == null) return;
 
         if (config.lockInput)
-            InputRouter.Instance.LockInput();
+        {
+            ScheduleInputUnlockFallback(config);
+            if (InputRouter.Instance != null)
+                InputRouter.Instance.LockInput();
+        }
 
         if (config.useFocus && config.focusTarget != null)
         {
@@ -243,14 +313,41 @@ public class Goal : MonoBehaviour
         {
             DOVirtual.DelayedCall(config.cameraDelay, () =>
             {
-                Camera.main
-                    .GetComponent<CameraController>()
-                    .MoveCameraToPositionByDuration(
-                        config.cameraTarget.position,
-                        config.cameraDuration
-                    );
+                if (Camera.main == null) return;
+                CameraController controller = Camera.main.GetComponent<CameraController>();
+                if (controller == null) return;
+                controller.MoveCameraToPositionByDuration(
+                    config.cameraTarget.position,
+                    config.cameraDuration
+                );
             });
         }
+    }
+
+    private void ScheduleInputUnlockFallback(StepConfig config)
+    {
+        int lockVersion = ++inputLockVersion;
+        float fallbackDelay = Mathf.Max(
+            MinInputUnlockFallbackDelay,
+            config.cameraDelay + config.cameraDuration + 0.5f
+        );
+
+        DOVirtual.DelayedCall(fallbackDelay, () =>
+        {
+            if (lockVersion != inputLockVersion)
+                return;
+
+            if (InputRouter.Instance == null || !InputRouter.Instance.InputLocked)
+                return;
+
+            Debug.LogWarning($"[Goal {goalID}] Fallback unlock triggered.");
+            InputRouter.Instance.UnlockInput();
+        });
+    }
+
+    private void CancelInputUnlockFallback()
+    {
+        inputLockVersion++;
     }
     public void OnAnimEnd()
     {
@@ -277,19 +374,24 @@ public class Goal : MonoBehaviour
             FocusMaskController.Instance.Hide(config.focusHideDuration);
 
         if (config.lockInput)
-            InputRouter.Instance.UnlockInput();
+        {
+            CancelInputUnlockFallback();
+            if (InputRouter.Instance != null)
+                InputRouter.Instance.UnlockInput();
+        }
     }
 
     protected void HandleStep1AnimEnd()
     {
+        // 保险：确保输入解锁，即使 OnAnimEnd 触发异常或没有调用
+        if (step1Config != null && step1Config.lockInput)
+            InputRouter.Instance.UnlockInput();
+
         EndStep(step1Config);
         //this.GetComponent<Animator>().ResetTrigger("click");
         Animator anim = GetComponent<Animator>();
         anim.ResetTrigger("step1"); // 对齐 Step 系统
-        foreach (BoxCollider cli in this.GetComponents<BoxCollider>())
-        {
-            cli.enabled = !cli.enabled;
-        }
+        SetClickableColliders(step2ClickableColliders);
         AudioHub.Instance.PlayGlobal("goal_step1");
         step1Completed = true;
 
@@ -311,6 +413,10 @@ public class Goal : MonoBehaviour
 
     protected void HandleStep2AnimEnd()
     {
+        // 保险：确保输入解锁，即使 OnAnimEnd 触发异常或没有调用
+        if (step2Config != null && step2Config.lockInput)
+            InputRouter.Instance.UnlockInput();
+
         EndStep(step2Config);
         if (!mIsTriggered)
         {
