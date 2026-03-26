@@ -39,6 +39,7 @@ public class DialogueManager : MonoBehaviour
 
         activeDialogueSprite = dialogueSprite;
         activeDialogueSprite.SetActive(true);
+        DisableDialogueRaycastBlocking(activeDialogueSprite);
 
         // 把世界坐标 anchor 转换为 UI 坐标
         Vector3 screenPos = Camera.main.WorldToScreenPoint(anchor.position);
@@ -63,6 +64,24 @@ public class DialogueManager : MonoBehaviour
         {
             activeDialogueSprite.SetActive(false);
             activeDialogueSprite = null;
+        }
+    }
+
+    private void DisableDialogueRaycastBlocking(GameObject dialogueRoot)
+    {
+        if (dialogueRoot == null)
+            return;
+
+        Graphic[] graphics = dialogueRoot.GetComponentsInChildren<Graphic>(true);
+        foreach (Graphic graphic in graphics)
+        {
+            graphic.raycastTarget = false;
+        }
+
+        CanvasGroup[] canvasGroups = dialogueRoot.GetComponentsInChildren<CanvasGroup>(true);
+        foreach (CanvasGroup canvasGroup in canvasGroups)
+        {
+            canvasGroup.blocksRaycasts = false;
         }
     }
     

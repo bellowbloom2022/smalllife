@@ -39,7 +39,7 @@ public class InputRouter : MonoBehaviour
         if (Input.GetMouseButtonDown(dragBtn))
         {
             lastMousePos = Input.mousePosition;
-            dragStartedOverUI = UIBlockChecker.IsPointerOverUI();
+            dragStartedOverUI = UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition);
         }
 
         if (Input.GetMouseButton(dragBtn))
@@ -63,7 +63,7 @@ public class InputRouter : MonoBehaviour
             lastClickTime = now;
 
             // 点在 UI 上：不向场景派发点击，避免穿透
-            bool isOverUI = UIBlockChecker.IsPointerOverUI();
+            bool isOverUI = UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition);
             if (isOverUI)
                 return;
 

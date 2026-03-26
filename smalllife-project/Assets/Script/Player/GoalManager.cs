@@ -3,8 +3,6 @@ using UnityEngine;
 public class GoalManager : MonoBehaviour
 {
     public Goal[] goals;
-    private float clickCoolDown = 0.1f; // 100ms防抖时间
-    private float lastClickTime = -1f;
 
     private void OnEnable()
     {
@@ -20,15 +18,39 @@ public class GoalManager : MonoBehaviour
 
     private void HandleClick(Vector3 screenPosition)
     {
-        if (Time.time - lastClickTime < clickCoolDown) return;
-        lastClickTime = Time.time;
-
-        // 如果有对话则先关闭
-        if (DialogueManager.Instance.IsDialogueActive())
-        {
-            DialogueManager.Instance.HideDialogue();
+        // 单通道：先处理 Goal 的 3D 点击（步骤推进）
+        if (TryHandleGoalStepClick(screenPosition))
             return;
-        }
+
+        // 再处理 Goal 的 2D 对话热点点击
+        if (TryHandleGoalDialogueClick(screenPosition))
+            return;
+
+        // 没有点击任何 Goal 时关闭对话框（如有）
+        if (DialogueManager.Instance != null && DialogueManager.Instance.IsDialogueActive())
+            DialogueManager.Instance.HideDialogue();
+    }
+
+    private bool TryHandleGoalStepClick(Vector3 screenPosition)
+    {
+        if (Camera.main == null) return false;
+
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
+        if (hits == null || hits.Length == 0)
+            return false;
+
+        Goal goal = FindNearestGoalFromHits(hits);
+        if (goal == null)
+            return false;
+
+        goal.OnClicked();
+        return true;
+    }
+
+    private bool TryHandleGoalDialogueClick(Vector3 screenPosition)
+    {
+        if (Camera.main == null) return false;
 
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
         Collider2D[] hitColliders = Physics2D.OverlapPointAll(worldPos);
@@ -40,11 +62,32 @@ public class GoalManager : MonoBehaviour
                 if (goal.IsMyGoalCollider(hitCollider))
                 {
                     goal.HandleClick(hitCollider);
-                    return;
+                    return true;
                 }
             }
         }
-        // 没有点击任何目标时关闭对话框（如有）
-        DialogueManager.Instance.HideDialogue();
+
+        return false;
+    }
+
+    private Goal FindNearestGoalFromHits(RaycastHit[] hits)
+    {
+        Goal nearestGoal = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (RaycastHit hit in hits)
+        {
+            Goal goal = hit.transform.GetComponentInParent<Goal>();
+            if (goal == null)
+                continue;
+
+            if (hit.distance >= nearestDistance)
+                continue;
+
+            nearestDistance = hit.distance;
+            nearestGoal = goal;
+        }
+
+        return nearestGoal;
     }
 }

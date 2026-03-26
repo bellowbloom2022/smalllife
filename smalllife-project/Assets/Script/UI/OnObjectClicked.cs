@@ -9,6 +9,9 @@ public class OnObjectClicked : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition))
+            return;
+
         //获取点击位置
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //将点击位置转换为水潭本地坐标系中的位置
