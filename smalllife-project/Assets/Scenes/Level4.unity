@@ -2696,7 +2696,7 @@ GameObject:
   - component: {fileID: 55052810}
   - component: {fileID: 55052811}
   m_Layer: 0
-  m_Name: DISPLAY
+  m_Name: global_display
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3255,7 +3255,7 @@ GameObject:
   - component: {fileID: 74825776}
   - component: {fileID: 74825777}
   m_Layer: 0
-  m_Name: RESET
+  m_Name: global_reset
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4764,7 +4764,7 @@ GameObject:
   - component: {fileID: 128841670}
   - component: {fileID: 128841671}
   m_Layer: 0
-  m_Name: ACHIEVE
+  m_Name: global_achieve
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5355,6 +5355,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &133015977
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -10462,7 +10464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee4021ce59f313499a5cab041f02aba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  translationName: MAKEBY
+  translationName: global_makeby
   FallbackText: 'Made by Yueqi Wu
 
     ShrimpShopGames
@@ -12613,6 +12615,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!82 &304030075
 AudioSource:
   m_ObjectHideFlags: 0
@@ -14717,7 +14721,7 @@ GameObject:
   - component: {fileID: 352719335}
   - component: {fileID: 352719336}
   m_Layer: 0
-  m_Name: DISPLAYMODE
+  m_Name: global_displaymode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16795,7 +16799,7 @@ GameObject:
   - component: {fileID: 396806414}
   - component: {fileID: 396806415}
   m_Layer: 0
-  m_Name: CONGRATULATE2
+  m_Name: gameplay_congratulate2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17809,7 +17813,7 @@ GameObject:
   - component: {fileID: 419310401}
   - component: {fileID: 419310402}
   m_Layer: 0
-  m_Name: DRAGMETHOD
+  m_Name: global_dragmethod
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18802,21 +18806,21 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2099248113}
-  - {fileID: 1309479284}
   - {fileID: 1586629083}
+  - {fileID: 1309479284}
   - {fileID: 1057878721}
   - {fileID: 553418010}
-  - {fileID: 1604631036}
   - {fileID: 1160516385}
+  - {fileID: 1604631036}
   - {fileID: 414629393}
   - {fileID: 1291309814}
   - {fileID: 2078464401}
+  - {fileID: 1095324555}
   - {fileID: 1976177992}
+  - {fileID: 724636855}
   - {fileID: 53262615}
   - {fileID: 1907777904}
   - {fileID: 1098917995}
-  - {fileID: 1095324555}
-  - {fileID: 724636855}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20694,6 +20698,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &473486493
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21181,7 +21187,7 @@ GameObject:
   - component: {fileID: 492465958}
   - component: {fileID: 492465959}
   m_Layer: 0
-  m_Name: BACK
+  m_Name: global_back
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22201,7 +22207,7 @@ GameObject:
   - component: {fileID: 510752477}
   - component: {fileID: 510752478}
   m_Layer: 0
-  m_Name: SET
+  m_Name: global_set
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22797,6 +22803,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &529437265
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -23888,6 +23896,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &547461424
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -27274,7 +27284,7 @@ GameObject:
   - component: {fileID: 608844948}
   - component: {fileID: 608844949}
   m_Layer: 0
-  m_Name: SFX
+  m_Name: global_sfx
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30717,6 +30727,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &697021591
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -32484,7 +32496,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 436103689}
-  m_RootOrder: 15
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -37071,7 +37083,7 @@ GameObject:
   - component: {fileID: 837500751}
   - component: {fileID: 837500752}
   m_Layer: 0
-  m_Name: CONTROL
+  m_Name: global_control
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -40222,7 +40234,7 @@ GameObject:
   - component: {fileID: 946235723}
   - component: {fileID: 946235724}
   m_Layer: 0
-  m_Name: APARTMENT
+  m_Name: global_apartment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42600,6 +42612,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &997697472
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -43720,7 +43734,7 @@ GameObject:
   - component: {fileID: 1058839672}
   - component: {fileID: 1058839673}
   m_Layer: 0
-  m_Name: MUSIC
+  m_Name: global_music
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45173,7 +45187,7 @@ GameObject:
   - component: {fileID: 1092496402}
   - component: {fileID: 1092496403}
   m_Layer: 0
-  m_Name: FULLSCREEN
+  m_Name: global_fullscreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45255,7 +45269,7 @@ RectTransform:
   - {fileID: 266214076}
   - {fileID: 1130367288}
   m_Father: {fileID: 436103689}
-  m_RootOrder: 14
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -45867,7 +45881,7 @@ GameObject:
   - component: {fileID: 1110692502}
   - component: {fileID: 1110692503}
   m_Layer: 0
-  m_Name: WINDOWED
+  m_Name: global_windowed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48407,7 +48421,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 436103689}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -48584,6 +48598,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &1166375190
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -49909,7 +49925,7 @@ GameObject:
   - component: {fileID: 1224682961}
   - component: {fileID: 1224682962}
   m_Layer: 0
-  m_Name: MSTERVOLUME
+  m_Name: global_master_volume
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50670,6 +50686,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &1242796749
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -51929,7 +51947,7 @@ GameObject:
   - component: {fileID: 1275926731}
   - component: {fileID: 1275926732}
   m_Layer: 0
-  m_Name: APARTMENT
+  m_Name: global_apartment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52068,7 +52086,7 @@ GameObject:
   - component: {fileID: 1282304776}
   - component: {fileID: 1282304777}
   m_Layer: 0
-  m_Name: MAKEBY
+  m_Name: global_makeby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52365,7 +52383,7 @@ GameObject:
   - component: {fileID: 1289655973}
   - component: {fileID: 1289655974}
   m_Layer: 0
-  m_Name: LANGUAGE
+  m_Name: global_language
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -55749,7 +55767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee4021ce59f313499a5cab041f02aba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  translationName: WINTEXT2
+  translationName: global_wintext2
   FallbackText: "\u8C22\u8C22\u4F60\u6765\u73A9\u8FD9\u4E2A demo\u3002\r\n\r\n\u4E5F\u8BB8\u4F60\u6CE8\u610F\u5230\u4E86\u4EC0\u4E48\u7EC6\u5FAE\u7684\u4E1C\u897F\u2014\u2014 
     \r\n\u4E00\u58F0\u54CD\uFF0C\u4E00\u4E2A\u5FAE\u7B11\uFF0C\u4E00\u79CD\u5947\u602A\u7684\u5173\u8054\u3002\r\n\r\n\u4ECE\u597D\u5947\u5F00\u59CB\u7684\uFF0C\u662F\u6BCF\u4E2A\u4EBA\u7684\u5C0F\u5C0F\u53EF\u80FD\u3002 "
 --- !u!114 &1362286297
@@ -56065,7 +56083,7 @@ GameObject:
   - component: {fileID: 1370471963}
   - component: {fileID: 1370471964}
   m_Layer: 0
-  m_Name: PAUSE
+  m_Name: global_pause
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57765,7 +57783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ee4021ce59f313499a5cab041f02aba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  translationName: WINTEXT
+  translationName: global_wintext
   FallbackText: "\u8C22\u8C22\u4F60\u6765\u73A9\u8FD9\u4E2A demo\u3002\r\n\r\n\u4E5F\u8BB8\u4F60\u6CE8\u610F\u5230\u4E86\u4EC0\u4E48\u7EC6\u5FAE\u7684\u4E1C\u897F\u2014\u2014 
     \r\n\u4E00\u58F0\u54CD\uFF0C\u4E00\u4E2A\u5FAE\u7B11\uFF0C\u4E00\u79CD\u5947\u602A\u7684\u5173\u8054\u3002\r\n\r\n\u4ECE\u597D\u5947\u5F00\u59CB\u7684\uFF0C\u662F\u6BCF\u4E2A\u4EBA\u7684\u5C0F\u5C0F\u53EF\u80FD\u3002 "
 --- !u!114 &1429942998
@@ -58001,7 +58019,7 @@ GameObject:
   - component: {fileID: 1433839872}
   - component: {fileID: 1433839873}
   m_Layer: 0
-  m_Name: SOUND
+  m_Name: global_sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59170,7 +59188,7 @@ GameObject:
   - component: {fileID: 1460688794}
   - component: {fileID: 1460688795}
   m_Layer: 0
-  m_Name: DRAGRIGHT
+  m_Name: global_dragright
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61221,7 +61239,7 @@ GameObject:
   - component: {fileID: 1512929816}
   - component: {fileID: 1512929817}
   m_Layer: 0
-  m_Name: RESETTODEFAULT
+  m_Name: global_resettodefault
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63295,7 +63313,7 @@ RectTransform:
   - {fileID: 1199064268}
   - {fileID: 397618960}
   m_Father: {fileID: 436103689}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -63633,7 +63651,7 @@ GameObject:
   - component: {fileID: 1594569714}
   - component: {fileID: 1594569715}
   m_Layer: 0
-  m_Name: WINTEXT
+  m_Name: global_wintext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68773,7 +68791,7 @@ GameObject:
   - component: {fileID: 1736219270}
   - component: {fileID: 1736219271}
   m_Layer: 0
-  m_Name: BACKTOTITLE
+  m_Name: global_backtotitle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70833,6 +70851,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &1792623621
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -77980,7 +78000,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3892152874424873307, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3892152874424873307, guid: e1d8b92c5388547c5bf337434de4a950, type: 3}
       propertyPath: m_AnchorMax.x
@@ -79818,7 +79838,7 @@ GameObject:
   - component: {fileID: 2029280869}
   - component: {fileID: 2029280870}
   m_Layer: 0
-  m_Name: WINTEXT2
+  m_Name: global_wintext2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81599,6 +81619,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   step1Completed: 0
   step2Completed: 0
+  step1ClickableColliders: []
+  step2ClickableColliders: []
 --- !u!65 &2070763556
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -82250,7 +82272,7 @@ GameObject:
   - component: {fileID: 2077386995}
   - component: {fileID: 2077386996}
   m_Layer: 0
-  m_Name: DRAGLEFT
+  m_Name: global_dragleft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84083,7 +84105,7 @@ GameObject:
   - component: {fileID: 2133718135}
   - component: {fileID: 2133718136}
   m_Layer: 0
-  m_Name: KEEPPLAY
+  m_Name: gameplay_keepplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

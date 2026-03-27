@@ -15,7 +15,7 @@ public class MainMenuController : MonoBehaviour
     public List<LevelDataAsset> allLevelData;
     public LeanLocalizedText continueButtonTitleText;  // 显示关卡标题，如“静安公园”
     public Text continueButtonPrefixText;              // 可选：用于显示“上次：”
-    public string lastPlayedPrefixKey = "LastPlayed"; // Lean Localization Key: 如“上次：”
+    public string lastPlayedPrefixKey = "global_last_played"; // Lean Localization Key: 如“上次：”
 
     public RectTransform backgroundRect;  // 白底
     public float animDuration = 0.4f;
