@@ -17,6 +17,7 @@ public class GoalNoteRowUpdater : MonoBehaviour
     private bool resetColorOnFinish = true;
     private bool summaryFinalBold = true;
     private bool summaryFinalItalic = true;
+    private string summaryPrefix = "";
 
     public void ConfigureSummaryTypewriterVisual(Color normalColor, Color accentColor, bool resetColor, bool finalBold, bool finalItalic)
     {
@@ -25,6 +26,11 @@ public class GoalNoteRowUpdater : MonoBehaviour
         resetColorOnFinish = resetColor;
         summaryFinalBold = finalBold;
         summaryFinalItalic = finalItalic;
+    }
+
+    public void ConfigureSummaryPrefix(string prefix)
+    {
+        summaryPrefix = string.IsNullOrEmpty(prefix) ? "" : prefix;
     }
 
     /// <summary>
@@ -46,8 +52,7 @@ public class GoalNoteRowUpdater : MonoBehaviour
         SetLocalizedText(descriptionText, descriptionKey, true);
         
         // 仅在 step1 完成后才绑定 description 点击
-        if (isStep1Completed)
-            BindTextClick(descriptionText, onDescriptionClicked);
+        BindTextClick(descriptionText, isStep1Completed ? onDescriptionClicked : null);
 
         // 刷新 summary 文本
         if (showSummary)
@@ -55,8 +60,8 @@ public class GoalNoteRowUpdater : MonoBehaviour
         else
             SetSummaryText(summaryText, string.Empty, false, false);
 
-        // 绑定 summary 点击（step2 完成后即可点击）
-        BindTextClick(summaryText, onSummaryClicked);
+        // 仅在 summary 显示时绑定点击，隐藏时清理旧回调
+        BindTextClick(summaryText, showSummary ? onSummaryClicked : null);
 
     }
 
@@ -70,14 +75,24 @@ public class GoalNoteRowUpdater : MonoBehaviour
 
         if (string.IsNullOrEmpty(key))
         {
-            text.text = "";
-            text.gameObject.SetActive(false);
+            if (text.text.Length > 0)
+                text.text = "";
+
+            if (text.gameObject.activeSelf)
+                text.gameObject.SetActive(false);
+
             return;
         }
 
         string localized = LeanLocalization.GetTranslationText(key);
-        text.text = string.IsNullOrEmpty(localized) ? key : localized;
-        text.gameObject.SetActive(active);
+        string rawText = string.IsNullOrEmpty(localized) ? key : localized;
+        string resolvedText = rawText.TrimStart('*').TrimStart();
+
+        if (!string.Equals(text.text, resolvedText, StringComparison.Ordinal))
+            text.text = resolvedText;
+
+        if (text.gameObject.activeSelf != active)
+            text.gameObject.SetActive(active);
     }
 
     /// <summary>
@@ -90,12 +105,17 @@ public class GoalNoteRowUpdater : MonoBehaviour
 
         if (!active || string.IsNullOrEmpty(key))
         {
-            text.text = string.Empty;
-            text.gameObject.SetActive(false);
+            if (text.text.Length > 0)
+                text.text = string.Empty;
+
+            if (text.gameObject.activeSelf)
+                text.gameObject.SetActive(false);
+
             return;
         }
 
-        text.gameObject.SetActive(true);
+        if (!text.gameObject.activeSelf)
+            text.gameObject.SetActive(true);
 
         // 获取或创建 LocalizedTypewriterEffect
         if (!typewriterByText.TryGetValue(text, out var typewriter) || typewriter == null)
@@ -113,8 +133,8 @@ public class GoalNoteRowUpdater : MonoBehaviour
             resetColorOnFinish,
             summaryFinalBold,
             summaryFinalItalic);
+        typewriter.ConfigureTextPrefix(summaryPrefix);
 
-        // 播放逐字或直接显示
         if (playTypewriter)
             typewriter.Play(key, null, false, true);
         else
@@ -126,7 +146,7 @@ public class GoalNoteRowUpdater : MonoBehaviour
     /// </summary>
     private void BindTextClick(Text text, Action onClick)
     {
-        if (text == null || onClick == null)
+        if (text == null)
             return;
 
         var relay = text.GetComponent<GoalNoteTextClickRelay>();
@@ -159,6 +179,9 @@ public class GoalNoteTextClickRelay : MonoBehaviour, IPointerClickHandler
 
     public void SetOnClick(Action callback)
     {
+        if (onClick == callback)
+            return;
+
         onClick = callback;
     }
 

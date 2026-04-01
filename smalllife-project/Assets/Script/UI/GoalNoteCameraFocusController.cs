@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// 负责 Goal Note 面板相关的镜头移动和 focus target 查询
@@ -7,6 +8,10 @@
 public class GoalNoteCameraFocusController : MonoBehaviour
 {
     private const float DefaultCameraMoveDuration = 0.8f;
+    private readonly Dictionary<int, Goal> goalById = new Dictionary<int, Goal>();
+
+    private Camera cachedMainCamera;
+    private CameraController cachedCameraController;
 
     /// <summary>
     /// 将镜头移动到指定 Goal 的 step focus target
@@ -28,17 +33,8 @@ public class GoalNoteCameraFocusController : MonoBehaviour
             return;
         }
 
-        Camera mainCam = Camera.main;
-        if (mainCam == null)
+        if (!TryGetCameraController(out var controller))
         {
-            Debug.LogWarning("[GoalNoteCameraFocus] Main camera not found.");
-            return;
-        }
-
-        CameraController controller = mainCam.GetComponent<CameraController>();
-        if (controller == null)
-        {
-            Debug.LogWarning("[GoalNoteCameraFocus] CameraController missing on main camera.");
             return;
         }
 
@@ -54,13 +50,59 @@ public class GoalNoteCameraFocusController : MonoBehaviour
     /// </summary>
     private Goal FindGoalById(int goalID)
     {
+        if (goalById.TryGetValue(goalID, out var cachedGoal) && cachedGoal != null)
+            return cachedGoal;
+
+        RebuildGoalCache();
+        if (goalById.TryGetValue(goalID, out var rebuiltGoal) && rebuiltGoal != null)
+            return rebuiltGoal;
+
+        return null;
+    }
+
+    private void RebuildGoalCache()
+    {
+        goalById.Clear();
+
         Goal[] goals = FindObjectsOfType<Goal>();
         for (int i = 0; i < goals.Length; i++)
         {
-            if (goals[i] != null && goals[i].GoalID == goalID)
-                return goals[i];
+            Goal goal = goals[i];
+            if (goal == null)
+                continue;
+
+            if (!goalById.ContainsKey(goal.GoalID))
+                goalById.Add(goal.GoalID, goal);
+        }
+    }
+
+    private bool TryGetCameraController(out CameraController controller)
+    {
+        if (cachedCameraController != null)
+        {
+            controller = cachedCameraController;
+            return true;
         }
 
-        return null;
+        if (cachedMainCamera == null)
+            cachedMainCamera = Camera.main;
+
+        if (cachedMainCamera == null)
+        {
+            Debug.LogWarning("[GoalNoteCameraFocus] Main camera not found.");
+            controller = null;
+            return false;
+        }
+
+        cachedCameraController = cachedMainCamera.GetComponent<CameraController>();
+        if (cachedCameraController == null)
+        {
+            Debug.LogWarning("[GoalNoteCameraFocus] CameraController missing on main camera.");
+            controller = null;
+            return false;
+        }
+
+        controller = cachedCameraController;
+        return true;
     }
 }
