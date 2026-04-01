@@ -35,6 +35,10 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private Action onFinishedCallback;
     private FontStyle baseFontStyle;
     private bool useTriggerVisual;
+    private string textPrefix = string.Empty;
+
+    // 优化：降频布局重建，每5字重建一次，大幅降低CPU开销同时保持视觉效果
+    private const int RELAYOUT_FREQUENCY = 5;
 
     public bool IsTyping => typingCoroutine != null;
 
@@ -45,6 +49,11 @@ public class LocalizedTypewriterEffect : MonoBehaviour
         resetToNormalColorOnFinish = resetColorOnFinish;
         boldOnTriggerFinished = finalBold;
         italicOnTriggerFinished = finalItalic;
+    }
+
+    public void ConfigureTextPrefix(string prefix)
+    {
+        textPrefix = string.IsNullOrEmpty(prefix) ? string.Empty : prefix;
     }
 
     private void Awake()
@@ -144,7 +153,12 @@ public class LocalizedTypewriterEffect : MonoBehaviour
                 audioSource.PlayOneShot(typingSound);
             }
 
-            ForceRelayout();
+            // 优化：每5字或最后一字时才重建布局，避免每字都强制重建导致CPU飙升
+            if ((i + 1) % RELAYOUT_FREQUENCY == 0 || i == fullText.Length - 1)
+            {
+                ForceRelayout();
+            }
+            
             yield return new WaitForSeconds(delayBetweenCharacters);
         }
 
@@ -174,10 +188,17 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private string GetLocalizedText(string key)
     {
         var translation = LeanLocalization.GetTranslation(key);
-        if (translation != null && translation.Data is string str)
-            return str;
+        string resolvedText = textComponent.text;
 
-        return textComponent.text;
+        if (translation != null && translation.Data is string str)
+            resolvedText = str;
+
+        if (string.IsNullOrEmpty(textPrefix) || string.IsNullOrEmpty(resolvedText))
+            return resolvedText;
+
+        return resolvedText.StartsWith(textPrefix, StringComparison.Ordinal)
+            ? resolvedText
+            : textPrefix + resolvedText;
     }
 
     private void PrepareVisualBeforePlay()
