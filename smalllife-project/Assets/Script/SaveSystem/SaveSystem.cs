@@ -96,6 +96,14 @@ public class SaveSystem : MonoBehaviour
 
     public static void ClearData()
     {
+        EnsureSavePath();
+
+        GameSettings preservedSettings = null;
+        if (gameData != null && gameData.settings != null)
+        {
+            preservedSettings = CloneSettings(gameData.settings);
+        }
+
         // 直接使用 savePath 进行文件删除操作
         if (File.Exists(savePath))
         {
@@ -106,7 +114,34 @@ public class SaveSystem : MonoBehaviour
         {
             Debug.Log("No save file found to delete.");
         }
+
         gameData = new GameData();
+
+        // Keep user preferences when starting a new game.
+        if (preservedSettings != null)
+        {
+            gameData.settings = preservedSettings;
+        }
+
+        SaveGame();
+    }
+
+    private static GameSettings CloneSettings(GameSettings source)
+    {
+        if (source == null)
+            return new GameSettings();
+
+        return new GameSettings
+        {
+            masterVolume = source.masterVolume,
+            musicVolume = source.musicVolume,
+            sfxVolume = source.sfxVolume,
+            dragMode = source.dragMode,
+            displayModeIndex = source.displayModeIndex,
+            resolutionIndex = source.resolutionIndex,
+            overlayColorIndex = source.overlayColorIndex,
+            language = source.language
+        };
     }
 
     //只有目标数增加时才更新存档

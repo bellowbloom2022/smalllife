@@ -32,21 +32,24 @@ public class SettingsPanel : BasePanel
     
     private Dictionary<string, GameObject> tabMap;
     private bool isInitialized = false;
+    private bool hasUnsavedChanges = false;
 
     private GameSettings settings;
 
     [SerializeField] private BGMController bgmController;
 
     private void Start(){
+        if (bgmController == null)
+            bgmController = FindObjectOfType<BGMController>();
 
         // 赋值到 UI
-        masterSlider.value = SaveSystem.GameData.settings.masterVolume;
-        musicSlider.value = SaveSystem.GameData.settings.musicVolume;
-        sfxSlider.value = SaveSystem.GameData.settings.sfxVolume;
+        masterSlider.SetValueWithoutNotify(SaveSystem.GameData.settings.masterVolume);
+        musicSlider.SetValueWithoutNotify(SaveSystem.GameData.settings.musicVolume);
+        sfxSlider.SetValueWithoutNotify(SaveSystem.GameData.settings.sfxVolume);
 
         // 应用到音频系统
         AudioListener.volume = SaveSystem.GameData.settings.masterVolume;
-        FindObjectOfType<BGMController>()?.SetVolume(SaveSystem.GameData.settings.musicVolume);
+        bgmController?.SetVolume(SaveSystem.GameData.settings.musicVolume);
         AudioHub.Instance.SetSFXVolume(SaveSystem.GameData.settings.sfxVolume);
 
         // 添加监听
@@ -80,7 +83,11 @@ public class SettingsPanel : BasePanel
     private void OnEnable()
     {
         settings = SaveSystem.GameData.settings;
-        GameSettingsApplier.ApplyAll(settings, bgmController);
+        GameSettingsApplier.ApplyAll(settings, bgmController, displayController, false);
+
+        masterSlider.SetValueWithoutNotify(settings.masterVolume);
+        musicSlider.SetValueWithoutNotify(settings.musicVolume);
+        sfxSlider.SetValueWithoutNotify(settings.sfxVolume);
 
         if (!isInitialized)
         {
@@ -101,9 +108,22 @@ public class SettingsPanel : BasePanel
     /// </summary>
     public void ShowTab(string tabName)
     {
+        if (tabName == "Display" && displayController != null)
+        {
+            // Sync before enabling the tab to avoid Toggle OnEnable callbacks
+            // overriding saved value with prefab default.
+            displayController.LoadSavedSettings();
+            displayController.BeginDisplayTabActivationSync();
+        }
+
         foreach (var kvp in tabMap)
         {
             kvp.Value.SetActive(kvp.Key == tabName);
+        }
+
+        if (tabName == "Display" && displayController != null)
+        {
+            displayController.EndDisplayTabActivationSync();
         }
 
         AudioHub.Instance.PlayGlobal("click_confirm");
@@ -140,34 +160,49 @@ public class SettingsPanel : BasePanel
     
     public override void Hide()
     {
-        Debug.Log("[SettingsPanel] Hide called, saving settings...");
-        SaveSystem.SaveGame(); 
+        if (hasUnsavedChanges)
+        {
+            SaveSystem.SaveGame();
+            hasUnsavedChanges = false;
+        }
         base.Hide();           
     }
 
     private void OnMasterVolumeChanged(float value)
     {
+        if (Mathf.Approximately(SaveSystem.GameData.settings.masterVolume, value))
+            return;
+
         AudioListener.volume = value;
         SaveSystem.GameData.settings.masterVolume = value;
+        hasUnsavedChanges = true;
     }
 
     private void OnMusicVolumeChanged(float value)
     {
-        FindObjectOfType<BGMController>()?.SetVolume(value);
+        if (Mathf.Approximately(SaveSystem.GameData.settings.musicVolume, value))
+            return;
+
+        bgmController?.SetVolume(value);
         SaveSystem.GameData.settings.musicVolume = value;
+        hasUnsavedChanges = true;
     }
 
     private void OnSFXVolumeChanged(float value)
     {
+        if (Mathf.Approximately(SaveSystem.GameData.settings.sfxVolume, value))
+            return;
+
         AudioHub.Instance.SetSFXVolume(value);
         SaveSystem.GameData.settings.sfxVolume = value;
+        hasUnsavedChanges = true;
     }
 
     private void ResetSoundSettings()
     {
-        masterSlider.value = 1f;
-        musicSlider.value = 1f;
-        sfxSlider.value = 1f;
+        masterSlider.SetValueWithoutNotify(1f);
+        musicSlider.SetValueWithoutNotify(1f);
+        sfxSlider.SetValueWithoutNotify(1f);
 
         OnMasterVolumeChanged(1f);
         OnMusicVolumeChanged(1f);

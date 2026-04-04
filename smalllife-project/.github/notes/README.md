@@ -38,6 +38,7 @@
 | [goal-camera-duration-inspector.md](tasks/resolved/goal-camera-duration-inspector.md) | Goal 镜头移动速度改为直接调整场景内的 cameraDuration |
 | [goal-note-panel-step-feedback.md](tasks/resolved/goal-note-panel-step-feedback.md) | Goal Step 与 panel-note 联动、控制器拆分、文本动效可配置 |
 | [goal-note-panel-controller-refactor.md](tasks/resolved/goal-note-panel-controller-refactor.md) | GoalNotePanelController 等价重构：减少 if 重复、索引缓存、分页与行渲染逻辑收敛 |
+| [display-overlay-color-persistence-and-rendering.md](tasks/resolved/display-overlay-color-persistence-and-rendering.md) | Display 色调叠加修复：渲染链稳定、设置持久化与清档保留偏好 |
 
 ---
 

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
-public class DisplaySettingsController : MonoBehaviour
+public partial class DisplaySettingsController : MonoBehaviour
 {
     public Dropdown resolutionDropdown;
     public Dropdown modeDropdown;
@@ -16,8 +16,11 @@ public class DisplaySettingsController : MonoBehaviour
     public Toggle toggleGreen;
     public Toggle toggleBrown;
 
-    private Dictionary<Toggle, Color> colorMap;
-    private const string KEY_COLOR_INDEX = "Display_ColorIndex";
+    [Header("Overlay Runtime Fallback")]
+    [SerializeField] private string runtimeOverlayCanvasName = "__OverlayColorRuntimeCanvas";
+    [SerializeField] private string runtimeOverlayImageName = "__OverlayColorRuntimeImage";
+    [SerializeField] private int overlayFallbackSortingOrder = 50;
+
     private List<Vector2Int> commonResolutions = new List<Vector2Int>()
     {
         new Vector2Int(1280, 720),
@@ -33,29 +36,22 @@ public class DisplaySettingsController : MonoBehaviour
     private int defaultResolutionIndex = 0;
     private int defaultModeIndex = 0; // 0: fullscreen, 1: windowed
 
-    private const string PREF_RES_INDEX = "Display_ResIndex";
-    private const string PREF_MODE_INDEX = "Display_ModeIndex";
+    private int lastAppliedResIndex = -1;
+    private int lastAppliedModeIndex = -1;
+    private bool colorListenersBound = false;
+    private bool suppressOverlayToggleCallbacks = false;
+    private Canvas runtimeOverlayCanvas;
+    private Image runtimeOverlayImage;
+    private Material runtimeOverlayMaterial;
+    private static Sprite sharedRuntimeOverlaySprite;
+    private static Texture2D sharedRuntimeOverlayTexture;
 
     void Awake()
     {
         resetButton.onClick.AddListener(ResetToDefault);
         PopulateResolutionDropdown();
-
-        colorMap = new Dictionary<Toggle, Color>
-        {
-            { toggleWhite, new Color(1f, 1f, 1f, 0f) },
-            { toggleBeige, new Color(1f, 1f, 0.9f, 0.3f) },
-            { toggleGreen, new Color(0.85f, 1f, 0.85f, 0.3f) },
-            { toggleBrown, new Color(0.9f, 0.8f, 0.7f, 0.3f) }
-        };
-        // ?? toggle ??
-        foreach (var kvp in colorMap)
-        {
-            kvp.Key.onValueChanged.AddListener(isOn =>
-            {
-                if (isOn) SetOverlayColor(kvp.Key);
-            });
-        }
+        EnsureOverlayToggleListeners();
+        EnsureRuntimeOverlayCanvas();
     }
 
     void OnEnable()
@@ -99,6 +95,12 @@ public class DisplaySettingsController : MonoBehaviour
         int resIndex = resolutionDropdown.value;
         int modeIndex = modeDropdown.value;
 
+        if (resIndex == lastAppliedResIndex && modeIndex == lastAppliedModeIndex)
+        {
+            UpdateResolutionUIState();
+            return;
+        }
+
         FullScreenMode screenMode = (modeIndex == 0) ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
         Vector2Int selected;
 
@@ -112,14 +114,33 @@ public class DisplaySettingsController : MonoBehaviour
             selected = commonResolutions[resIndex];
         }
 
-        Screen.SetResolution(selected.x, selected.y, screenMode);
+        bool resolutionOrModeChanged =
+            Screen.width != selected.x ||
+            Screen.height != selected.y ||
+            Screen.fullScreenMode != screenMode;
+
+        if (resolutionOrModeChanged)
+        {
+            Screen.SetResolution(selected.x, selected.y, screenMode);
+        }
+
+        lastAppliedResIndex = resIndex;
+        lastAppliedModeIndex = modeIndex;
 
         // UI状态刷新
         UpdateResolutionUIState();
 
         // 保存设置
+        bool settingsChanged = SaveSystem.GameData.settings.resolutionIndex != resIndex ||
+                               SaveSystem.GameData.settings.displayModeIndex != modeIndex;
+
         SaveSystem.GameData.settings.resolutionIndex = resIndex;
         SaveSystem.GameData.settings.displayModeIndex = modeIndex;
+
+        if (settingsChanged)
+        {
+            SaveSystem.SaveGame();
+        }
     }
 
     void UpdateResolutionUIState()
@@ -141,8 +162,8 @@ public class DisplaySettingsController : MonoBehaviour
         int savedRes = SaveSystem.GameData.settings.resolutionIndex;
         int savedMode = SaveSystem.GameData.settings.displayModeIndex;
 
-        resolutionDropdown.value = Mathf.Clamp(savedRes, 0, commonResolutions.Count - 1);
-        modeDropdown.value = savedMode;
+        resolutionDropdown.SetValueWithoutNotify(Mathf.Clamp(savedRes, 0, commonResolutions.Count - 1));
+        modeDropdown.SetValueWithoutNotify(savedMode);
 
         resolutionDropdown.RefreshShownValue();
         modeDropdown.RefreshShownValue();
@@ -150,43 +171,13 @@ public class DisplaySettingsController : MonoBehaviour
         ApplyDisplaySettings();
         UpdateResolutionUIState(); // 确保初始化时UI也变灰
     }
-    
-    private void LoadSavedOverlayColor()
-    {
-        int savedIndex = SaveSystem.GameData.settings.overlayColorIndex;
-        Toggle selectedToggle = GetToggleByIndex(savedIndex);
-        if (selectedToggle != null)
-        {
-            selectedToggle.isOn = true;
-            colorOverlayImage.color = colorMap[selectedToggle];
-        }
-    }
-    
-    public void SetOverlayColor(Toggle toggle)
-    {
-        if (!colorMap.ContainsKey(toggle)) return;
-
-        Color selectedColor = colorMap[toggle];
-
-        // UI Image  Unity Inspector 
-        colorOverlayImage.color = selectedColor;
-
-        // Shader  _Color 
-        if (colorOverlayImage.material != null)
-        {
-            colorOverlayImage.material.color = selectedColor;
-        }
-
-        int index = GetToggleIndex(toggle);
-        SaveSystem.GameData.settings.overlayColorIndex = index;
-    }
 
     public void ResetToDefault()
     {
         AudioHub.Instance?.PlayGlobal("back_confirm");
 
-        resolutionDropdown.value = defaultResolutionIndex;
-        modeDropdown.value = defaultModeIndex;
+        resolutionDropdown.SetValueWithoutNotify(defaultResolutionIndex);
+        modeDropdown.SetValueWithoutNotify(defaultModeIndex);
 
         resolutionDropdown.RefreshShownValue();
         modeDropdown.RefreshShownValue();
@@ -196,26 +187,5 @@ public class DisplaySettingsController : MonoBehaviour
 
         ApplyDisplaySettings();
         AudioHub.Instance?.PlayGlobal("back_confirm");
-    }
-    
-    private int GetToggleIndex(Toggle toggle)
-    {
-        if (toggle == toggleWhite) return 0;
-        if (toggle == toggleBeige) return 1;
-        if (toggle == toggleGreen) return 2;
-        if (toggle == toggleBrown) return 3;
-        return 0;
-    }
-    
-    public Toggle GetToggleByIndex(int index)
-    {
-        switch (index)
-        {
-            case 0: return toggleWhite;
-            case 1: return toggleBeige;
-            case 2: return toggleGreen;
-            case 3: return toggleBrown;
-            default: return toggleWhite;
-        }
     }
 }

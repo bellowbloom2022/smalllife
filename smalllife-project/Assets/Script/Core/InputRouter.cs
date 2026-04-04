@@ -74,6 +74,12 @@ public class InputRouter : MonoBehaviour
 
     public void SetDragMode(string mode)
     {
+        if (string.IsNullOrEmpty(mode))
+            return;
+
+        if (dragMode == mode)
+            return;
+
         dragMode = mode;
         PlayerPrefs.SetString("Control_DragMode", mode);
     }

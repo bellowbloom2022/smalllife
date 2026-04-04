@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &113960186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -311,6 +311,11 @@ MonoBehaviour:
   typingSound: {fileID: 8300000, guid: abda29c11392cb54eae7bde14bf3b470, type: 3}
   playSoundEveryNCharacters: 1
   autoPlayOnEnable: 1
+  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
+  triggerAccentColor: {r: 0.8, g: 0.4, b: 0.4, a: 1}
+  resetToNormalColorOnFinish: 1
+  boldOnTriggerFinished: 1
+  italicOnTriggerFinished: 0
 --- !u!82 &318727885
 AudioSource:
   m_ObjectHideFlags: 0
@@ -454,14 +459,14 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "Even though everyone\u2019s busy,\r\nit somehow feels like people are
-      a little different now."
+    Text: "Even though everyone\u2019s busy, it somehow feels like people are a little
+      different now."
     Object: {fileID: 0}
   - Language: Chinese
     Text: "\u867D\u7136\u5FD9\u5FD9\u788C\u788C\u7684\uFF0C\u603B\u611F\u89C9\u5927\u5BB6\u597D\u50CF\u6709\u70B9\u4E0D\u4E00\u6837\u4E86\u3002"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u5FD9\u3057\u305D\u3046\u3067\u306F\u3042\u308B\u3051\u3069\u3001\r\n\u306A\u3093\u3060\u304B\u307F\u3093\u306A\u3001\u5C11\u3057\u5909\u308F\u3063\u305F\u6C17\u304C\u3059\u308B\u3002"
+    Text: "\u5FD9\u3057\u305D\u3046\u3067\u306F\u3042\u308B\u3051\u3069\u3001\u306A\u3093\u3060\u304B\u307F\u3093\u306A\u3001\u5C11\u3057\u5909\u308F\u3063\u305F\u6C17\u304C\u3059\u308B\u3002"
     Object: {fileID: 0}
 --- !u!1 &783416697
 GameObject:
@@ -492,7 +497,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: Japanese
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -700,7 +705,7 @@ MonoBehaviour:
     Text: "\u5BFB\u627E\u4EBA\u4EEC\u751F\u6D3B\u91CC\u7684\u5C0F\u5C0F\u53EF\u80FD"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u90FD\u4F1A\u306E\u66AE\u3089\u3057\u306E\u4E2D\u3001\u4EBA\u3005\u306E\u3061\u3044\u3055\u306A\u3072\u3089\u3081\u304D\u3092\u898B\u3064\u3051\u308B"
+    Text: "\u66AE\u3089\u3057\u306E\u4E2D\u3001\u4EBA\u3005\u306E\u3061\u3044\u3055\u306A\u3072\u3089\u3081\u304D\u3092\u898B\u3064\u3051\u308B"
     Object: {fileID: 0}
 --- !u!1 &1213189613
 GameObject:

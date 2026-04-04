@@ -29,8 +29,6 @@ public class Level : MonoBehaviour
     [Header("Scene")]
     public SceneChanger sceneChanger;
 
-    private GameData currentGameData;
-
     private void Awake()
     {
         ins = this;
@@ -81,9 +79,10 @@ public class Level : MonoBehaviour
 
     private void LoadGameData()
     {
-        SaveSystem.LoadGame(); // 仅调用加载方法
-        var data = SaveSystem.GameData; // 获取数据
-        Debug.Log("Game data loaded successfully.");
+        // SaveSystem is persistent and already initialized before level start.
+        // Re-loading from disk here can overwrite in-memory settings changed in UI
+        // moments earlier (e.g. overlayColorIndex selected on Title/Pause settings).
+        var data = SaveSystem.GameData;
     }
 
     private void LoadAllGoalStates()
