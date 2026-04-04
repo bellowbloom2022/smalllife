@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using UnityEngine.UI;
 
 public class Level : MonoBehaviour
 {
@@ -19,8 +19,9 @@ public class Level : MonoBehaviour
     public LevelDataAsset levelDataAsset;
 
     [Header("UI")]
-    public Button nextButton;    // 找到全部目标后显示的按钮
+    public InfoPanelController infoPanel;
     public TextMeshProUGUI goalText;
+    public float completionInfoPanelDelay = 1.5f;
 
     [Header("Count")]
     public int TotalCount;
@@ -28,6 +29,8 @@ public class Level : MonoBehaviour
 
     [Header("Scene")]
     public SceneChanger sceneChanger;
+
+    private Coroutine completionInfoPanelCoroutine;
 
     private void Awake()
     {
@@ -49,14 +52,17 @@ public class Level : MonoBehaviour
         LoadGameData();
         LoadAllGoalStates();
         UpdateGoalText();
-        nextButton.gameObject.SetActive(false);
-        nextButton.onClick.AddListener(OnNextButtonClicked);
 
         UpdateLevelGoals();
     }
+
     private void OnDestroy()
     {
-        nextButton.onClick.RemoveListener(OnNextButtonClicked);
+        if (completionInfoPanelCoroutine != null)
+        {
+            StopCoroutine(completionInfoPanelCoroutine);
+            completionInfoPanelCoroutine = null;
+        }
     }
     
     //  缓存所有 Goal 脚本引用 & 自动注入关卡数据
@@ -108,50 +114,80 @@ public class Level : MonoBehaviour
     public void AddCount()
     {
         ++mCount;
+        UpdateGoalText();
 
         if (mCount >= TotalCount)
         {
-            // 改为使用 GameData 标记关卡通关状态
-            string sceneName = SceneManager.GetActiveScene().name;
-            LevelDataAsset data = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneName}");
-            if (data == null)
-            {
-                Debug.LogError($"未找到对应的 LevelDataAsset: {sceneName}");
-                return;
-            }
-            string levelID = data.levelID;
-            Debug.Log($"[Save] Saving Completed LevelID: {levelID}");
-
-            if (!SaveSystem.GameData.completedLevels.ContainsKey(levelID))
-            {
-                SaveSystem.GameData.completedLevels[levelID] = true;
-                SaveSystem.SaveGame();  // 立即保存
-            }
-            nextButton.gameObject.SetActive(true);
+            MarkCurrentLevelCompleted();
+            ScheduleCompletionInfoPanel();
         }
+
         SaveLevelData();
         ShowAllGoalsFoundFeedback();
     }
+
     private void UpdateGoalText()
     {
         if (goalText != null)
             goalText.text = $"{mCount}/{TotalCount}";
     }
 
-    private void ShowNextButton()
+    private void MarkCurrentLevelCompleted()
     {
-        if (nextButton != null)
-            nextButton.gameObject.SetActive(true);
-        //通关时存入完成的关卡ID
         string sceneName = SceneManager.GetActiveScene().name;
         LevelDataAsset data = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneName}");
+        if (data == null)
+        {
+            Debug.LogError($"未找到对应的 LevelDataAsset: {sceneName}");
+            return;
+        }
 
-        string levelID = SceneManager.GetActiveScene().name;
-        SaveSystem.GameData.completedLevels[levelID] = true;
-        SaveSystem.SaveGame();
-        
-        bool isCompleted = SaveSystem.GameData.completedLevels.ContainsKey(levelID)
-            && SaveSystem.GameData.completedLevels[levelID];
+        string levelID = data.levelID;
+        Debug.Log($"[Save] Saving Completed LevelID: {levelID}");
+
+        if (!SaveSystem.GameData.completedLevels.ContainsKey(levelID))
+        {
+            SaveSystem.GameData.completedLevels[levelID] = true;
+            SaveSystem.SaveGame();
+        }
+    }
+
+    private void ScheduleCompletionInfoPanel()
+    {
+        if (completionInfoPanelCoroutine != null)
+            StopCoroutine(completionInfoPanelCoroutine);
+
+        completionInfoPanelCoroutine = StartCoroutine(ShowCompletionInfoPanelAfterDelay());
+    }
+
+    private IEnumerator ShowCompletionInfoPanelAfterDelay()
+    {
+        if (completionInfoPanelDelay > 0f)
+            yield return new WaitForSeconds(completionInfoPanelDelay);
+
+        completionInfoPanelCoroutine = null;
+        ShowCompletionInfoPanel();
+    }
+
+    private void ShowCompletionInfoPanel()
+    {
+        if (infoPanel == null)
+        {
+            Debug.LogWarning("Level: InfoPanelController not assigned.");
+            return;
+        }
+
+        if (sceneChanger == null)
+        {
+            infoPanel.ShowAsCompletion(null, null);
+            return;
+        }
+
+        LevelDataAsset nextLevelData = null;
+        if (!string.IsNullOrEmpty(sceneChanger.targetSceneName))
+            nextLevelData = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneChanger.targetSceneName}");
+
+        infoPanel.ShowAsCompletion(nextLevelData, sceneChanger);
     }
 
     private void ShowAllGoalsFoundFeedback()
@@ -166,16 +202,6 @@ public class Level : MonoBehaviour
             SaveSystem.SaveGame();
             Debug.Log($"✅ 记录该关卡 {levelID} 为新通关，用于主菜单显示勾选");
         }
-    }
-
-    public void OnNextButtonClicked()
-    {
-        if (sceneChanger == null)
-        {
-            Debug.LogError("SceneChanger not assigned in Level.");
-            return;
-        }
-        sceneChanger.ChangeScene();
     }
 
     public void SaveLevelData()
@@ -217,10 +243,7 @@ public class Level : MonoBehaviour
             }
         }
         mCount = foundCount;
-        if (mCount >= TotalCount)
-        {
-            ShowNextButton();
-        }
+        UpdateGoalText();
     }
 
     private void UpdateGoalUI(GameObject goal)

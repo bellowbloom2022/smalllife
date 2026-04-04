@@ -6,9 +6,7 @@ public class SignboardTrigger : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (infoPanel != null && !infoPanel.IsShown)
-        {
-            infoPanel.Show();
-        }
+        if (infoPanel != null)
+            infoPanel.OpenFromSignboard();
     }
 }

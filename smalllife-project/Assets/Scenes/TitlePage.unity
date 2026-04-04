@@ -139,8 +139,12 @@ PrefabInstance:
       value: global_leave
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806191855259, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 7.0631
+      objectReference: {fileID: 0}
+    - target: {fileID: 1645068806191855259, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.0000038146973
+      value: 54.794
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_Text
@@ -153,6 +157,14 @@ PrefabInstance:
     - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1645068806191855268, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
+      propertyPath: m_Name
+      value: global_leave
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806326175390, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_IsActive
@@ -1010,6 +1022,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 1949b36ca0a3b4f30970d42b06704e22, type: 3}
   - tag: back_confirm
     clip: {fileID: 8300000, guid: 7661bf57e2cc88f4389a4b64a8929ec2, type: 3}
+  - tag: button_flip_info
+    clip: {fileID: 8300000, guid: b502421457ad77e4ab3b738910915542, type: 3}
+  - tag: level_complete
+    clip: {fileID: 8300000, guid: 4cd00ab7f684983459ace5191fcbedce, type: 3}
   - tag: EnterGameDFX1
     clip: {fileID: 8300000, guid: 6e8ded17d9be94c86962fb56769d17d2, type: 3}
   - tag: howtoplay-bookflip
@@ -2017,7 +2033,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u65C5\u306E\u9014\u4E2D\u3067\u3001\u8857\u306E\u7247\u9685\u306B\u96A0\u308C\u305F\u5C0F\u3055\u306A\u751F\u6D3B\u3092\u898B\u3064\u3051\u308B\u3002"
+  m_Text: On a journey, uncover small lives hidden in the corners of the city.
 --- !u!114 &557512615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2474,7 +2490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Japanese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -4121,13 +4137,13 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: SmallLife Shanghai Demo Build 2026.03
+    Text: SmallLife Shanghai Demo Build 2026.04
     Object: {fileID: 0}
   - Language: Chinese
-    Text: SmallLife Shanghai Demo Build 2026.03
+    Text: SmallLife Shanghai Demo Build 2026.04
     Object: {fileID: 0}
   - Language: Japanese
-    Text: SmallLife Shanghai Demo Build 2026.03
+    Text: SmallLife Shanghai Demo Build 2026.04
     Object: {fileID: 0}
 --- !u!1 &1297002801
 GameObject:
@@ -4278,7 +4294,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u524D\u56DE\uFF1A"
+  m_Text: 'Last Played:'
 --- !u!1 &1342259425
 GameObject:
   m_ObjectHideFlags: 0
@@ -5361,11 +5377,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806191855259, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 47
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_Text
-      value: "\u30BB\u30FC\u30D6\u30C7\u30FC\u30BF\u304C\u898B\u3064\u304B\u308A\u307E\u3057\u305F\u3002\u65B0\u3057\u304F\u59CB\u3081\u308B\u3068\u3001\u65E2\u5B58\u306E\u9032\u884C\u72B6\u6CC1\u304C\u6D88\u53BB\u3055\u308C\u307E\u3059\u3002"
+      value: "\u5DF2\u6709\u5B58\u6863\uFF0C\u662F\u5426\u5F00\u59CB\u65B0\u7684\u6E38\u620F\uFF1F\n\u539F\u6709\u8FDB\u5EA6\u5C06\u88AB\u6E05\u9664\u3002"
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_FontData.m_Font
@@ -5378,6 +5394,14 @@ PrefabInstance:
     - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1645068806191855263, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
+      propertyPath: m_FontData.m_Alignment
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1645068806191855268, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
+      propertyPath: m_Name
+      value: global_newgameconfirm
       objectReference: {fileID: 0}
     - target: {fileID: 1645068806326175390, guid: 7eb8cd4803ebd40e9a8f77d5c71c1ba5, type: 3}
       propertyPath: m_IsActive
@@ -6361,7 +6385,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 15
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -6372,7 +6396,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SmallLife Shanghai Demo Build 2026.03
+  m_Text: SmallLife Shanghai Demo Build 2026.04
 --- !u!1 &1953289980
 GameObject:
   m_ObjectHideFlags: 0
