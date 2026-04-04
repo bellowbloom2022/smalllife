@@ -4,7 +4,9 @@ using Lean.Localization;
 
 public static class GameSettingsApplier
 {
-    public static void ApplyAll(GameSettings gameSettings, BGMController bgmController)
+    private static LeanLocalization cachedLocalization;
+
+    public static void ApplyAll(GameSettings gameSettings, BGMController bgmController, DisplaySettingsController displaySettings = null, bool applyLanguage = false)
     {
         // 应用到音频系统
         AudioListener.volume = gameSettings.masterVolume;
@@ -15,27 +17,37 @@ public static class GameSettingsApplier
         InputRouter.Instance?.SetDragMode(gameSettings.dragMode);
 
         // 应用 overlay 色调
-        var displaySettings = GameObject.FindObjectOfType<DisplaySettingsController>();
+        if (displaySettings == null)
+        {
+            displaySettings = GameObject.FindObjectOfType<DisplaySettingsController>();
+        }
+
         if (displaySettings != null)
         {
-            Toggle targetToggle = displaySettings.GetToggleByIndex(gameSettings.overlayColorIndex);
-            if (targetToggle != null)
-            {
-                targetToggle.isOn = true;
-                displaySettings.SetOverlayColor(targetToggle);
-            }
+            displaySettings.SyncOverlayFromSettings();
         }
-        // 应用语言设置
-        ApplyLanguage(gameSettings.language);
+        // 应用语言设置（按需）
+        if (applyLanguage)
+        {
+            ApplyLanguage(gameSettings.language, false);
+        }
     }
     
-    public static void ApplyLanguage(string langCode)
+    public static void ApplyLanguage(string langCode, bool saveToDisk = false)
     {
-        var localization = GameObject.FindObjectOfType<LeanLocalization>();
-        if (localization != null)
+        if (cachedLocalization == null)
         {
-            localization.SetCurrentLanguage(langCode);
+            cachedLocalization = GameObject.FindObjectOfType<LeanLocalization>();
         }
-        SaveSystem.SaveGame(); // 确保切换语言后立刻保存
+
+        if (cachedLocalization != null)
+        {
+            cachedLocalization.SetCurrentLanguage(langCode);
+        }
+
+        if (saveToDisk)
+        {
+            SaveSystem.SaveGame();
+        }
     }
 }

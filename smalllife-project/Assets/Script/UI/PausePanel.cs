@@ -67,7 +67,7 @@ public class PausePanel : BasePanel
         base.Hide();
         Time.timeScale = 1f;
 
-        if (howToPlayPanel != null) howToPlayPanel.Hide();
-        if (settingsPanel != null) settingsPanel.Hide();
+        if (howToPlayPanel != null && howToPlayPanel.IsShown) howToPlayPanel.Hide();
+        if (settingsPanel != null && settingsPanel.IsShown) settingsPanel.Hide();
     }
 } 

@@ -238,7 +238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &113960186
 RectTransform:
   m_ObjectHideFlags: 0
@@ -397,7 +397,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.2
-  m_Text: "\u770B\u7740\u8FD8\u633A\u8F7B\u677E\u7684\u3002\u5927\u5988\u8EAB\u5B50\u9AA8\u771F\u786C\u6717\u3002"
+  m_Text: "\u201C\u770B\u7740\u8FD8\u633A\u8F7B\u677E\u7684\u3002\u5927\u5988\u8EAB\u5B50\u9AA8\u771F\u786C\u6717\u3002\u201D"
 --- !u!222 &318727883
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -423,6 +423,11 @@ MonoBehaviour:
   typingSound: {fileID: 8300000, guid: abda29c11392cb54eae7bde14bf3b470, type: 3}
   playSoundEveryNCharacters: 1
   autoPlayOnEnable: 1
+  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
+  triggerAccentColor: {r: 0.8, g: 0.4, b: 0.4, a: 1}
+  resetToNormalColorOnFinish: 1
+  boldOnTriggerFinished: 1
+  italicOnTriggerFinished: 0
 --- !u!82 &318727885
 AudioSource:
   m_ObjectHideFlags: 0
@@ -598,15 +603,7 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: 'She looks pretty relaxed.
-
-      The old lady seems really strong.'
-    Object: {fileID: 0}
-  - Language: Chinese
-    Text: "\u770B\u7740\u8FD8\u633A\u8F7B\u677E\u7684\u3002\u5927\u5988\u8EAB\u5B50\u9AA8\u771F\u786C\u6717\u3002"
-    Object: {fileID: 0}
-  - Language: Japanese
-    Text: "\u898B\u3066\u308B\u3068\u3001\u3051\u3063\u3053\u3046\u6C17\u697D\u305D\u3046\u3060\u3002\r\n\u304A\u3070\u3042\u3055\u3093\u3001\u4F53\u304C\u307B\u3093\u3068\u306B\u4E08\u592B\u3060\u306A\u3002"
+    Text: "The old lady seems full of life. She\u2019s quite spry for her age."
     Object: {fileID: 0}
 --- !u!1 &783416697
 GameObject:
@@ -637,7 +634,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: Japanese
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -845,7 +842,7 @@ MonoBehaviour:
     Text: "\u5BFB\u627E\u4EBA\u4EEC\u751F\u6D3B\u91CC\u7684\u5C0F\u5C0F\u53EF\u80FD"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u90FD\u4F1A\u306E\u66AE\u3089\u3057\u306E\u4E2D\u3001\u4EBA\u3005\u306E\u3061\u3044\u3055\u306A\u3072\u3089\u3081\u304D\u3092\u898B\u3064\u3051\u308B"
+    Text: "\u66AE\u3089\u3057\u306E\u4E2D\u3001\u4EBA\u3005\u306E\u3061\u3044\u3055\u306A\u3072\u3089\u3081\u304D\u3092\u898B\u3064\u3051\u308B"
     Object: {fileID: 0}
 --- !u!1 &1213189613
 GameObject:

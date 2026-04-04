@@ -8,8 +8,11 @@ public class LanguageSettingsController : MonoBehaviour
     /// </summary>
     public void SetLanguage(string langCode)
     {
+        if (SaveSystem.GameData.settings.language == langCode)
+            return;
+
         SaveSystem.GameData.settings.language = langCode;
-        GameSettingsApplier.ApplyLanguage(langCode);
+        GameSettingsApplier.ApplyLanguage(langCode, true);
     }
 
     /// <summary>
@@ -20,7 +23,7 @@ public class LanguageSettingsController : MonoBehaviour
         string savedLang = SaveSystem.GameData.settings.language;
         if (!string.IsNullOrEmpty(savedLang))
         {
-            GameSettingsApplier.ApplyLanguage(savedLang);
+            GameSettingsApplier.ApplyLanguage(savedLang, false);
         }
     }
 }

@@ -170,13 +170,13 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "\"Let\u2019s go! \u30FD( \xB0 \u25BD\xB0)\u30CE\""
+    Text: "Off we go! \u30FD( \xB0 \u25BD\xB0)\u30CE"
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\"\u51FA\u53D1\uFF5E\u30FD( \xB0 \u25BD\xB0)\u30CE\u3002\u201D"
+    Text: "\u201C\u51FA\u53D1\uFF5E\u30FD( \xB0 \u25BD\xB0)\u30CE\u201D"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u300C\u51FA\u767A\u3060\uFF5E\u30FD( \xB0 \u25BD\xB0)\u30CE\u3002\u300D"
+    Text: "\u300C\u51FA\u767A\u3060\uFF5E\u30FD( \xB0 \u25BD\xB0)\u30CE\u300D"
     Object: {fileID: 0}
 --- !u!1 &62029441
 GameObject:
@@ -511,10 +511,10 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "(deep breath)I actually made it to Shanghai\u2026"
+    Text: (Deep breath) I'm actually going to Shanghai...
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\uFF08\u6DF1\u547C\u5438\uFF09\u6211\u5C45\u7136\u771F\u8981\u53BB\u4E0A\u6D77\u4E86\u2026\u2026"
+    Text: "\uFF08\u6DF1\u547C\u5438\uFF09\u6211\u5C45\u7136\u2026\u2026\u771F\u7684\u8981\u53BB\u4E0A\u6D77\u4E86\u3002"
     Object: {fileID: 0}
   - Language: Japanese
     Text: "\uFF08\u6DF1\u547C\u5438\uFF09\u672C\u5F53\u306B\u4E0A\u6D77\u884C\u304F\u3088\u3046\u306B\u306A\u3063\u305F\u2026\u2026"
@@ -720,7 +720,7 @@ MonoBehaviour:
     Text: 2021, The Beginning of the Journey
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "2021\u5E74,\u65C5\u9014\u7684\u5F00\u59CB"
+    Text: "2021\u5E74\uFF0C\u65C5\u7A0B\u7684\u8D77\u70B9\u3002"
     Object: {fileID: 0}
   - Language: Japanese
     Text: "2021\u5E74\u3001\u65C5\u306E\u306F\u3058\u307E\u308A"
@@ -775,7 +775,7 @@ MonoBehaviour:
     Text: "Whatever. Let\u2019s go."
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\u7B97\u4E86\uFF0C\u7BA1\u4ED6\u5462\u3002"
+    Text: "\u7B97\u4E86\uFF0C\u7BA1\u4ED6\u5462\uFF01"
     Object: {fileID: 0}
   - Language: Japanese
     Text: "\u307E\u3042\u3001\u3044\u3063\u304B\u3002"
@@ -827,10 +827,10 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "Kind of a sudden decision\u2026"
+    Text: I guess I was being a bit impulsive...
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\u597D\u50CF\u662F\u6709\u70B9\u51B2\u52A8\u2026\u2026"
+    Text: "\u662F\u4E0D\u662F\u6709\u70B9\u592A\u51B2\u52A8\u4E86\uFF1F"
     Object: {fileID: 0}
   - Language: Japanese
     Text: "\u3061\u3087\u3063\u3068\u885D\u52D5\u7684\u3060\u3063\u305F\u304B\u3082\u2026\u2026"
@@ -1894,6 +1894,11 @@ MonoBehaviour:
   typingSound: {fileID: 8300000, guid: abda29c11392cb54eae7bde14bf3b470, type: 3}
   playSoundEveryNCharacters: 1
   autoPlayOnEnable: 0
+  normalTextColor: {r: 0, g: 0, b: 0, a: 1}
+  triggerAccentColor: {r: 0.8, g: 0.4, b: 0.4, a: 1}
+  resetToNormalColorOnFinish: 1
+  boldOnTriggerFinished: 1
+  italicOnTriggerFinished: 0
 --- !u!82 &974072074
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2090,7 +2095,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &1088343410
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -2847,10 +2852,10 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "\"The guy next to me\u2026 his neck looks exhausting.\""
+    Text: The guy next to me... his neck looks so sore.
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\"\u65C1\u8FB9\u5C0F\u4F19\u5B50\u7684\u8116\u5B50\uFF0C\u770B\u7740\u597D\u7D2F\u554A\u3002\u201D"
+    Text: "\u201C\u2026\u2026\u65C1\u8FB9\u90A3\u4F4D\u5C0F\u54E5\u7761\u5F97\u597D\u6C89\u554A\uFF0C\u8116\u5B50\u770B\u7740\u90FD\u8981\u6298\u4E86\uFF0C\u771F\u7D2F\u554A\u3002\u201D"
     Object: {fileID: 0}
   - Language: Japanese
     Text: "\u300C\u96A3\u306E\u4EBA\u306E\u9996\u3001\u306A\u3093\u304B\u75B2\u308C\u305D\u3046\u3002\u300D"
@@ -3239,7 +3244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: Japanese
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
