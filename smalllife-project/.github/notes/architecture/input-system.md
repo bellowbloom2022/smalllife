@@ -50,3 +50,11 @@ DOVirtual.DelayedCall(fallbackDelay, () =>
 ## 与 Goal 系统的交互
 
 见 [goal-step-system.md](goal-step-system.md)
+
+---
+
+## 与 Panel_info 的交互
+
+- `InfoPanelController` 当前会监听 `InputRouter.OnBlankClick`，用于在展开态点击空白区域后折回侧边栏。
+- 由于 `Panel_info` 已改为“常驻 active + 折叠/展开”模型，它不再完全符合传统 `BasePanel` 的显示语义。
+- 若后续调整空白点击、UI 穿透或侧边栏关闭行为，建议同时查看 `../tasks/resolved/panel-info-completion-flow.md`。

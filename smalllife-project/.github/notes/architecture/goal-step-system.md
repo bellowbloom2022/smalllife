@@ -129,3 +129,12 @@ enum Stage { PreAnim1, PostAnim1, PostAnim2 }
 - 已在场景内验证：点击 panel-note 不再穿透到后方场景物体。
 - 当前结论：输入分发与面板区域拦截策略生效。
 - 后续若出现个别区域漏点，优先检查对应 UI 节点是否具备可命中的射线配置（Raycast Target / CanvasGroup.blocksRaycasts）。
+
+---
+
+## 与 Panel_info 完成态的衔接
+
+- 当前关卡完成后的 `InfoPanel` 弹出时机，不放在 `Goal` 内部处理，而是由 `Level` 在总目标数满足后统一调度。
+- 这样可以避免把 `panel-note` 的打字节奏、关卡完成态 UI 和 Goal 单体逻辑耦合在一起。
+- 当前实现还额外保留约 `1.5s` 延迟，给 note-panel 的文字显示留出缓冲。
+- 详见 `../tasks/resolved/panel-info-completion-flow.md`。
