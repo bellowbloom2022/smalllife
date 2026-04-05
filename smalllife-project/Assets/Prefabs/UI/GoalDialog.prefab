@@ -38,8 +38,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 246, y: -92}
-  m_SizeDelta: {x: 300, y: 176}
+  m_AnchoredPosition: {x: 266, y: -92}
+  m_SizeDelta: {x: 340, y: 176}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!82 &2105475645601133893
 AudioSource:
@@ -192,6 +192,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayBetweenCharacters: 0.06
+  enableEnglishSpeedBoost: 1
+  englishDelayMultiplier: 0.85
+  enableFastPunctuation: 1
+  punctuationDelayMultiplier: 0.3
   phraseName: level0_spot_text
   typingSound: {fileID: 8300000, guid: abda29c11392cb54eae7bde14bf3b470, type: 3}
   playSoundEveryNCharacters: 1
@@ -216,7 +220,7 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 300
+  m_PreferredWidth: 340
   m_PreferredHeight: -1
   m_FlexibleWidth: 1
   m_FlexibleHeight: 1
@@ -354,8 +358,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 204, y: -96}
-  m_SizeDelta: {x: 400, y: 184}
+  m_AnchoredPosition: {x: 224, y: -96}
+  m_SizeDelta: {x: 440, y: 184}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2164404763290242740
 MonoBehaviour:
@@ -422,7 +426,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.060058594, y: 0.3499756}
-  m_SizeDelta: {x: -3432, y: -1968}
+  m_SizeDelta: {x: -3392, y: -1968}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7844224262278146509
 CanvasRenderer:
