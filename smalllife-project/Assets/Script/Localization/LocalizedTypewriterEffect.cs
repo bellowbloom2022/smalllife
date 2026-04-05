@@ -9,6 +9,10 @@ public class LocalizedTypewriterEffect : MonoBehaviour
 {
     [Header("Typing")]
     public float delayBetweenCharacters = 0.05f;
+    [SerializeField] private bool enableEnglishSpeedBoost = true;
+    [SerializeField, Range(0.5f, 1f)] private float englishDelayMultiplier = 0.85f;
+    [SerializeField] private bool enableFastPunctuation = true;
+    [SerializeField, Range(0.05f, 1f)] private float punctuationDelayMultiplier = 0.3f;
     [Tooltip("Lean.Localization 的词条名；Play时会被覆盖为传入的key")]
     public string phraseName = "YourPhraseName";
     public AudioClip typingSound;
@@ -39,6 +43,7 @@ public class LocalizedTypewriterEffect : MonoBehaviour
 
     // 优化：降频布局重建，每5字重建一次，大幅降低CPU开销同时保持视觉效果
     private const int RELAYOUT_FREQUENCY = 5;
+    private const float MIN_DELAY = 0.005f;
 
     public bool IsTyping => typingCoroutine != null;
 
@@ -142,7 +147,8 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     {
         for (int i = 0; i < fullText.Length; i++)
         {
-            textComponent.text += fullText[i];
+            char currentChar = fullText[i];
+            textComponent.text += currentChar;
 
             if (useTriggerVisual)
                 UpdateTypingColorByProgress(i, fullText.Length);
@@ -159,7 +165,7 @@ public class LocalizedTypewriterEffect : MonoBehaviour
                 ForceRelayout();
             }
             
-            yield return new WaitForSeconds(delayBetweenCharacters);
+            yield return new WaitForSeconds(GetCharacterDelay(currentChar));
         }
 
         typingCoroutine = null;
@@ -199,6 +205,44 @@ public class LocalizedTypewriterEffect : MonoBehaviour
         return resolvedText.StartsWith(textPrefix, StringComparison.Ordinal)
             ? resolvedText
             : textPrefix + resolvedText;
+    }
+
+    private float GetCharacterDelay(char c)
+    {
+        float delay = delayBetweenCharacters;
+
+        if (enableFastPunctuation && (char.IsWhiteSpace(c) || IsPunctuation(c)))
+        {
+            delay *= punctuationDelayMultiplier;
+        }
+
+        if (enableEnglishSpeedBoost && IsCurrentLanguageEnglish())
+        {
+            delay *= englishDelayMultiplier;
+        }
+
+        return Mathf.Max(MIN_DELAY, delay);
+    }
+
+    private bool IsCurrentLanguageEnglish()
+    {
+        string language = LeanLocalization.GetFirstCurrentLanguage();
+        if (string.IsNullOrEmpty(language))
+        {
+            return false;
+        }
+
+        if (string.Equals(language, "English", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return language.StartsWith("en", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsPunctuation(char c)
+    {
+        return char.IsPunctuation(c);
     }
 
     private void PrepareVisualBeforePlay()
