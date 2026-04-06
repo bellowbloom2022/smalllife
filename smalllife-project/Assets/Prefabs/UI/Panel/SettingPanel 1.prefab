@@ -983,7 +983,7 @@ MonoBehaviour:
   toggleBrown: {fileID: 8577232087744997326}
   runtimeOverlayCanvasName: __OverlayColorRuntimeCanvas
   runtimeOverlayImageName: __OverlayColorRuntimeImage
-  sceneOverlayImageName: OverlayColorImage
+  overlayFallbackSortingOrder: 50
 --- !u!1 &8577232086767429146
 GameObject:
   m_ObjectHideFlags: 0
@@ -5213,8 +5213,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 26, y: 112.86}
-  m_SizeDelta: {x: 300, y: 60}
+  m_AnchoredPosition: {x: 78, y: 112.86}
+  m_SizeDelta: {x: 370, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8577232087393932354
 CanvasRenderer:
@@ -5571,7 +5571,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: "\u30D5\u30EB\u30B9\u30AF\u30EA\u30FC\u30F3\u30E2\u30FC\u30C9"
 --- !u!114 &8577232087435460137
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5585,7 +5585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   translationName: 
-  FallbackText: "\u7A97\u53E3\u6A21\u5F0F"
+  FallbackText: "\u30D5\u30EB\u30B9\u30AF\u30EA\u30FC\u30F3\u30E2\u30FC\u30C9"
 --- !u!1 &8577232087451384634
 GameObject:
   m_ObjectHideFlags: 0
@@ -13141,8 +13141,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 26, y: 214}
-  m_SizeDelta: {x: 300, y: 60}
+  m_AnchoredPosition: {x: 78, y: 214}
+  m_SizeDelta: {x: 370, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8577232088433001530
 CanvasRenderer:
@@ -13231,9 +13231,9 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: 
+    - m_Text: "\u30D5\u30EB\u30B9\u30AF\u30EA\u30FC\u30F3\u30E2\u30FC\u30C9"
       m_Image: {fileID: 0}
-    - m_Text: 
+    - m_Text: "\u30A6\u30A3\u30F3\u30C9\u30A6\u30E2\u30FC\u30C9"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13252,11 +13252,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   options:
-  - StringTranslationName: FULLSCREEN
+  - StringTranslationName: global_fullscreen
     SpriteTranslationName: 
     FallbackText: 
     FallbackSprite: {fileID: 0}
-  - StringTranslationName: WINDOWED
+  - StringTranslationName: global_windowed
     SpriteTranslationName: 
     FallbackText: 
     FallbackSprite: {fileID: 0}

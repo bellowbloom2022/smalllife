@@ -40,6 +40,9 @@ public class Goal : MonoBehaviour
     public bool step1Completed = false;
     public bool step2Completed = false;
 
+    [Header("Goal Icon UI")]
+    [SerializeField] private GoalIconUIController iconController;
+
     [Header("Clickable 3D Colliders")]
     [SerializeField] private BoxCollider[] step1ClickableColliders;
     [SerializeField] private BoxCollider[] step2ClickableColliders;
@@ -82,6 +85,7 @@ public class Goal : MonoBehaviour
         isFound = step1Completed && step2Completed;
         ApplyClickableCollidersByStepState();
         PlayLoopAnimationAccordingToStep();
+        iconController?.ApplyProgress(step1Completed, step2Completed);
     }
 
     private void InitializeClickableColliderConfig()
@@ -241,6 +245,12 @@ public class Goal : MonoBehaviour
                 {
                     SaveSystem.SaveGame();
                     GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step2);
+                }
+                else
+                {
+                    // SingleGoal 单步完成：SaveGame 并通知 UI
+                    SaveSystem.SaveGame();
+                    GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step1);
                 }
             };
         };

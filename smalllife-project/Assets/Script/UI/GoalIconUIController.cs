@@ -1,0 +1,121 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+
+/// <summary>
+/// 挂在 goal1_get UI 根节点上。
+/// 负责：右上角角标（2 / 1 / ✓）+ Icon 底部填充进度 两个视觉状态。
+///
+/// Unity Editor 配置步骤：
+/// 1. 在 goal1_get 下新建子物体 "FillIcon"，添加 Image 组件，
+///    图片与底图相同，Image Type = Filled，Fill Method = Vertical，
+///    Fill Origin = Bottom，Fill Amount 默认 = 0，Color.alpha = 255。
+/// 2. 在 goal1_get 下新建子物体 "Badge"，添加 Image 组件，
+///    锚点设置到右上角，准备好 step2/step1/checkmark 三张 sprite。
+/// 3. 将此脚本拖入 goal1_get，在 Inspector 里填写 levelID / goalID /
+///    isSingleStep，以及三个引用和三张 sprite。
+/// </summary>
+public class GoalIconUIController : MonoBehaviour
+{
+    [Header("Goal Identity")]
+    [SerializeField] private string levelID;
+    [SerializeField] private int goalID;
+    /// <summary>true = SingleGoal（单步），false = Goal（两步）</summary>
+    [SerializeField] private bool isSingleStep;
+
+    [Header("Fill Effect (Image Type = Filled / Vertical / Bottom)")]
+    [SerializeField] private Image fillImage;
+
+    [Header("Badge")]
+    [SerializeField] private Image badgeImage;
+    [SerializeField] private Sprite badgeStep2Sprite;   // 显示 "2"
+    [SerializeField] private Sprite badgeStep1Sprite;   // 显示 "1"
+    [SerializeField] private Sprite badgeCheckSprite;   // 显示 ✓
+
+    // DOTween 动画参数（可按需在 Inspector 调整）
+    private const float FillDuration = 0.5f;
+    private const float PunchDuration = 0.45f;
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Unity 生命周期
+    // ──────────────────────────────────────────────────────────────────────
+
+    private void Start()
+    {
+        ApplyProgress(false, false);
+    }
+
+    private void OnEnable()
+    {
+        GoalNoteEvents.GoalCompleted += HandleGoalCompleted;
+    }
+
+    private void OnDisable()
+    {
+        GoalNoteEvents.GoalCompleted -= HandleGoalCompleted;
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // 公开接口：由 Goal.ApplySavedProgress 在读档后调用，无动画直接还原状态
+    // ──────────────────────────────────────────────────────────────────────
+
+    public void ApplyProgress(bool step1Done, bool step2Done)
+    {
+        // 填充量（非动画）
+        if (fillImage != null)
+        {
+            if (step2Done || (isSingleStep && step1Done))
+                fillImage.fillAmount = 1f;
+            else if (step1Done)
+                fillImage.fillAmount = 0.5f;
+            else
+                fillImage.fillAmount = 0f;
+        }
+
+        // 角标 sprite（非动画）
+        if (badgeImage != null)
+        {
+            if (step2Done || (isSingleStep && step1Done))
+                badgeImage.sprite = badgeCheckSprite;
+            else if (step1Done)
+                badgeImage.sprite = badgeStep1Sprite;
+            else
+                badgeImage.sprite = isSingleStep ? badgeStep1Sprite : badgeStep2Sprite;
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // 事件响应：有动画地更新状态
+    // ──────────────────────────────────────────────────────────────────────
+
+    private void HandleGoalCompleted(string inLevelID, int inGoalID, GoalNoteStep completedStep)
+    {
+        if (inLevelID != levelID || inGoalID != goalID)
+            return;
+
+        // isSingleStep 时任何 Step 到达即为全部完成
+        bool isFullyDone = completedStep == GoalNoteStep.Step2 || isSingleStep;
+
+        AnimateFill(isFullyDone ? 1f : 0.5f);
+        AnimateBadge(isFullyDone ? badgeCheckSprite : badgeStep1Sprite);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // 内部动画
+    // ──────────────────────────────────────────────────────────────────────
+
+    private void AnimateFill(float targetFill)
+    {
+        if (fillImage == null) return;
+        fillImage.DOKill();
+        fillImage.DOFillAmount(targetFill, FillDuration).SetEase(Ease.OutQuad);
+    }
+
+    private void AnimateBadge(Sprite nextSprite)
+    {
+        if (badgeImage == null) return;
+        badgeImage.sprite = nextSprite;
+        badgeImage.transform.DOKill();
+        badgeImage.transform.DOPunchScale(Vector3.one * 0.4f, PunchDuration, 2, 0.5f);
+    }
+}
