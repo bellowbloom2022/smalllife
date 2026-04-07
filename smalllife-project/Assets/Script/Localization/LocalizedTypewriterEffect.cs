@@ -20,6 +20,8 @@ public class LocalizedTypewriterEffect : MonoBehaviour
 
     [Header("Lifecycle")]
     [SerializeField] private bool autoPlayOnEnable = false;
+    [SerializeField] private bool enableBlankClickSkip = false;
+    [SerializeField] private bool autoEnableBlankClickSkipForCongrats = true;
 
     [Header("Trigger Visual")]
     [SerializeField] private Color normalTextColor = Color.black;
@@ -73,6 +75,7 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private void OnEnable()
     {
         LeanLocalization.OnLocalizationChanged += UpdateLocalizationAndMaybeRestart;
+        InputRouter.OnBlankClickAnyButton += HandleBlankClickAnyButton;
         if (autoPlayOnEnable && !string.IsNullOrEmpty(phraseName))
         {
             Play(phraseName);
@@ -82,12 +85,24 @@ public class LocalizedTypewriterEffect : MonoBehaviour
     private void OnDisable()
     {
         LeanLocalization.OnLocalizationChanged -= UpdateLocalizationAndMaybeRestart;
+        InputRouter.OnBlankClickAnyButton -= HandleBlankClickAnyButton;
         if (typingCoroutine != null)
         {
             StopCoroutine(typingCoroutine);
             typingCoroutine = null;
         }
         onFinishedCallback = null;
+    }
+
+    private void HandleBlankClickAnyButton(int mouseButton)
+    {
+        if (!ShouldEnableBlankClickSkip())
+            return;
+
+        if (!IsTyping)
+            return;
+
+        SkipToEnd();
     }
 
     // 对外：播放指定 key 的打字机，并在完成时回调
@@ -295,5 +310,21 @@ public class LocalizedTypewriterEffect : MonoBehaviour
             return FontStyle.Italic;
 
         return baseFontStyle;
+    }
+
+    private bool ShouldEnableBlankClickSkip()
+    {
+        if (enableBlankClickSkip)
+            return true;
+
+        return autoEnableBlankClickSkipForCongrats && IsCongratsKey(phraseName);
+    }
+
+    private static bool IsCongratsKey(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+            return false;
+
+        return key.IndexOf("congrats", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 }

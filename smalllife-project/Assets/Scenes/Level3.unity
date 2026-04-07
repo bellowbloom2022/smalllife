@@ -8527,9 +8527,12 @@ MonoBehaviour:
   - {fileID: 1186233122}
   dialogueAnchorsPostAnim1:
   - {fileID: 210378901}
-  collidersPostAnim2: []
-  dialogueSpritesPostAnim2: []
-  dialogueAnchorsPostAnim2: []
+  collidersPostAnim2:
+  - {fileID: 888309707}
+  dialogueSpritesPostAnim2:
+  - {fileID: 1186233122}
+  dialogueAnchorsPostAnim2:
+  - {fileID: 210378901}
   animator: {fileID: 211113251}
   step1Completed: 0
   step2Completed: 0
@@ -19211,7 +19214,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &479173895 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1982727961260772258, guid: a50762d7d7da34e88a068a1d70cce374, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5249366027145761550, guid: a50762d7d7da34e88a068a1d70cce374, type: 3}
   m_PrefabInstance: {fileID: 479173893}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -27086,10 +27089,19 @@ MonoBehaviour:
   - {fileID: 1468547652}
   collidersPostAnim2:
   - {fileID: 1322455888}
+  - {fileID: 1913887796}
+  - {fileID: 705550343}
+  - {fileID: 1121064872}
   dialogueSpritesPostAnim2:
   - {fileID: 1348000669}
+  - {fileID: 1217819366}
+  - {fileID: 625348104}
+  - {fileID: 308327576}
   dialogueAnchorsPostAnim2:
   - {fileID: 1830553661}
+  - {fileID: 992402052}
+  - {fileID: 25989399}
+  - {fileID: 1468547652}
   animator: {fileID: 682731216}
   step1Completed: 0
   step2Completed: 0
@@ -32970,13 +32982,13 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: Spot 4 An isolated village north of Shanghai, separated by rivers and bridges
+    Text: An isolated village north of Shanghai
     Object: {fileID: 0}
   - Language: Chinese
-    Text: "\u5730\u70B94 \u5728\u4E0A\u6D77\u5E02\u5317\u8FB9\u88AB\u6CB3\u6D41\u548C\u5927\u6865\u9694\u5F00\u7684\u4E00\u4E2A\u72EC\u7ACB\u6751\u843D"
+    Text: "\u5728\u4E0A\u6D77\u5E02\u5317\u8FB9\u7684\u4E00\u4E2A\u72EC\u7ACB\u6751\u843D"
     Object: {fileID: 0}
   - Language: Japanese
-    Text: "\u5834\u6240\uFF14 \u4E0A\u6D77\u5E02\u306E\u5317\u5074\u306B\u3042\u308A\u3001\u5DDD\u3068\u6A4B\u306B\u3088\u3063\u3066\u9694\u3066\u3089\u308C\u305F\u72EC\u7ACB\u3057\u305F\u6751\u843D"
+    Text: "\u4E0A\u6D77\u5E02\u306E\u5317\u5074\u306B\u72EC\u7ACB\u3057\u305F\u6751\u843D"
     Object: {fileID: 0}
 --- !u!1 &888309705
 GameObject:
@@ -35127,6 +35139,22 @@ PrefabInstance:
       propertyPath: translationName
       value: SPOT4
       objectReference: {fileID: 0}
+    - target: {fileID: 6689509465396123097, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689509465396123098, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689509465396123099, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 473.89
+      objectReference: {fileID: 0}
+    - target: {fileID: 6689509465396123099, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 51.831
+      objectReference: {fileID: 0}
     - target: {fileID: 6689509466260880429, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -35143,6 +35171,10 @@ PrefabInstance:
       propertyPath: m_Text
       value: "\u4E00\u680B\u8001\u5EFA\u7B51\uFF0C\u5750\u843D\u5728\u4E00\u4E2A\u5341\u5B57\u8DEF\u53E3\u3002\u62E5\u6709\u5386\u53F2\u7684\u8001\u5EFA\u7B51\u4E00\u76F4\u662F\u8FD9\u4E2A\u57CE\u5E02\u8FF7\u4EBA\u7684\u5730\u65B9\u3002"
       objectReference: {fileID: 0}
+    - target: {fileID: 6689509466789752641, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
+      propertyPath: popupSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0f91d26e4e963c046a86783200f5aaef, type: 3}
     - target: {fileID: 6689509466789752641, guid: 088f5d366ca10420ababe32d0e09352b, type: 3}
       propertyPath: edgePeekButton
       value: 
@@ -37944,10 +37976,13 @@ MonoBehaviour:
   - {fileID: 1526079716}
   collidersPostAnim2:
   - {fileID: 86420265}
+  - {fileID: 2045499590}
   dialogueSpritesPostAnim2:
   - {fileID: 370629622}
+  - {fileID: 310597744}
   dialogueAnchorsPostAnim2:
   - {fileID: 1664813649}
+  - {fileID: 1526079716}
   animator: {fileID: 1064481410}
   step1Completed: 0
   step2Completed: 0
@@ -67627,10 +67662,13 @@ MonoBehaviour:
   - {fileID: 1107884071}
   collidersPostAnim2:
   - {fileID: 1457317621}
+  - {fileID: 552458029}
   dialogueSpritesPostAnim2:
   - {fileID: 1197860330}
+  - {fileID: 1049013250}
   dialogueAnchorsPostAnim2:
   - {fileID: 716138179}
+  - {fileID: 1107884071}
   animator: {fileID: 1973079792}
   step1Completed: 0
   step2Completed: 0

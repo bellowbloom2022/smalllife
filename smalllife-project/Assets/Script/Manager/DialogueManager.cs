@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -10,6 +11,11 @@ public class DialogueManager : MonoBehaviour
     private GameObject activeDialogueSprite;
     private RectTransform activeSpriteRect;
     private ContentSizeFitter sizeFitter;
+    private LocalizedTypewriterEffect activeTypewriter;
+    private readonly HashSet<GameObject> playedTypewriterDialogues = new HashSet<GameObject>();
+    private readonly HashSet<GameObject> raycastDisabledDialogueRoots = new HashSet<GameObject>();
+    private readonly Dictionary<GameObject, LocalizedTypewriterEffect> typewriterCache = new Dictionary<GameObject, LocalizedTypewriterEffect>();
+    private bool suppressNextSceneClick;
 
     private void Awake()
     {
@@ -26,16 +32,19 @@ public class DialogueManager : MonoBehaviour
     void OnEnable()
     {
         InputRouter.OnBlankClick += TryHide;
+        InputRouter.OnBlankClickAnyButton += TryHideByAnyButton;
     }
 
     void OnDisable()
     {
         InputRouter.OnBlankClick -= TryHide;
+        InputRouter.OnBlankClickAnyButton -= TryHideByAnyButton;
     }
 
     public void ShowDialogue(GameObject dialogueSprite, Transform anchor)
     {
         HideDialogue();
+        suppressNextSceneClick = false;
 
         activeDialogueSprite = dialogueSprite;
         activeDialogueSprite.SetActive(true);
@@ -56,6 +65,8 @@ public class DialogueManager : MonoBehaviour
         {
             activeSpriteRect.anchoredPosition = anchoredPos;
         }
+
+        PrepareGoalTypewriter(dialogueSprite);
     }
 
     public void HideDialogue()
@@ -64,12 +75,19 @@ public class DialogueManager : MonoBehaviour
         {
             activeDialogueSprite.SetActive(false);
             activeDialogueSprite = null;
+            activeTypewriter = null;
         }
+
+        suppressNextSceneClick = false;
     }
 
     private void DisableDialogueRaycastBlocking(GameObject dialogueRoot)
     {
         if (dialogueRoot == null)
+            return;
+
+        // 对同一个对话根节点只做一次遍历，避免重复 GetComponentsInChildren 开销。
+        if (raycastDisabledDialogueRoots.Contains(dialogueRoot))
             return;
 
         Graphic[] graphics = dialogueRoot.GetComponentsInChildren<Graphic>(true);
@@ -83,15 +101,73 @@ public class DialogueManager : MonoBehaviour
         {
             canvasGroup.blocksRaycasts = false;
         }
+
+        raycastDisabledDialogueRoots.Add(dialogueRoot);
     }
     
     public void TryHide()
     {
+        TryHandleDialogueBlankClick();
+    }
+
+    public bool ConsumeSuppressedSceneClick()
+    {
+        if (!suppressNextSceneClick)
+            return false;
+
+        suppressNextSceneClick = false;
+        return true;
+    }
+
+    private void TryHideByAnyButton(int mouseButton)
+    {
+        if (mouseButton != 1)
+            return;
+
+        TryHandleDialogueBlankClick();
+    }
+
+    private void TryHandleDialogueBlankClick()
+    {
         if (IsDialogueActive())
         {
+            if (activeTypewriter != null && activeTypewriter.IsTyping)
+            {
+                activeTypewriter.SkipToEnd();
+                suppressNextSceneClick = true;
+                return;
+            }
+
             HideDialogue();
-            InputRouter.Instance.UnlockInput();
+
+            if (InputRouter.Instance != null)
+                InputRouter.Instance.UnlockInput();
         }
+    }
+
+    private void PrepareGoalTypewriter(GameObject dialogueRoot)
+    {
+        activeTypewriter = null;
+
+        if (dialogueRoot == null)
+            return;
+
+        if (!typewriterCache.TryGetValue(dialogueRoot, out LocalizedTypewriterEffect typewriter))
+        {
+            typewriter = dialogueRoot.GetComponentInChildren<LocalizedTypewriterEffect>(true);
+            typewriterCache[dialogueRoot] = typewriter;
+        }
+
+        if (typewriter == null)
+            return;
+
+        activeTypewriter = typewriter;
+
+        bool hasPlayedBefore = playedTypewriterDialogues.Contains(dialogueRoot);
+        typewriter.Play(typewriter.phraseName, instant: hasPlayedBefore);
+
+        if (!hasPlayedBefore)
+            playedTypewriterDialogues.Add(dialogueRoot);
     }
 
     public bool IsDialogueActive() => activeDialogueSprite != null;

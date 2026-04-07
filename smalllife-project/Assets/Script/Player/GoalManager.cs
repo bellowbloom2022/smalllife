@@ -18,6 +18,9 @@ public class GoalManager : MonoBehaviour
 
     private void HandleClick(Vector3 screenPosition)
     {
+        if (DialogueManager.Instance != null && DialogueManager.Instance.ConsumeSuppressedSceneClick())
+            return;
+
         // 单通道：先处理 Goal 的 3D 点击（步骤推进）
         if (TryHandleGoalStepClick(screenPosition))
             return;

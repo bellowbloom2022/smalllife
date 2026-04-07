@@ -8,6 +8,7 @@ public class InputRouter : MonoBehaviour
     public event Action<Vector3> OnDrag;   // 拖拽事件（delta）
     public event Action<Vector3> OnClick;  // 点击事件（屏幕位置）
     public static event Action OnBlankClick;
+    public static event Action<int> OnBlankClickAnyButton;
 
     private Vector3 lastMousePos;
     private float clickCooldown = 0.2f;
@@ -58,18 +59,31 @@ public class InputRouter : MonoBehaviour
         }
 
         // === 点击检测 ===
-        if (Input.GetMouseButtonDown(0) && now - lastClickTime >= clickCooldown)
+        ProcessBlankClick(0, now);
+        ProcessBlankClick(1, now);
+    }
+
+    private void ProcessBlankClick(int button, float now)
+    {
+        if (!Input.GetMouseButtonDown(button))
+            return;
+
+        if (now - lastClickTime < clickCooldown)
+            return;
+
+        lastClickTime = now;
+
+        bool isOverUI = UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition);
+        if (isOverUI)
+            return;
+
+        if (button == 0)
         {
-            lastClickTime = now;
-
-            // 点在 UI 上：不向场景派发点击，避免穿透
-            bool isOverUI = UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition);
-            if (isOverUI)
-                return;
-
-            OnBlankClick?.Invoke(); // 点击空白区域（非 UI）
+            OnBlankClick?.Invoke(); // 兼容旧逻辑：左键点击空白
             OnClick?.Invoke(Input.mousePosition);
         }
+
+        OnBlankClickAnyButton?.Invoke(button);
     }
 
     public void SetDragMode(string mode)

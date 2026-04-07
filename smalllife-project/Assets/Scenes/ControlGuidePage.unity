@@ -123,95 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &113960185
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 113960186}
-  - component: {fileID: 113960189}
-  - component: {fileID: 113960188}
-  - component: {fileID: 113960187}
-  m_Layer: 6
-  m_Name: colorOverlayImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &113960186
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113960185}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1475139641}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 19.1745, y: 14.9135}
-  m_SizeDelta: {x: 2469.662, y: 1493.3118}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &113960187
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113960185}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
---- !u!114 &113960188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113960185}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 9a9737be220c345088b87a42762345b3, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9b6c91151d8b7374ab10cf537cd0beb1, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &113960189
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 113960185}
-  m_CullTransparentMesh: 1
 --- !u!1 &222484011
 GameObject:
   m_ObjectHideFlags: 0
@@ -369,7 +280,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
     m_FontSize: 30
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 3
     m_MaxSize: 40
@@ -379,7 +290,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "ESC\u5F00\u542F\u6682\u505C\u83DC\u5355"
+  m_Text: Press ESC to open the pause menu
 --- !u!222 &280393927
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -464,7 +375,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
     m_FontSize: 30
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 3
     m_MaxSize: 40
@@ -474,7 +385,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5DE6\u952E\u70B9\u51FB\u5373\u53EF\u4E92\u52A8"
+  m_Text: Left-click to interact.
 --- !u!222 &665019553
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -559,7 +470,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
     m_FontSize: 30
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 3
     m_MaxSize: 40
@@ -569,7 +480,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "WASD\u6216\u53F3\u952E\u62D6\u52A8\u5747\u53EF\u79FB\u52A8\u753B\u9762"
+  m_Text: Use the mouse wheel to zoom in and out, and WASD to move the canvas.
 --- !u!222 &673255445
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -683,7 +594,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Chinese
+  currentLanguage: English
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1
@@ -1594,7 +1505,6 @@ RectTransform:
   - {fileID: 273517838}
   - {fileID: 1243232044}
   - {fileID: 1205083995}
-  - {fileID: 113960186}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1885,7 +1795,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 12800000, guid: 718e26e2be600964c90dee42dee3e7b4, type: 3}
     m_FontSize: 30
-    m_FontStyle: 1
+    m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 3
     m_MaxSize: 40
@@ -1895,7 +1805,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u6ED1\u52A8\u6EDA\u8F6E\u7F29\u653E\u89C6\u89D2"
+  m_Text: Use the mouse wheel to zoom in and out
 --- !u!222 &1933710437
 CanvasRenderer:
   m_ObjectHideFlags: 0
