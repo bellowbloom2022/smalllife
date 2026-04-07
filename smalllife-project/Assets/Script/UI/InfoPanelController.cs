@@ -35,6 +35,8 @@ public class InfoPanelController : BasePanel
     private bool isCompletionMode;
     private bool isExpanded;
     private bool isInitialized;
+    private bool _completionShowTitle;
+    private bool _completionShowNextButton;
     private Vector2 lastParentRectSize;
     private CanvasGroup nextLevelNameCanvasGroup;
     private CanvasGroup nextButtonCanvasGroup;
@@ -83,6 +85,11 @@ public class InfoPanelController : BasePanel
 
     public void OpenFromSignboard()
     {
+        if (isCompletionMode)
+        {
+            ExpandPanel();
+            return;
+        }
         ResetToNormalMode();
         ExpandPanel();
     }
@@ -156,6 +163,8 @@ public class InfoPanelController : BasePanel
         else
             Debug.LogWarning("InfoPanelController: nextButton is not assigned in Inspector.");
 
+        _completionShowTitle = shouldShowTitle;
+        _completionShowNextButton = shouldShowNextButton;
         ExpandPanel();
         PlayCompletionRevealSequence(shouldShowTitle, shouldShowNextButton);
     }
@@ -277,6 +286,10 @@ public class InfoPanelController : BasePanel
 
         isExpanded = false;
         completionSequence?.Kill();
+
+        if (isCompletionMode)
+            ShowCompletionElementsImmediate();
+
         MovePanel(foldedAnchoredPosition, panelSlideDuration);
 
         if (edgePeekButton != null)
@@ -291,6 +304,29 @@ public class InfoPanelController : BasePanel
         isExpanded = false;
         edgePeekButton?.gameObject.SetActive(true);
         panelRect.anchoredPosition = foldedAnchoredPosition;
+    }
+
+    private void ShowCompletionElementsImmediate()
+    {
+        if (checkmarkImage != null)
+        {
+            checkmarkImage.gameObject.SetActive(true);
+            checkmarkImage.color = WithAlpha(checkmarkImage.color, 1f);
+        }
+
+        if (_completionShowTitle && nextLevelNameText != null)
+        {
+            nextLevelNameText.gameObject.SetActive(true);
+            if (nextLevelNameCanvasGroup != null)
+                nextLevelNameCanvasGroup.alpha = 1f;
+        }
+
+        if (_completionShowNextButton && nextButton != null)
+        {
+            nextButton.gameObject.SetActive(true);
+            if (nextButtonCanvasGroup != null)
+                nextButtonCanvasGroup.alpha = 1f;
+        }
     }
 
     private void MovePanel(Vector2 targetPos, float duration)

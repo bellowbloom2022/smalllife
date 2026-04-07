@@ -108,6 +108,28 @@
 
 ---
 
+## 后续 Bug 修复记录
+
+### [2026-04-06] 完成态再次打开时元素消失
+
+**问题现象：**
+
+1. 关卡完成后 InfoPanel 自动展开，若此时点击 InfoPanel 面板本身，面板折叠。再次打开时，NextLevelName 和 NextButton 消失（Checkmark 仍显示）。
+2. 点击场景内牌子（SignboardTrigger）重开时，Checkmark / NextLevelName / NextButton 全部消失。
+
+**根本原因：**
+
+1. `FoldPanel` 会 `Kill` 掉 `completionSequence`，若动画尚未播完，NextLevelName / NextButton 停留在 `SetActive(false)` 的中间态，但 `isCompletionMode` 仍为 true。再次展开时无任何逻辑恢复这些元素。
+2. `OpenFromSignboard` 无条件调用 `ResetToNormalMode()`，直接清除所有 completion 状态。
+
+**修复方式（`InfoPanelController.cs`）：**
+
+- 新增 `_completionShowTitle` / `_completionShowNextButton` 字段，在 `ShowAsCompletion` 中保存参数。
+- `FoldPanel` 折叠时，若 `isCompletionMode == true`，调用新增的 `ShowCompletionElementsImmediate()`，将 Checkmark / NextLevelName / NextButton 立即置为最终可见状态（`SetActive(true)` + `alpha = 1`）。
+- `OpenFromSignboard` 中新增判断：若 `isCompletionMode == true`，跳过 `ResetToNormalMode()`，直接 `ExpandPanel()` 返回。
+
+---
+
 ## 本次 review 记录的后续优化项
 
 以下不是当前阻塞项，留待后续统一处理：

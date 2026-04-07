@@ -76,3 +76,37 @@ LocalizedTypewriterEffect.Play()
 - 预设系统（快/标准/慢方案）
 - 按字符族差异化（CJK vs 拉丁）
 - 音效同步优化（标点快进时减少音效触发）
+
+---
+
+## 2026-04-07 增补：LoadingPage Congrats 点击跳过
+
+为统一文字播放交互，`LocalizedTypewriterEffect` 新增了“点击空白时打字立即全出”的能力，并默认对 `congrats` 类 key 自动生效。
+
+### 目标范围
+
+- `Level0LoadingPage.unity`：`level0_congrats`
+- `Level1LoadingPage.unity`：`level1_congrats`
+- `Level2LoadingPage.unity`：`level2_congrats`
+- `Level3LoadingPage.unity`：`level3_congrats`
+
+### 触发机制
+
+- 监听 `InputRouter.OnBlankClickAnyButton`
+- 当文本处于 `IsTyping` 时，点击空白触发 `SkipToEnd()`
+- 左键/右键均可触发（与 GoalDialog 的“点击可全出”体验统一）
+
+### 参数与策略
+
+新增参数：
+
+- `enableBlankClickSkip`（默认 `false`）：手动强制启用点击跳过
+- `autoEnableBlankClickSkipForCongrats`（默认 `true`）：当 key 包含 `congrats` 时自动启用
+
+自动判定规则：`phraseName` 包含 `congrats`（不区分大小写）即启用。
+
+### 兼容性
+
+- 不修改现有 `Play()` 调用链
+- 非 `congrats` 文本默认不受影响（除非显式打开 `enableBlankClickSkip`）
+- 保持原有多语言速度优化参数与布局优化策略不变
