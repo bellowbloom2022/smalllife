@@ -54,6 +54,10 @@ public class Level : MonoBehaviour
         UpdateGoalText();
 
         UpdateLevelGoals();
+
+        // 读档进入且已全收集时，也要恢复 InfoPanel 的完成态（含 next button/checkmark）。
+        if (mCount >= TotalCount)
+            StartCoroutine(ShowCompletionInfoPanelNextFrame());
     }
 
     private void OnDestroy()
@@ -103,7 +107,7 @@ public class Level : MonoBehaviour
             {
                 goal.ApplySavedProgress(progress);
 
-                if (progress.step1Completed && progress.step2Completed)
+                if (IsGoalCompletedForCount(goal, progress))
                     found++;
             }
         }
@@ -166,6 +170,12 @@ public class Level : MonoBehaviour
             yield return new WaitForSeconds(completionInfoPanelDelay);
 
         completionInfoPanelCoroutine = null;
+        ShowCompletionInfoPanel();
+    }
+
+    private IEnumerator ShowCompletionInfoPanelNextFrame()
+    {
+        yield return null;
         ShowCompletionInfoPanel();
     }
 
@@ -236,7 +246,7 @@ public class Level : MonoBehaviour
             if (goal == null) continue;
             string key = $"{currentLevelIndex}_{goal.GoalID}";
             if (data.goalProgressMap.TryGetValue(key, out var progress) &&
-                progress.step1Completed && progress.step2Completed)
+                IsGoalCompletedForCount(goal, progress))
             {
                 UpdateGoalUI(goal.gameObject);
                 foundCount++;
@@ -268,9 +278,25 @@ public class Level : MonoBehaviour
     public bool IsGoalFound(int goalID)
     {
         string key = currentLevelIndex + "_" + goalID;
-        return SaveSystem.GameData.goalProgressMap.ContainsKey(key) &&
-               SaveSystem.GameData.goalProgressMap[key].step1Completed &&
-               SaveSystem.GameData.goalProgressMap[key].step2Completed;
+        if (!SaveSystem.GameData.goalProgressMap.TryGetValue(key, out var progress))
+            return false;
+
+        Goal goal = goalComponents.Find(g => g != null && g.GoalID == goalID);
+        if (goal is SingleGoal)
+            return progress.step1Completed;
+
+        return progress.step1Completed && progress.step2Completed;
+    }
+
+    private static bool IsGoalCompletedForCount(Goal goal, GoalProgress progress)
+    {
+        if (goal == null || progress == null)
+            return false;
+
+        if (goal is SingleGoal)
+            return progress.step1Completed;
+
+        return progress.step1Completed && progress.step2Completed;
     }
     
     public void CompleteStep(string levelID, int goalID, int step)

@@ -39,6 +39,33 @@ HandleStep2AnimEnd()
     → step2Completed = true
 ```
 
+### SingleGoal（单步目标）补充流程（2026-04-08）
+
+```
+玩家点击 SingleGoal
+    ↓
+OnClicked()
+    ↓
+PlayStep1()
+    → animator.SetTrigger("step1")
+    → BeginStep1() → ExecuteStep(step1Config)
+    ↓
+[single-step animation plays...]
+    ↓
+OnAnimEnd()
+    ↓
+EndStep(step1Config)
+    ↓
+TriggerCollectAnimation(false)
+    → AddCount()
+    → step1Completed = true
+    → step2Completed = false
+```
+
+- `SingleGoal` 仍然复用 `step1` trigger 与 `OnAnimEnd()` 动画事件。
+- 不再走第二次点击；step1 动画播完后直接进入收集。
+- 计数、读档恢复、InfoPanel 完成判定都按 `step1Completed == true` 视为单步目标完成。
+
 ---
 
 ## 关键字段（StepConfig）
@@ -66,6 +93,14 @@ HandleStep2AnimEnd()
 
 > ⚠️ 常见错误：事件时间 > 动画时长 → 事件永远不触发 → 输入永久冻结
 > 见：[goal-input-lock-bug.md](../tasks/ongoing/goal-input-lock-bug.md)
+
+### 命名约定（2026-04-08 更新）
+
+- 当前项目已统一回 `goal` 命名体系，`SingleGoal` 也应使用与普通 Goal 一致的 Animator 状态名：
+    - `0_goal{ID}_normal`
+    - `1_goal{ID}`
+    - `1_goal{ID}_loop`
+- 不再建议新建 `sgoal` 命名分支，否则读档恢复与通用状态回放会额外分叉。
 
 ---
 
@@ -137,4 +172,5 @@ enum Stage { PreAnim1, PostAnim1, PostAnim2 }
 - 当前关卡完成后的 `InfoPanel` 弹出时机，不放在 `Goal` 内部处理，而是由 `Level` 在总目标数满足后统一调度。
 - 这样可以避免把 `panel-note` 的打字节奏、关卡完成态 UI 和 Goal 单体逻辑耦合在一起。
 - 当前实现还额外保留约 `1.5s` 延迟，给 note-panel 的文字显示留出缓冲。
+- 若带存档重新进入且该关卡已全完成，`Level.Start()` 也会在初始化计数后主动恢复 `InfoPanel` 完成态，不依赖再次收集触发。
 - 详见 `../tasks/resolved/panel-info-completion-flow.md`。

@@ -45,7 +45,7 @@
 | [dropdown-caption-lean-localized-text-conflict.md](tasks/resolved/dropdown-caption-lean-localized-text-conflict.md) | Dropdown CaptionText 被 Dropdown 接管，Label 上挂 LeanLocalizedText 无效的根因与修复 |
 | [panel-info-completion-flow.md](tasks/resolved/panel-info-completion-flow.md) | Panel_info 完成态、折叠侧边栏、音效与弹出节奏调整 |
 | [goal-dialog-typewriter-click-behavior.md](tasks/resolved/goal-dialog-typewriter-click-behavior.md) | GoalDialog 首播打字/复播秒出、打字中点击全文、左右键空白统一关闭 |
-| [single-goal-click-lag-exittime-hotfix.md](tasks/resolved/single-goal-click-lag-exittime-hotfix.md) | Level0 GoalID=2 单步目标点击迟滞：ExitTime 临时修复已执行，代码根治方案待做 |
+| [single-goal-click-lag-exittime-hotfix.md](tasks/resolved/single-goal-click-lag-exittime-hotfix.md) | SingleGoal 点击链路、读档恢复、统一命名与完成态恢复修复 |
 
 ---
 
