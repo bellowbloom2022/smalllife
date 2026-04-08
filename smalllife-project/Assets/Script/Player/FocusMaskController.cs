@@ -12,6 +12,7 @@ public class FocusMaskController : MonoBehaviour
     Transform followTarget;
     Camera cam;
     Tween radiusTween;
+    int focusSessionId;
 
     void Awake()
     {
@@ -22,6 +23,12 @@ public class FocusMaskController : MonoBehaviour
 
     void Update()
     {
+        if (cam == null)
+            cam = Camera.main;
+
+        if (cam == null)
+            return;
+
         if (followTarget == null) return;
 
         Vector3 screenPos = cam.WorldToScreenPoint(followTarget.position);
@@ -35,6 +42,17 @@ public class FocusMaskController : MonoBehaviour
 
     public void Show(Transform target, float radius, float duration)
     {
+        if (target == null)
+            return;
+
+        if (maskImage.enabled && followTarget == target)
+        {
+            float currentRadius = maskMaterial.GetFloat("_Radius");
+            if (Mathf.Abs(currentRadius - radius) < 0.0001f)
+                return;
+        }
+
+        focusSessionId++;
         StopRadiusTween();
         followTarget = target;
         maskImage.enabled = true;
@@ -51,6 +69,7 @@ public class FocusMaskController : MonoBehaviour
 
     public void Hide(float duration, FocusHideMode hideMode = FocusHideMode.LegacyShrink)
     {
+        int currentSessionId = ++focusSessionId;
         StopRadiusTween();
 
         float targetRadius = hideMode == FocusHideMode.ExpandToFullThenHide
@@ -64,6 +83,9 @@ public class FocusMaskController : MonoBehaviour
             duration
         ).OnComplete(() =>
         {
+            if (currentSessionId != focusSessionId)
+                return;
+
             followTarget = null;
             maskImage.enabled = false;
             radiusTween = null;

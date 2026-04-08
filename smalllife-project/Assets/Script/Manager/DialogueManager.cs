@@ -139,9 +139,6 @@ public class DialogueManager : MonoBehaviour
             }
 
             HideDialogue();
-
-            if (InputRouter.Instance != null)
-                InputRouter.Instance.UnlockInput();
         }
     }
 

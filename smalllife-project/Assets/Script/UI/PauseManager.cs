@@ -7,6 +7,9 @@ public class PauseManager : MonoBehaviour
 
     void Update()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();

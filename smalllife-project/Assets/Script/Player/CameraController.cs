@@ -20,6 +20,15 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
+        if (mainCamera == null)
+            return;
+
         if (GameManager.instance != null && GameManager.instance.CheckGuiRaycastObject())
             return;
 

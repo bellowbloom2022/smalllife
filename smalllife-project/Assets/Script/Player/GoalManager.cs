@@ -3,21 +3,49 @@ using UnityEngine;
 public class GoalManager : MonoBehaviour
 {
     public Goal[] goals;
+    private InputRouter subscribedRouter;
 
     private void OnEnable()
     {
-        if (InputRouter.Instance != null)
-            InputRouter.Instance.OnClick += HandleClick;
+        InputRouter.InstanceReady += HandleInputRouterReady;
+        TrySubscribeToRouter(InputRouter.Instance);
     }
 
     private void OnDisable()
     {
-        if (InputRouter.Instance != null)
-            InputRouter.Instance.OnClick -= HandleClick;
+        InputRouter.InstanceReady -= HandleInputRouterReady;
+        UnsubscribeFromRouter();
+    }
+
+    private void HandleInputRouterReady(InputRouter router)
+    {
+        TrySubscribeToRouter(router);
+    }
+
+    private void TrySubscribeToRouter(InputRouter router)
+    {
+        if (router == null || router == subscribedRouter)
+            return;
+
+        UnsubscribeFromRouter();
+        router.OnClick += HandleClick;
+        subscribedRouter = router;
+    }
+
+    private void UnsubscribeFromRouter()
+    {
+        if (subscribedRouter == null)
+            return;
+
+        subscribedRouter.OnClick -= HandleClick;
+        subscribedRouter = null;
     }
 
     private void HandleClick(Vector3 screenPosition)
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (DialogueManager.Instance != null && DialogueManager.Instance.ConsumeSuppressedSceneClick())
             return;
 

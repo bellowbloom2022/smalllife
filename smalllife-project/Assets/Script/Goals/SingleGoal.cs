@@ -25,6 +25,9 @@ public class SingleGoal : Goal
 
     public override void OnClicked()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (isCollecting || step1Completed || singleStage == SingleGoalStage.Collected)
             return;
 

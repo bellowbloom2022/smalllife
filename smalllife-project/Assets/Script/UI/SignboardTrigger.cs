@@ -6,6 +6,9 @@ public class SignboardTrigger : MonoBehaviour
 
     private void OnMouseUp()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (infoPanel != null)
             infoPanel.OpenFromSignboard();
     }

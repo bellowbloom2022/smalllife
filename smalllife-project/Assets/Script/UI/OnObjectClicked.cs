@@ -9,6 +9,9 @@ public class OnObjectClicked : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (UIBlockChecker.IsPointerOverUI() || BasePanel.IsPointerOverAnyShownPanel(Input.mousePosition))
             return;
 

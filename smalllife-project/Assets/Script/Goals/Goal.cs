@@ -55,7 +55,9 @@ public class Goal : MonoBehaviour
 
     private BoxCollider[] allGoalBoxColliders;
     private int inputLockVersion;
-    private const float MinInputUnlockFallbackDelay = 0.4f;
+    private const float FallbackUnlockTimeout = 8f;
+    private bool stepCutsceneActive;
+    private float stepCutsceneStartTime;
 
 
     protected virtual void Start()
@@ -68,6 +70,10 @@ public class Goal : MonoBehaviour
     }
     public virtual void OnClicked()
     {
+        // Block any new goal trigger while a step cutscene is running.
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         // 防止 Step2 期间重复点击（可选但推荐）
         if (step2Completed)
             return;
@@ -341,12 +347,11 @@ public class Goal : MonoBehaviour
     {
         if (config == null) return;
 
-        if (config.lockInput)
-        {
-            ScheduleInputUnlockFallback(config);
-            if (InputRouter.Instance != null)
-                InputRouter.Instance.LockInput();
-        }
+        stepCutsceneActive = true;
+        stepCutsceneStartTime = Time.time;
+        ScheduleInputUnlockFallback();
+        if (InputRouter.Instance != null)
+            InputRouter.Instance.LockInput($"Goal#{goalID}.ExecuteStep");
 
         if (config.useFocus && config.focusTarget != null)
         {
@@ -372,24 +377,25 @@ public class Goal : MonoBehaviour
         }
     }
 
-    private void ScheduleInputUnlockFallback(StepConfig config)
+    private void ScheduleInputUnlockFallback()
     {
         int lockVersion = ++inputLockVersion;
-        float fallbackDelay = Mathf.Max(
-            MinInputUnlockFallbackDelay,
-            config.cameraDelay + config.cameraDuration + 0.5f
-        );
+        float fallbackDelay = FallbackUnlockTimeout;
 
         DOVirtual.DelayedCall(fallbackDelay, () =>
         {
             if (lockVersion != inputLockVersion)
                 return;
 
+            if (!stepCutsceneActive)
+                return;
+
             if (InputRouter.Instance == null || !InputRouter.Instance.InputLocked)
                 return;
 
-            Debug.LogWarning($"[Goal {goalID}] Fallback unlock triggered.");
-            InputRouter.Instance.UnlockInput();
+            float elapsed = Time.time - stepCutsceneStartTime;
+            Debug.LogWarning($"[Goal {goalID}] Fallback unlock triggered after timeout {elapsed:F2}s.");
+            InputRouter.Instance.UnlockInput($"Goal#{goalID}.Fallback");
         });
     }
 
@@ -418,23 +424,18 @@ public class Goal : MonoBehaviour
     {
         if (config == null) return;
 
+        stepCutsceneActive = false;
+
         if (config.useFocus)
             FocusMaskController.Instance.Hide(config.focusHideDuration, config.focusHideMode);
 
-        if (config.lockInput)
-        {
-            CancelInputUnlockFallback();
-            if (InputRouter.Instance != null)
-                InputRouter.Instance.UnlockInput();
-        }
+        CancelInputUnlockFallback();
+        if (InputRouter.Instance != null)
+            InputRouter.Instance.UnlockInput($"Goal#{goalID}.EndStep");
     }
 
     protected void HandleStep1AnimEnd()
     {
-        // 保险：确保输入解锁，即使 OnAnimEnd 触发异常或没有调用
-        if (step1Config != null && step1Config.lockInput)
-            InputRouter.Instance.UnlockInput();
-
         EndStep(step1Config);
         //this.GetComponent<Animator>().ResetTrigger("click");
         Animator anim = GetComponent<Animator>();
@@ -461,10 +462,6 @@ public class Goal : MonoBehaviour
 
     protected void HandleStep2AnimEnd()
     {
-        // 保险：确保输入解锁，即使 OnAnimEnd 触发异常或没有调用
-        if (step2Config != null && step2Config.lockInput)
-            InputRouter.Instance.UnlockInput();
-
         EndStep(step2Config);
         if (!mIsTriggered)
         {
