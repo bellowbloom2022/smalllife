@@ -128,6 +128,23 @@
 - `FoldPanel` 折叠时，若 `isCompletionMode == true`，调用新增的 `ShowCompletionElementsImmediate()`，将 Checkmark / NextLevelName / NextButton 立即置为最终可见状态（`SetActive(true)` + `alpha = 1`）。
 - `OpenFromSignboard` 中新增判断：若 `isCompletionMode == true`，跳过 `ResetToNormalMode()`，直接 `ExpandPanel()` 返回。
 
+### [2026-04-08] 带存档重进已通关关卡时未恢复完成态
+
+**问题现象：**
+
+- 关卡所有 goal 已完成并已存档。
+- 重新进入同一关卡时，`InfoPanel` 不会自动恢复 completion mode，导致 checkmark / NextLevelName / NextButton 不显示。
+
+**根本原因：**
+
+- 旧逻辑只在本局运行中 `AddCount()` 达到 `TotalCount` 时调用 `ShowCompletionInfoPanel()`。
+- 带存档重进时虽然 `mCount` 已在 `LoadAllGoalStates()` / `UpdateLevelGoals()` 中恢复，但没有任何启动阶段逻辑去重新切换 `InfoPanel` 到完成态。
+
+**修复方式（`Level.cs`）：**
+
+- `Start()` 中在恢复计数后，若 `mCount >= TotalCount`，启动 `ShowCompletionInfoPanelNextFrame()`。
+- 使用“下一帧恢复”而非立即调用，避免与 `InfoPanelController.Start()` 的初始折叠/定位流程抢时序。
+
 ---
 
 ## 本次 review 记录的后续优化项

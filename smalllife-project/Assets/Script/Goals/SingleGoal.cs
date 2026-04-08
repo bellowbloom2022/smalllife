@@ -8,19 +8,38 @@ public class SingleGoal : Goal
         Collected   // 已经收集完成
     }
     private SingleGoalStage singleStage;
+    private bool isCollecting;
 
     protected override void Start()
     {
         base.Start();
-        singleStage = SingleGoalStage.Normal;
+        singleStage = step1Completed ? SingleGoalStage.Collected : SingleGoalStage.Normal;
     }
 
-    public void OnClick()
+    public override void ApplySavedProgress(GoalProgress progress)
     {
-        if (singleStage == SingleGoalStage.Normal)
+        base.ApplySavedProgress(progress);
+        isFound = step1Completed;
+        singleStage = step1Completed ? SingleGoalStage.Collected : SingleGoalStage.Normal;
+    }
+
+    public override void OnClicked()
+    {
+        if (isCollecting || step1Completed || singleStage == SingleGoalStage.Collected)
+            return;
+
+        isCollecting = true;
+        PlayStep1(); // 播放 step1 动画；收集动作在 OnAnimEnd 内触发
+    }
+
+    public override void OnAnimEnd()
+    {
+        // 单步 goal：step1 动画播完后直接收集，不等待 step2 点击
+        if (!step1Completed)
         {
-            TriggerCollectAnimation(false); // 单目标只记 step1，不触发 step2
+            EndStep(step1Config);
             singleStage = SingleGoalStage.Collected;
+            TriggerCollectAnimation(false);
         }
     }
 }

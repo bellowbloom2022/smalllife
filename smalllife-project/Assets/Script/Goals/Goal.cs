@@ -60,7 +60,7 @@ public class Goal : MonoBehaviour
         ApplyClickableCollidersByStepState();
         SFXZone.TryRegister(GetComponent<AudioSource>());
     }
-    public void OnClicked()
+    public virtual void OnClicked()
     {
         // 防止 Step2 期间重复点击（可选但推荐）
         if (step2Completed)
@@ -78,7 +78,7 @@ public class Goal : MonoBehaviour
         }
     }
 
-    public void ApplySavedProgress(GoalProgress progress)
+    public virtual void ApplySavedProgress(GoalProgress progress)
     {
         step1Completed = progress.step1Completed;
         step2Completed = progress.step2Completed;
@@ -143,7 +143,7 @@ public class Goal : MonoBehaviour
         }
     }
 
-    public void PlayLoopAnimationAccordingToStep()
+    public virtual void PlayLoopAnimationAccordingToStep()
     {
         if (animator == null) animator = GetComponent<Animator>();
         if (animator == null) return;
@@ -259,7 +259,7 @@ public class Goal : MonoBehaviour
         currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
         ShowFirstDialogueOfCurrentStage();
     }
-    private void PlayStep1()
+    protected void PlayStep1()
     {
         if (animator == null)
         {
@@ -359,7 +359,7 @@ public class Goal : MonoBehaviour
     {
         inputLockVersion++;
     }
-    public void OnAnimEnd()
+    public virtual void OnAnimEnd()
     {
         // Step1 动画刚播完
         if (!step1Completed)
