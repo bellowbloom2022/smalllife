@@ -1,5 +1,11 @@
 using UnityEngine;
 
+public enum FocusHideMode
+{
+    LegacyShrink = 0,
+    ExpandToFullThenHide = 1
+}
+
 [System.Serializable]
 public class StepConfig
 {
@@ -12,6 +18,7 @@ public class StepConfig
     public float focusRadius = 0.25f;
     public float focusShowDuration = 0.4f;
     public float focusHideDuration = 0.3f;
+    public FocusHideMode focusHideMode = FocusHideMode.LegacyShrink;
 
     [Header("Camera")]
     public bool moveCamera = true;
