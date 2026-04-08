@@ -419,7 +419,7 @@ public class Goal : MonoBehaviour
         if (config == null) return;
 
         if (config.useFocus)
-            FocusMaskController.Instance.Hide(config.focusHideDuration);
+            FocusMaskController.Instance.Hide(config.focusHideDuration, config.focusHideMode);
 
         if (config.lockInput)
         {
