@@ -56,7 +56,7 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
 
     private void Start()
     {
-        ApplyProgress(false, false);
+        ApplyProgressFromSave();
     }
 
     private void OnEnable()
@@ -113,10 +113,12 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
 
     public void ApplyProgress(bool step1Done, bool step2Done)
     {
+        bool isFullyDone = GoalProgressRules.IsCollected(isSingleStep, step1Done, step2Done);
+
         // 填充量（非动画）
         if (fillImage != null)
         {
-            if (step2Done || (isSingleStep && step1Done))
+            if (isFullyDone)
                 fillImage.fillAmount = 1f;
             else if (step1Done)
                 fillImage.fillAmount = 0.5f;
@@ -127,7 +129,7 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
         // 角标 sprite（非动画）
         if (badgeImage != null)
         {
-            if (step2Done || (isSingleStep && step1Done))
+            if (isFullyDone)
                 badgeImage.sprite = badgeCheckSprite;
             else if (step1Done)
                 badgeImage.sprite = badgeStep1Sprite;
@@ -142,7 +144,7 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
 
     private void HandleGoalCompleted(string inLevelID, int inGoalID, GoalNoteStep completedStep)
     {
-        if (inLevelID != levelID || inGoalID != goalID)
+        if (!GoalProgressRules.IsSameLevelID(inLevelID, levelID) || inGoalID != goalID)
             return;
 
         // isSingleStep 时任何 Step 到达即为全部完成
@@ -150,6 +152,38 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
 
         AnimateFill(isFullyDone ? 1f : 0.5f);
         AnimateBadge(isFullyDone ? badgeCheckSprite : badgeStep1Sprite);
+    }
+
+    private void ApplyProgressFromSave()
+    {
+        GoalProgress progress = GetSavedProgress();
+        if (progress == null)
+        {
+            ApplyProgress(false, false);
+            return;
+        }
+
+        ApplyProgress(progress.step1Completed, progress.step2Completed);
+    }
+
+    private GoalProgress GetSavedProgress()
+    {
+        GameData data = SaveSystem.GameData;
+        if (data == null || data.goalProgressMap == null)
+            return null;
+
+        string exactKey = levelID + "_" + goalID;
+        if (!string.IsNullOrEmpty(levelID) && data.goalProgressMap.TryGetValue(exactKey, out GoalProgress exactProgress))
+            return exactProgress;
+
+        if (GoalProgressRules.TryParseLevelIndexStrict(levelID, out int levelIndex))
+        {
+            string numericKey = levelIndex + "_" + goalID;
+            if (data.goalProgressMap.TryGetValue(numericKey, out GoalProgress numericProgress))
+                return numericProgress;
+        }
+
+        return null;
     }
 
     // ──────────────────────────────────────────────────────────────────────

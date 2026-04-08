@@ -94,10 +94,23 @@ public class Goal : MonoBehaviour
     {
         step1Completed = progress.step1Completed;
         step2Completed = progress.step2Completed;
-        isFound = step1Completed && step2Completed;
+        isFound = GoalProgressRules.IsCollected(this, step1Completed, step2Completed);
         ApplyClickableCollidersByStepState();
         PlayLoopAnimationAccordingToStep();
         iconController?.ApplyProgress(step1Completed, step2Completed);
+        ApplyCollectedVisualStateFromSave();
+    }
+
+    private void ApplyCollectedVisualStateFromSave()
+    {
+        bool isCollectedOnSave = GoalProgressRules.IsCollected(this, step1Completed, step2Completed);
+        if (!isCollectedOnSave || mGameObjectNovel == null)
+            return;
+
+        if (destroyNovelObjectAfterCollect)
+            Destroy(mGameObjectNovel);
+        else
+            mGameObjectNovel.SetActive(false);
     }
 
     private void InitializeClickableColliderConfig()

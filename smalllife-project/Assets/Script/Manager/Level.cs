@@ -107,7 +107,7 @@ public class Level : MonoBehaviour
             {
                 goal.ApplySavedProgress(progress);
 
-                if (IsGoalCompletedForCount(goal, progress))
+                if (GoalProgressRules.IsCollected(goal, progress))
                     found++;
             }
         }
@@ -246,7 +246,7 @@ public class Level : MonoBehaviour
             if (goal == null) continue;
             string key = $"{currentLevelIndex}_{goal.GoalID}";
             if (data.goalProgressMap.TryGetValue(key, out var progress) &&
-                IsGoalCompletedForCount(goal, progress))
+                GoalProgressRules.IsCollected(goal, progress))
             {
                 UpdateGoalUI(goal.gameObject);
                 foundCount++;
@@ -282,21 +282,7 @@ public class Level : MonoBehaviour
             return false;
 
         Goal goal = goalComponents.Find(g => g != null && g.GoalID == goalID);
-        if (goal is SingleGoal)
-            return progress.step1Completed;
-
-        return progress.step1Completed && progress.step2Completed;
-    }
-
-    private static bool IsGoalCompletedForCount(Goal goal, GoalProgress progress)
-    {
-        if (goal == null || progress == null)
-            return false;
-
-        if (goal is SingleGoal)
-            return progress.step1Completed;
-
-        return progress.step1Completed && progress.step2Completed;
+        return GoalProgressRules.IsCollected(goal, progress);
     }
     
     public void CompleteStep(string levelID, int goalID, int step)
