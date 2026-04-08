@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 挂在 goal1_get UI 根节点上。
@@ -15,7 +16,7 @@ using DG.Tweening;
 /// 3. 将此脚本拖入 goal1_get，在 Inspector 里填写 levelID / goalID /
 ///    isSingleStep，以及三个引用和三张 sprite。
 /// </summary>
-public class GoalIconUIController : MonoBehaviour
+public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("Goal Identity")]
     [SerializeField] private string levelID;
@@ -36,6 +37,19 @@ public class GoalIconUIController : MonoBehaviour
     private const float FillDuration = 0.5f;
     private const float PunchDuration = 0.45f;
 
+    public string LevelID => levelID;
+    public int GoalID => goalID;
+
+    private GoalIconBarController ResolveDragTarget()
+    {
+        return GoalIconBarController.Instance;
+    }
+
+    private void Awake()
+    {
+        // 保持 raycast 开启：用于 ShowTextOnUI 悬停/点击等 UI 事件。
+    }
+
     // ──────────────────────────────────────────────────────────────────────
     // Unity 生命周期
     // ──────────────────────────────────────────────────────────────────────
@@ -48,11 +62,49 @@ public class GoalIconUIController : MonoBehaviour
     private void OnEnable()
     {
         GoalNoteEvents.GoalCompleted += HandleGoalCompleted;
+        GoalIconBarController.Instance?.RegisterIcon(this);
     }
 
     private void OnDisable()
     {
         GoalNoteEvents.GoalCompleted -= HandleGoalCompleted;
+        GoalIconBarController.Instance?.UnregisterIcon(this);
+    }
+
+    public void OnInitializePotentialDrag(PointerEventData eventData)
+    {
+        GoalIconBarController target = ResolveDragTarget();
+        if (target == null)
+            return;
+
+        target.OnInitializePotentialDrag(eventData);
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        GoalIconBarController target = ResolveDragTarget();
+        if (target == null)
+            return;
+
+        target.OnBeginDrag(eventData);
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        GoalIconBarController target = ResolveDragTarget();
+        if (target == null)
+            return;
+
+        target.OnDrag(eventData);
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        GoalIconBarController target = ResolveDragTarget();
+        if (target == null)
+            return;
+
+        target.OnEndDrag(eventData);
     }
 
     // ──────────────────────────────────────────────────────────────────────
