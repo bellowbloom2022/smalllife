@@ -16,6 +16,12 @@ public class Goal : MonoBehaviour
     public GameObject mNovelPosMid;
     public GameObject mNovelPos;
     public Canvas mCanvas;
+
+    [Header("Collect Visual")]
+    [SerializeField] private bool cleanupNovelAfterCollect = true;
+    [SerializeField] private bool destroyNovelObjectAfterCollect = true;
+    [SerializeField] private float cleanupDelayAfterCollect = 1f;
+
     private bool mIsTriggered;
     private CameraController cameraController;
 
@@ -225,9 +231,17 @@ public class Goal : MonoBehaviour
         rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
         {
             mGameObjectNovel.transform.DOScale(Vector3.one, 0.3f);
-            RectTransform r = mNovelPos.transform as RectTransform;
-            uiPos = r.anchoredPosition;
-            rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
+
+            // 在第二段飞行前先把 bar 对齐到目标，避免“落点按旧视口计算，随后 bar 才移动”的体感偏移。
+            if (levelData != null)
+                GoalIconBarController.Instance?.TryFocusToGoal(levelData.levelID, goalID, false);
+
+            Canvas.ForceUpdateCanvases();
+            Transform finalTarget = iconController != null ? iconController.transform : mNovelPos.transform;
+            // 用世界坐标转换，无论目标是否在 Content 内都能落到正确槽位
+            Vector3 finalLocalPos = rectPenZai.parent.InverseTransformPoint(finalTarget.position);
+            finalLocalPos.z = 0f;
+            rectPenZai.DOLocalMove(finalLocalPos, 0.4f).onComplete = () =>
             {
                 rectPenZai.GetComponent<Animator>().SetTrigger("click");
                 Level.ins.AddCount();
@@ -252,6 +266,11 @@ public class Goal : MonoBehaviour
                     SaveSystem.SaveGame();
                     GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step1);
                 }
+
+                if (levelData != null)
+                    GoalIconBarController.Instance?.TryFocusToGoal(levelData.levelID, goalID, false);
+
+                CleanupCollectedNovelObject();
             };
         };
 
@@ -259,6 +278,25 @@ public class Goal : MonoBehaviour
         currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
         ShowFirstDialogueOfCurrentStage();
     }
+
+    private void CleanupCollectedNovelObject()
+    {
+        if (!cleanupNovelAfterCollect || mGameObjectNovel == null)
+            return;
+
+        float delay = Mathf.Max(0f, cleanupDelayAfterCollect);
+        DOVirtual.DelayedCall(delay, () =>
+        {
+            if (mGameObjectNovel == null)
+                return;
+
+            if (destroyNovelObjectAfterCollect)
+                Destroy(mGameObjectNovel);
+            else
+                mGameObjectNovel.SetActive(false);
+        });
+    }
+
     protected void PlayStep1()
     {
         if (animator == null)
