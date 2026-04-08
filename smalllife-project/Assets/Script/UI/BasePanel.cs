@@ -9,6 +9,9 @@ public class BasePanel : MonoBehaviour
 
     public virtual void Show()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         gameObject.SetActive(true);
         AudioHub.Instance.PlayGlobal("click_confirm");
 

@@ -26,7 +26,7 @@
 
 | 文件 | 简述 | 状态 |
 |---|---|---|
-| [goal-input-lock-bug.md](tasks/ongoing/goal-input-lock-bug.md) | Level2 goal201/203/204 Step2 点击输入冻结问题 | ⚠️ 部分修复，待验证 |
+| [goal-input-lock-bug.md](tasks/ongoing/goal-input-lock-bug.md) | Level2 历史输入冻结问题 + 2026-04-08 演出期全输入锁定优化记录 | ⚠️ 输入锁问题已修复，历史动画问题待验证 |
 | [ui-panel-prefab-size-normalization.md](tasks/ongoing/ui-panel-prefab-size-normalization.md) | SettingPanel/PausePanel 尺寸基线与容器分层标准化（Steam demo 后） | 🕒 低优先级待办 |
 | [goal-name-localization-layout-batch.md](tasks/ongoing/goal-name-localization-layout-batch.md) | Goal 顶部名称黑方块本地化自适应批量化（计划完成，待工具落地） | ⚠️ 进行中 |
 | [goal-note-panel-controller-split-plan.md](tasks/ongoing/goal-note-panel-controller-split-plan.md) | GoalNotePanelController 拆分任务（demo 前冻结，demo 后分阶段执行） | 🕒 暂缓中（已规划） |

@@ -9,9 +9,6 @@ public enum FocusHideMode
 [System.Serializable]
 public class StepConfig
 {
-    [Header("Input")]
-    public bool lockInput = true;
-
     [Header("Focus Mask")]
     public bool useFocus = true;
     public Transform focusTarget;

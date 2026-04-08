@@ -63,28 +63,24 @@ public class GameManager : MonoBehaviour
     //公共方法用来执行GUI射线检测
     public bool CheckGuiRaycastObject()
     {
-        if (EventSystem.current.IsPointerOverGameObject())//检测当前鼠标指针是否悬停在GUI对象上
-        {
-            return true;
-        }
-        else
-        {
+        if (EventSystem.current == null)
             return false;
-        }
+
+        return EventSystem.current.IsPointerOverGameObject();//检测当前鼠标指针是否悬停在GUI对象上
     }
 
     public void PauseGame()
     {
         Time.timeScale = 0f;
         isPaused = true;
-        InputRouter.Instance?.LockInput();
+        InputRouter.Instance?.LockInput("GameManager.PauseGame");
     }
 
     public void ResumeGame()
     {
         Time.timeScale = 1f;
         isPaused = false;
-        InputRouter.Instance?.UnlockInput();
+        InputRouter.Instance?.UnlockInput("GameManager.ResumeGame");
     }
     public void ResetGame()
     {

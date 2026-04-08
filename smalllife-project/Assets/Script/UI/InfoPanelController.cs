@@ -80,11 +80,17 @@ public class InfoPanelController : BasePanel
 
     public override void Show()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         OpenFromSignboard();
     }
 
     public void OpenFromSignboard()
     {
+        if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
         if (isCompletionMode)
         {
             ExpandPanel();
