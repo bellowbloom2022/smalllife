@@ -45,9 +45,9 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // 强制锁定帧率
+        // 强制锁定帧率并启用垂直同步以消除画面撕裂
         Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 0;// 可选：关闭垂直同步以避免影响帧率锁定
+        QualitySettings.vSyncCount = 1;  // VSync 开启，确保与显示器同步，消除撕裂纹路
 
         // 在游戏启动时加载保存的数据
         LoadGameData();
