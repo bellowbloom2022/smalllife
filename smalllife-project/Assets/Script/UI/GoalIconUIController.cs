@@ -40,6 +40,8 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
     public string LevelID => levelID;
     public int GoalID => goalID;
 
+    private bool? runtimeSingleStepOverride;
+
     private GoalIconBarController ResolveDragTarget()
     {
         return GoalIconBarController.Instance;
@@ -63,6 +65,7 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
     {
         GoalNoteEvents.GoalCompleted += HandleGoalCompleted;
         GoalIconBarController.Instance?.RegisterIcon(this);
+        ApplyProgressFromSave();
     }
 
     private void OnDisable()
@@ -113,7 +116,9 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
 
     public void ApplyProgress(bool step1Done, bool step2Done)
     {
-        bool isFullyDone = GoalProgressRules.IsCollected(isSingleStep, step1Done, step2Done);
+        bool singleStep = GetEffectiveSingleStepFlag();
+        NormalizeLegacyProgressForDisplay(singleStep, ref step1Done, ref step2Done);
+        bool isFullyDone = GoalProgressRules.IsCollected(singleStep, step1Done, step2Done);
 
         // 填充量（非动画）
         if (fillImage != null)
@@ -134,7 +139,7 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
             else if (step1Done)
                 badgeImage.sprite = badgeStep1Sprite;
             else
-                badgeImage.sprite = isSingleStep ? badgeStep1Sprite : badgeStep2Sprite;
+                badgeImage.sprite = singleStep ? badgeStep1Sprite : badgeStep2Sprite;
         }
     }
 
@@ -147,8 +152,9 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
         if (!GoalProgressRules.IsSameLevelID(inLevelID, levelID) || inGoalID != goalID)
             return;
 
+        bool singleStep = GetEffectiveSingleStepFlag();
         // isSingleStep 时任何 Step 到达即为全部完成
-        bool isFullyDone = completedStep == GoalNoteStep.Step2 || isSingleStep;
+        bool isFullyDone = completedStep == GoalNoteStep.Step2 || singleStep;
 
         AnimateFill(isFullyDone ? 1f : 0.5f);
         AnimateBadge(isFullyDone ? badgeCheckSprite : badgeStep1Sprite);
@@ -183,7 +189,47 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
                 return numericProgress;
         }
 
+        if (Level.ins != null)
+        {
+            string currentLevelKey = Level.ins.currentLevelIndex + "_" + goalID;
+            if (data.goalProgressMap.TryGetValue(currentLevelKey, out GoalProgress currentLevelProgress))
+                return currentLevelProgress;
+        }
+
         return null;
+    }
+
+    private static void NormalizeLegacyProgressForDisplay(bool singleStep, ref bool step1Done, ref bool step2Done)
+    {
+        // 历史存档可能出现两步目标仅记录 step2Completed=true 的情况；
+        // 仅在图标展示层将其视为已完成，避免与手机面板出现读档后不一致。
+        if (!singleStep && step2Done && !step1Done)
+            step1Done = true;
+    }
+
+    private bool GetEffectiveSingleStepFlag()
+    {
+        if (runtimeSingleStepOverride.HasValue)
+            return runtimeSingleStepOverride.Value;
+
+        if (Level.ins == null || Level.ins.goals == null)
+            return isSingleStep;
+
+        for (int i = 0; i < Level.ins.goals.Count; i++)
+        {
+            GameObject goalObj = Level.ins.goals[i];
+            if (goalObj == null)
+                continue;
+
+            Goal goal = goalObj.GetComponent<Goal>();
+            if (goal == null || goal.GoalID != goalID)
+                continue;
+
+            runtimeSingleStepOverride = goal is SingleGoal;
+            return runtimeSingleStepOverride.Value;
+        }
+
+        return isSingleStep;
     }
 
     // ──────────────────────────────────────────────────────────────────────
