@@ -40,6 +40,10 @@ public class InfoPanelController : BasePanel
     private Vector2 lastParentRectSize;
     private CanvasGroup nextLevelNameCanvasGroup;
     private CanvasGroup nextButtonCanvasGroup;
+    private static readonly RaycastHit[] signboardHits3D = new RaycastHit[16];
+    private static readonly Collider2D[] signboardHits2D = new Collider2D[16];
+
+    public bool IsExpanded => isExpanded;
 
     private void Awake()
     {
@@ -89,6 +93,10 @@ public class InfoPanelController : BasePanel
     public void OpenFromSignboard()
     {
         if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
+            return;
+
+        // 路牌重复点击时，如果面板已展开则不重复触发展开动画。
+        if (isExpanded)
             return;
 
         if (isCompletionMode)
@@ -452,6 +460,47 @@ public class InfoPanelController : BasePanel
     private void TryHide()
     {
         if (isExpanded)
+        {
+            if (SignboardTrigger.WasPointerDownOnSignboardThisFrame())
+                return;
+
+            if (IsPointerOverSignboard())
+                return;
+
             FoldPanel();
+        }
+    }
+
+    private static bool IsPointerOverSignboard()
+    {
+        Camera cam = Camera.main;
+        if (cam == null)
+            return false;
+
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        int hitCount3D = Physics.RaycastNonAlloc(ray, signboardHits3D, 1000f);
+        for (int i = 0; i < hitCount3D; i++)
+        {
+            Transform hitTransform = signboardHits3D[i].transform;
+            if (hitTransform == null)
+                continue;
+
+            if (hitTransform.GetComponentInParent<SignboardTrigger>() != null)
+                return true;
+        }
+
+        Vector3 worldPoint = cam.ScreenToWorldPoint(Input.mousePosition);
+        int hitCount2D = Physics2D.OverlapPointNonAlloc(worldPoint, signboardHits2D);
+        for (int i = 0; i < hitCount2D; i++)
+        {
+            Collider2D hitCollider = signboardHits2D[i];
+            if (hitCollider == null)
+                continue;
+
+            if (hitCollider.GetComponentInParent<SignboardTrigger>() != null)
+                return true;
+        }
+
+        return false;
     }
 }

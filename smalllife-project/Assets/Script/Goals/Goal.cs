@@ -63,7 +63,11 @@ public class Goal : MonoBehaviour
     protected virtual void Start()
     {
         cameraController = FindObjectOfType<CameraController>();
-        currentStage = Stage.PreAnim1;
+        
+        // 仅在无保存进度时初始化为PreAnim1，否则让ApplySavedProgress()设置正确的stage
+        if (Level.ins == null || !SaveSystem.GameData.goalProgressMap.ContainsKey($"{Level.ins.currentLevelIndex}_{goalID}"))
+            currentStage = Stage.PreAnim1;
+        
         InitializeClickableColliderConfig();
         ApplyClickableCollidersByStepState();
         SFXZone.TryRegister(GetComponent<AudioSource>());
@@ -99,6 +103,7 @@ public class Goal : MonoBehaviour
         PlayLoopAnimationAccordingToStep();
         iconController?.ApplyProgress(step1Completed, step2Completed);
         ApplyCollectedVisualStateFromSave();
+        RestoreDialoguePlayedState();
     }
 
     private void ApplyCollectedVisualStateFromSave()
@@ -111,6 +116,35 @@ public class Goal : MonoBehaviour
             Destroy(mGameObjectNovel);
         else
             mGameObjectNovel.SetActive(false);
+    }
+
+    private void RestoreDialoguePlayedState()
+    {
+        if (DialogueManager.Instance == null)
+            return;
+
+        // 如果Step1已完成，标记PreAnim1对话为已播放
+        if (step1Completed)
+        {
+            foreach (var spriteObj in dialogueSpritesPreAnim1)
+                if (spriteObj != null)
+                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
+        }
+
+        // 如果Step2已完成，标记PostAnim2对话为已播放
+        if (step2Completed)
+        {
+            foreach (var spriteObj in dialogueSpritesPostAnim2)
+                if (spriteObj != null)
+                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
+        }
+        // 否则如果只Step1完成，标记PostAnim1对话为已播放
+        else if (step1Completed)
+        {
+            foreach (var spriteObj in dialogueSpritesPostAnim1)
+                if (spriteObj != null)
+                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
+        }
     }
 
     private void InitializeClickableColliderConfig()

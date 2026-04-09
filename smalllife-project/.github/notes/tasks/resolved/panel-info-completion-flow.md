@@ -145,6 +145,50 @@
 - `Start()` 中在恢复计数后，若 `mCount >= TotalCount`，启动 `ShowCompletionInfoPanelNextFrame()`。
 - 使用“下一帧恢复”而非立即调用，避免与 `InfoPanelController.Start()` 的初始折叠/定位流程抢时序。
 
+### [2026-04-09] 通关后不再自动弹出 InfoPanel，改为右上角快捷下一关
+
+**背景：**
+
+- 发行侧反馈：通关时自动弹出 `InfoPanel` 会打断玩家，且“下一步”入口不应只放在可折叠侧边栏内部。
+
+**调整结果：**
+
+- `Level` 通关后不再调用自动弹出 `InfoPanel` 的流程。
+- 新增右上角快捷按钮（`topRightNextLevelButton`）作为通关后的主跳转入口。
+- 该按钮仅在“已通关且 `sceneChanger` 有效”时显示；点击后调用 `sceneChanger.ChangeScene()`。
+- 读档进入已通关关卡时，按钮可见性也会正确恢复。
+
+**影响说明：**
+
+- `InfoPanel` 内原有完成态内容与按钮逻辑未删除，仅从“自动打断式入口”改为“可主动查看入口”。
+
+### [2026-04-09] 路牌触发改为开关切换，并修复重复触发/性能问题
+
+**问题现象：**
+
+1. 面板展开时点击路牌会出现“收起后又展开”的体感抖动。
+2. 路牌与空白点击事件叠加时，可能重复触发展开动画。
+3. 每次空白点击都做全场景物理检测，存在不必要开销。
+
+**根本原因：**
+
+1. `InputRouter.OnBlankClick` 先触发 `TryHide()`，再到 `OnMouseUp()` 执行路牌逻辑，形成同帧“先关后开”。
+2. 路牌逻辑早期只做“打开”，未统一为开关语义。
+3. `InfoPanelController.IsPointerOverSignboard()` 采用 `RaycastAll/OverlapPointAll`，每次点击都会分配数组并全量扫描。
+
+**修复方式：**
+
+- `SignboardTrigger` 统一为“点击切换”：展开时点路牌收起，收起时点路牌展开。
+- 新增路牌按下帧标记（`OnMouseDown` 记录 frame），`InfoPanel.TryHide()` 优先读取该标记并直接跳过收起。
+- 保留物理检测兜底，但改为 `RaycastNonAlloc` / `OverlapPointNonAlloc`，避免运行时分配。
+- 在 `SignboardTrigger.OnMouseUp()` 增加 UI 遮挡判断，防止 UI 点击误触场景路牌。
+
+**当前交互结论：**
+
+1. 点击路牌与点击 `edgePeekButton` 都可开关面板。
+2. 两种入口可互通，不会互相打架。
+3. 连续点击路牌时不再重复触发切入动画。
+
 ---
 
 ## 本次 review 记录的后续优化项
