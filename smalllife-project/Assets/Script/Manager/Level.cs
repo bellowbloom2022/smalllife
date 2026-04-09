@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class Level : MonoBehaviour
 {
@@ -22,6 +23,9 @@ public class Level : MonoBehaviour
     public InfoPanelController infoPanel;
     public TextMeshProUGUI goalText;
     public float completionInfoPanelDelay = 1.5f;
+
+    [Header("Quick Next Button")]
+    [SerializeField] private Button topRightNextLevelButton;
 
     [Header("Count")]
     public int TotalCount;
@@ -55,9 +59,8 @@ public class Level : MonoBehaviour
 
         UpdateLevelGoals();
 
-        // 读档进入且已全收集时，也要恢复 InfoPanel 的完成态（含 next button/checkmark）。
-        if (mCount >= TotalCount)
-            StartCoroutine(ShowCompletionInfoPanelNextFrame());
+        SetupTopRightNextLevelButton();
+        RefreshTopRightNextLevelButtonState();
     }
 
     private void OnDestroy()
@@ -123,7 +126,8 @@ public class Level : MonoBehaviour
         if (mCount >= TotalCount)
         {
             MarkCurrentLevelCompleted();
-            ScheduleCompletionInfoPanel();
+            // 通关后不自动弹出 InfoPanel，避免打断玩家。
+            RefreshTopRightNextLevelButtonState();
         }
 
         SaveLevelData();
@@ -198,6 +202,35 @@ public class Level : MonoBehaviour
             nextLevelData = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneChanger.targetSceneName}");
 
         infoPanel.ShowAsCompletion(nextLevelData, sceneChanger);
+    }
+
+    private void SetupTopRightNextLevelButton()
+    {
+        if (topRightNextLevelButton == null)
+            return;
+
+        topRightNextLevelButton.onClick.RemoveListener(OnTopRightNextLevelButtonClicked);
+        topRightNextLevelButton.onClick.AddListener(OnTopRightNextLevelButtonClicked);
+    }
+
+    private void RefreshTopRightNextLevelButtonState()
+    {
+        if (topRightNextLevelButton == null)
+            return;
+
+        bool canGoNext = mCount >= TotalCount && sceneChanger != null;
+        topRightNextLevelButton.gameObject.SetActive(canGoNext);
+    }
+
+    private void OnTopRightNextLevelButtonClicked()
+    {
+        if (sceneChanger == null)
+        {
+            Debug.LogWarning("Level: SceneChanger not assigned for top-right next level button.");
+            return;
+        }
+
+        sceneChanger.ChangeScene();
     }
 
     private void ShowAllGoalsFoundFeedback()

@@ -45,10 +45,12 @@
 | [dropdown-caption-lean-localized-text-conflict.md](tasks/resolved/dropdown-caption-lean-localized-text-conflict.md) | Dropdown CaptionText 被 Dropdown 接管，Label 上挂 LeanLocalizedText 无效的根因与修复 |
 | [panel-info-completion-flow.md](tasks/resolved/panel-info-completion-flow.md) | Panel_info 完成态、折叠侧边栏、音效与弹出节奏调整 |
 | [goal-dialog-typewriter-click-behavior.md](tasks/resolved/goal-dialog-typewriter-click-behavior.md) | GoalDialog 首播打字/复播秒出、打字中点击全文、左右键空白统一关闭 |
+| [level4-ending-social-buttons-localization.md](tasks/resolved/level4-ending-social-buttons-localization.md) | Level4 结束面板 Steam/QQ/Discord 按语言显示规则、OnClick 绑定与 FeedbackLink1 清理 |
 | [focusmask-expand-hide-mode.md](tasks/resolved/focusmask-expand-hide-mode.md) | FocusMask 收尾新增可选模式：扩张回全画面后隐藏 |
 | [goalbar-prefab-overwrite-recovery-and-guardrails.md](tasks/resolved/goalbar-prefab-overwrite-recovery-and-guardrails.md) | GoalBar 功能基线、Prefab 覆盖事故复盘、Level0/1/2 回退与防删守则 |
 | [single-goal-click-lag-exittime-hotfix.md](tasks/resolved/single-goal-click-lag-exittime-hotfix.md) | SingleGoal 点击链路、读档恢复、统一命名与完成态恢复修复 |
 | [goal-save-restore-visual-sync.md](tasks/resolved/goal-save-restore-visual-sync.md) | Goal 读档恢复可视状态与 GoalBar icon 同步修复，含统一规则收敛与后续优化建议 |
+| [goal-dialog-save-restore-stage-sync.md](tasks/resolved/goal-dialog-save-restore-stage-sync.md) | GoalDialog 读档阶段错位修复：防止 Start 覆盖恢复阶段，并同步复播秒出状态 |
 
 ---
 

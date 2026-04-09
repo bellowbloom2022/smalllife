@@ -167,5 +167,11 @@ public class DialogueManager : MonoBehaviour
             playedTypewriterDialogues.Add(dialogueRoot);
     }
 
+    public void MarkSpriteAsPlayed(GameObject sprite)
+    {
+        if (sprite != null)
+            playedTypewriterDialogues.Add(sprite);
+    }
+
     public bool IsDialogueActive() => activeDialogueSprite != null;
 }
