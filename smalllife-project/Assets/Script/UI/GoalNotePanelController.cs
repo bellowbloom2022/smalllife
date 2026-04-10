@@ -825,8 +825,6 @@ public class GoalNotePanelController : BasePanel
         return false;
     }
 
-
-
     private void OnDescriptionTextClicked(int goalID)
     {
         if (!rowByGoalId.TryGetValue(goalID, out var row) || row == null)
@@ -866,6 +864,5 @@ public class GoalNotePanelController : BasePanel
 
         return action;
     }
-
 
 }

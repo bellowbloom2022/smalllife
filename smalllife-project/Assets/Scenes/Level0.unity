@@ -759,8 +759,8 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: "This old building is stuck right at the intersection.Looks like it\u2019s
-      been here a long time."
+    Text: This old building is stuck right at the intersection.Looks like it's been
+      here a long time.
     Object: {fileID: 0}
   - Language: Chinese
     Text: "\u201C\u8FD9\u680B\u8001\u697C\uFF0C\u5361\u5728\u5341\u5B57\u8DEF\u53E3\u3002\u770B\u8D77\u6765\u5728\u8FD9\u513F\u5F88\u4E45\u4E86\u3002\u201D"
@@ -2045,8 +2045,8 @@ MonoBehaviour:
   data: 0
   entries:
   - Language: English
-    Text: The whole corner is one big jewelry shop.No wonder it looks so shiny from
-      far away.
+    Text: '"The whole corner is one big jewelry shop.No wonder it looks so shiny
+      from far away."'
     Object: {fileID: 0}
   - Language: Chinese
     Text: "\u201C\u4E00\u6574\u4E2A\u62D0\u89D2\u90FD\u662F\u8FD9\u5BB6\u91D1\u9970\u5E97\uFF0C\u96BE\u602A\u8FDC\u770B\u91D1\u78A7\u8F89\u714C\u7684\u3002\u201D"
@@ -4735,6 +4735,14 @@ MonoBehaviour:
   goals:
   - {fileID: 724685803}
   - {fileID: 2043813382}
+  stepClickLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  dialogueClickLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  max3DHits: 16
+  max2DHits: 16
 --- !u!1 &915668165
 GameObject:
   m_ObjectHideFlags: 0
@@ -8786,6 +8794,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultLanguage: Chinese
+  foregroundTargetFrameRate: 60
+  backgroundTargetFrameRate: 15
+  highRefreshThreshold: 90
+  normalRefreshVSyncCount: 1
+  highRefreshVSyncCount: 2
 --- !u!4 &1661393754
 Transform:
   m_ObjectHideFlags: 0
@@ -9513,7 +9526,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f0696300aeac44a0e17efee222854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLanguage: Japanese
+  currentLanguage: Chinese
   detectLanguage: 1
   defaultLanguage: Chinese
   saveLoad: 1

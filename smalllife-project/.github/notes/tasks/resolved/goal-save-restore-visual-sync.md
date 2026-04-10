@@ -100,3 +100,32 @@ Level3 读档进入场景时出现两类异常：
 ## 备注
 
 本次重构为“规则收敛 + 行为稳定化”，核心目标是避免读档时 UI 与场景状态分叉，已验证达成。
+
+---
+
+## 后续补丁（2026-04-10）
+
+### 背景
+
+发行商回归中反馈：Level3 读取旧存档后，手机面板显示完成，但顶部 GoalBar 的少数两步目标 icon 未打勾。
+
+### 定位结论
+
+1. 本次问题聚焦在 badge 展示链路，不涉及 notepanel 逻辑。  
+2. 两步目标在旧存档中可能出现 `step2Completed=true` 但 `step1Completed=false` 的历史数据形态。  
+3. 手机面板按 `step2Completed` 判定完成；而 icon 侧按两步完整条件判定，导致读档后表现分叉。
+
+### 已实施调整（最小改动）
+
+文件：`Assets/Script/UI/GoalIconUIController.cs`
+
+1. 在 icon 展示层新增旧存档兼容归一化：
+   - 若为两步目标且 `step2Completed=true && step1Completed=false`，仅在展示计算中补齐为完成态。  
+   - 目的：保证读档后 badge 与手机面板一致。
+2. 保持修复范围仅限 badge/icon 渲染链路，不改 `GoalNotePanelController`。
+
+### 影响范围与说明
+
+1. 仅影响读档后的 icon 视觉判定，不改变存档结构。  
+2. 不影响单步目标逻辑。  
+3. 不引入 notepanel 行为变化。

@@ -78,6 +78,10 @@ public class Goal : MonoBehaviour
         if (InputRouter.Instance != null && InputRouter.Instance.InputLocked)
             return;
 
+        // Block re-entry while Step2 collect flow is already in progress.
+        if (mIsTriggered)
+            return;
+
         // 防止 Step2 期间重复点击（可选但推荐）
         if (step2Completed)
             return;
@@ -174,6 +178,12 @@ public class Goal : MonoBehaviour
 
     private void ApplyClickableCollidersByStepState()
     {
+        if (step2Completed)
+        {
+            SetClickableColliders(null);
+            return;
+        }
+
         // Step1 complete but Step2 not complete => switch to step2 click area.
         bool useStep2Clickable = step1Completed && !step2Completed;
         SetClickableColliders(useStep2Clickable ? step2ClickableColliders : step1ClickableColliders);
@@ -377,6 +387,9 @@ public class Goal : MonoBehaviour
 
         if (animator != null)
             animator.SetTrigger("step2");
+
+        // Disable clickable colliders immediately after Step2 trigger.
+        SetClickableColliders(null);
 
         BeginStep2();
     }

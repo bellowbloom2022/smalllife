@@ -3,10 +3,21 @@ using UnityEngine;
 public class GoalManager : MonoBehaviour
 {
     public Goal[] goals;
+    [Header("Click Raycast")]
+    [SerializeField] private LayerMask stepClickLayerMask = ~0;
+    [SerializeField] private LayerMask dialogueClickLayerMask = ~0;
+    [SerializeField] private int max3DHits = 16;
+    [SerializeField] private int max2DHits = 16;
+
     private InputRouter subscribedRouter;
+    private Camera cachedMainCamera;
+    private RaycastHit[] raycastHitsBuffer;
+    private Collider2D[] overlap2DBuffer;
 
     private void OnEnable()
     {
+        EnsureBuffers();
+        TryRefreshMainCamera();
         InputRouter.InstanceReady += HandleInputRouterReady;
         TrySubscribeToRouter(InputRouter.Instance);
     }
@@ -64,14 +75,16 @@ public class GoalManager : MonoBehaviour
 
     private bool TryHandleGoalStepClick(Vector3 screenPosition)
     {
-        if (Camera.main == null) return false;
+        if (!TryRefreshMainCamera()) return false;
 
-        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
-        if (hits == null || hits.Length == 0)
+        EnsureBuffers();
+
+        Ray ray = cachedMainCamera.ScreenPointToRay(screenPosition);
+        int hitCount = Physics.RaycastNonAlloc(ray, raycastHitsBuffer, 1000f, stepClickLayerMask);
+        if (hitCount <= 0)
             return false;
 
-        Goal goal = FindNearestGoalFromHits(hits);
+        Goal goal = FindNearestGoalFromHits(raycastHitsBuffer, hitCount);
         if (goal == null)
             return false;
 
@@ -81,13 +94,22 @@ public class GoalManager : MonoBehaviour
 
     private bool TryHandleGoalDialogueClick(Vector3 screenPosition)
     {
-        if (Camera.main == null) return false;
+        if (!TryRefreshMainCamera()) return false;
 
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(screenPosition);
-        Collider2D[] hitColliders = Physics2D.OverlapPointAll(worldPos);
+        EnsureBuffers();
 
-        foreach (var hitCollider in hitColliders)
+        Vector3 worldPos = cachedMainCamera.ScreenToWorldPoint(screenPosition);
+        Vector2 worldPoint = new Vector2(worldPos.x, worldPos.y);
+        int colliderCount = Physics2D.OverlapPointNonAlloc(worldPoint, overlap2DBuffer, dialogueClickLayerMask);
+        if (colliderCount <= 0)
+            return false;
+
+        for (int i = 0; i < colliderCount; i++)
         {
+            Collider2D hitCollider = overlap2DBuffer[i];
+            if (hitCollider == null)
+                continue;
+
             foreach (var goal in goals)
             {
                 if (goal.IsMyGoalCollider(hitCollider))
@@ -101,13 +123,14 @@ public class GoalManager : MonoBehaviour
         return false;
     }
 
-    private Goal FindNearestGoalFromHits(RaycastHit[] hits)
+    private Goal FindNearestGoalFromHits(RaycastHit[] hits, int hitCount)
     {
         Goal nearestGoal = null;
         float nearestDistance = float.MaxValue;
 
-        foreach (RaycastHit hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            RaycastHit hit = hits[i];
             Goal goal = hit.transform.GetComponentInParent<Goal>();
             if (goal == null)
                 continue;
@@ -120,5 +143,24 @@ public class GoalManager : MonoBehaviour
         }
 
         return nearestGoal;
+    }
+
+    private void EnsureBuffers()
+    {
+        int safe3DSize = Mathf.Max(1, max3DHits);
+        if (raycastHitsBuffer == null || raycastHitsBuffer.Length != safe3DSize)
+            raycastHitsBuffer = new RaycastHit[safe3DSize];
+
+        int safe2DSize = Mathf.Max(1, max2DHits);
+        if (overlap2DBuffer == null || overlap2DBuffer.Length != safe2DSize)
+            overlap2DBuffer = new Collider2D[safe2DSize];
+    }
+
+    private bool TryRefreshMainCamera()
+    {
+        if (cachedMainCamera == null)
+            cachedMainCamera = Camera.main;
+
+        return cachedMainCamera != null;
     }
 }
