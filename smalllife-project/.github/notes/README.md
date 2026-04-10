@@ -38,6 +38,8 @@
 | 文件 | 简述 |
 |---|---|
 | [goalmanager-raycastall.md](tasks/resolved/goalmanager-raycastall.md) | GoalManager 改为 RaycastAll 多命中版本 |
+| [goal-step2-collider-reentry-fix.md](tasks/resolved/goal-step2-collider-reentry-fix.md) | Goal Step2 快速连点触发聚光灯卡死修复：PlayStep2 触发即关 collider，mIsTriggered guard 兜底 |
+| [windows-heat-framepacing-and-click-alloc-optimization.md](tasks/resolved/windows-heat-framepacing-and-click-alloc-optimization.md) | Windows 发热优化：高刷自适应 VSync 档位 + 后台降帧 + GoalManager 点击路径零分配改造 |
 | [goal-camera-duration-inspector.md](tasks/resolved/goal-camera-duration-inspector.md) | Goal 镜头移动速度改为直接调整场景内的 cameraDuration |
 | [goal-note-panel-step-feedback.md](tasks/resolved/goal-note-panel-step-feedback.md) | Goal Step 与 panel-note 联动、控制器拆分、文本动效可配置 |
 | [goal-note-panel-controller-refactor.md](tasks/resolved/goal-note-panel-controller-refactor.md) | GoalNotePanelController 等价重构：减少 if 重复、索引缓存、分页与行渲染逻辑收敛 |

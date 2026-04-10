@@ -10,6 +10,15 @@ public class GameManager : MonoBehaviour
     private GameData gameData; // 添加这个字段来存储当前的游戏数据
     [SerializeField] private string defaultLanguage = "Chinese";
 
+    [Header("Frame Pacing")]
+    [SerializeField] private int foregroundTargetFrameRate = 60;
+    [SerializeField] private int backgroundTargetFrameRate = 15;
+    [SerializeField] private int highRefreshThreshold = 90;
+    [SerializeField] private int normalRefreshVSyncCount = 1;
+    [SerializeField] private int highRefreshVSyncCount = 2;
+
+    private bool appInBackground;
+
     private void Awake()
     {
 #if !UNITY_EDITOR && !DEVELOPMENT_BUILD
@@ -45,9 +54,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        // 强制锁定帧率并启用垂直同步以消除画面撕裂
-        Application.targetFrameRate = 60;
-        QualitySettings.vSyncCount = 1;  // VSync 开启，确保与显示器同步，消除撕裂纹路
+        // 根据刷新率选择 VSync 档位：高刷屏默认使用 vSync=2 以降低发热。
+        ApplyForegroundFramePacing();
 
         // 在游戏启动时加载保存的数据
         LoadGameData();
@@ -58,6 +66,41 @@ public class GameManager : MonoBehaviour
         SaveSystem.LoadGame(); // 仅调用加载方法
         var data = SaveSystem.GameData; // 获取数据
 
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        appInBackground = !hasFocus;
+        ApplyCurrentFramePacing();
+    }
+
+    private void OnApplicationPause(bool pauseStatus)
+    {
+        appInBackground = pauseStatus;
+        ApplyCurrentFramePacing();
+    }
+
+    private void ApplyCurrentFramePacing()
+    {
+        if (appInBackground)
+            ApplyBackgroundFramePacing();
+        else
+            ApplyForegroundFramePacing();
+    }
+
+    private void ApplyForegroundFramePacing()
+    {
+        int refreshRate = Mathf.Max(1, Screen.currentResolution.refreshRate);
+        bool isHighRefresh = refreshRate > highRefreshThreshold;
+        QualitySettings.vSyncCount = isHighRefresh ? highRefreshVSyncCount : normalRefreshVSyncCount;
+        Application.targetFrameRate = Mathf.Max(30, foregroundTargetFrameRate);
+    }
+
+    private void ApplyBackgroundFramePacing()
+    {
+        // 后台时关闭 VSync 并降帧，减少无感知发热。
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = Mathf.Max(5, backgroundTargetFrameRate);
     }
 
     //公共方法用来执行GUI射线检测

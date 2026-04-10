@@ -21,17 +21,17 @@ public partial class DisplaySettingsController : MonoBehaviour
     [SerializeField] private string runtimeOverlayImageName = "__OverlayColorRuntimeImage";
     [SerializeField] private int overlayFallbackSortingOrder = 50;
 
+    [Header("Resolution Dropdown Scroll")]
+    [SerializeField] private float resolutionDropdownScrollSensitivity = 220f;
+
     private List<Vector2Int> commonResolutions = new List<Vector2Int>()
     {
-        new Vector2Int(1280, 720),
-        new Vector2Int(1366, 768),
-        new Vector2Int(1600, 900),
-        new Vector2Int(1728, 1117),
-        new Vector2Int(1920, 1080), // 可选但非默认
-        new Vector2Int(2336, 1460),
-        new Vector2Int(2560, 1600),
-        new Vector2Int(2992, 1870),
-        new Vector2Int(3456, 2160),
+        new Vector2Int(1280, 720),   // 720p HD
+        new Vector2Int(1600, 900),   // HD+
+        new Vector2Int(1920, 1080),  // 1080p FHD
+        new Vector2Int(2560, 1440),  // 2K QHD
+        new Vector2Int(2560, 1600),  // MacBook Pro
+        new Vector2Int(3840, 2160),  // 4K UHD
     };
     private int defaultResolutionIndex = 0;
     private int defaultModeIndex = 0; // 0: fullscreen, 1: windowed
@@ -43,6 +43,7 @@ public partial class DisplaySettingsController : MonoBehaviour
     private Canvas runtimeOverlayCanvas;
     private Image runtimeOverlayImage;
     private Material runtimeOverlayMaterial;
+    private ScrollRect resolutionDropdownScrollRect;
     private static Sprite sharedRuntimeOverlaySprite;
     private static Texture2D sharedRuntimeOverlayTexture;
 
@@ -50,12 +51,16 @@ public partial class DisplaySettingsController : MonoBehaviour
     {
         resetButton.onClick.AddListener(ResetToDefault);
         PopulateResolutionDropdown();
+        CacheResolutionDropdownScrollRect();
+        ApplyResolutionDropdownScrollTuning();
         EnsureOverlayToggleListeners();
         EnsureRuntimeOverlayCanvas();
     }
 
     void OnEnable()
     {
+        CacheResolutionDropdownScrollRect();
+        ApplyResolutionDropdownScrollTuning();
         LoadSavedSettings();
         LoadSavedOverlayColor();
     }
@@ -86,8 +91,28 @@ public partial class DisplaySettingsController : MonoBehaviour
         // 保存默认分辨率索引
         defaultResolutionIndex = currentResIndex;
 
+        CacheResolutionDropdownScrollRect();
+        ApplyResolutionDropdownScrollTuning();
+
         resolutionDropdown.onValueChanged.AddListener(_ => ApplyDisplaySettings());
         modeDropdown.onValueChanged.AddListener(_ => ApplyDisplaySettings());
+    }
+
+    void CacheResolutionDropdownScrollRect()
+    {
+        if (resolutionDropdown == null || resolutionDropdown.template == null)
+            return;
+
+        resolutionDropdownScrollRect = resolutionDropdown.template.GetComponentInChildren<ScrollRect>(true);
+    }
+
+    void ApplyResolutionDropdownScrollTuning()
+    {
+        if (resolutionDropdownScrollRect == null)
+            return;
+
+        // 调高分辨率下拉列表滚轮步进，避免滚很多但移动很少。
+        resolutionDropdownScrollRect.scrollSensitivity = Mathf.Max(1f, resolutionDropdownScrollSensitivity);
     }
 
     public void ApplyDisplaySettings()
