@@ -3,6 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class LanguageFontAutoApplier : MonoBehaviour
 {
@@ -19,6 +22,9 @@ public class LanguageFontAutoApplier : MonoBehaviour
     private static Font japaneseFont;
     private static TMP_FontAsset chineseTmpFont;
     private static TMP_FontAsset japaneseTmpFont;
+#if UNITY_EDITOR
+    private static bool pendingRefreshRetry;
+#endif
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Bootstrap()
@@ -135,6 +141,19 @@ public class LanguageFontAutoApplier : MonoBehaviour
 
     private static void EnsureFontsLoaded()
     {
+#if UNITY_EDITOR
+        if (EditorApplication.isUpdating)
+        {
+            if (!pendingRefreshRetry)
+            {
+                pendingRefreshRetry = true;
+                EditorApplication.delayCall += RetryAfterEditorRefresh;
+            }
+
+            return;
+        }
+#endif
+
         if (chineseFont == null)
         {
             chineseFont = Resources.Load<Font>(ChineseFontResourcePath);
@@ -165,6 +184,24 @@ public class LanguageFontAutoApplier : MonoBehaviour
             Debug.LogWarning("[LanguageFontAutoApplier] Missing Japanese font in Resources/Fonts/NotoSansCJKjp-Light.");
         }
     }
+
+#if UNITY_EDITOR
+    private static void RetryAfterEditorRefresh()
+    {
+        if (EditorApplication.isUpdating)
+        {
+            return;
+        }
+
+        pendingRefreshRetry = false;
+        EditorApplication.delayCall -= RetryAfterEditorRefresh;
+
+        if (instance != null)
+        {
+            instance.ApplyCurrentLanguageFont();
+        }
+    }
+#endif
 
     private static T[] FindAll<T>() where T : Object
     {

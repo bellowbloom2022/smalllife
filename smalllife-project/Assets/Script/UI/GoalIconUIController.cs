@@ -5,16 +5,7 @@ using UnityEngine.EventSystems;
 
 /// <summary>
 /// 挂在 goal1_get UI 根节点上。
-/// 负责：右上角角标（2 / 1 / ✓）+ Icon 底部填充进度 两个视觉状态。
-///
-/// Unity Editor 配置步骤：
-/// 1. 在 goal1_get 下新建子物体 "FillIcon"，添加 Image 组件，
-///    图片与底图相同，Image Type = Filled，Fill Method = Vertical，
-///    Fill Origin = Bottom，Fill Amount 默认 = 0，Color.alpha = 255。
-/// 2. 在 goal1_get 下新建子物体 "Badge"，添加 Image 组件，
-///    锚点设置到右上角，准备好 step2/step1/checkmark 三张 sprite。
-/// 3. 将此脚本拖入 goal1_get，在 Inspector 里填写 levelID / goalID /
-///    isSingleStep，以及三个引用和三张 sprite。
+/// 负责：Icon 透明度 + Dot Circle 圆环填充进度 + Checkmark 显示 三个视觉状态。
 /// </summary>
 public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -24,18 +15,19 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
     /// <summary>true = SingleGoal（单步），false = Goal（两步）</summary>
     [SerializeField] private bool isSingleStep;
 
-    [Header("Fill Effect (Image Type = Filled / Vertical / Bottom)")]
-    [SerializeField] private Image fillImage;
 
-    [Header("Badge")]
-    [SerializeField] private Image badgeImage;
-    [SerializeField] private Sprite badgeStep2Sprite;   // 显示 "2"
-    [SerializeField] private Sprite badgeStep1Sprite;   // 显示 "1"
-    [SerializeField] private Sprite badgeCheckSprite;   // 显示 ✓
 
-    // DOTween 动画参数（可按需在 Inspector 调整）
+    [Header("Dot Circle Filled (Dashed Circle Background)")]
+    [SerializeField] private Image dotCircleFilledImage; // 虚线圆环底图
+
+    [Header("Icon Image")]
+    [SerializeField] private Image iconImage; // Icon 主体
+
+    [Header("Checkmark")]
+    [SerializeField] private GameObject checkmark; // Checkmark 图标
+
     private const float FillDuration = 0.5f;
-    private const float PunchDuration = 0.45f;
+    private const float IconAlphaDuration = 0.5f; // Icon 透明度动画时长
 
     public string LevelID => levelID;
     public int GoalID => goalID;
@@ -120,26 +112,34 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
         NormalizeLegacyProgressForDisplay(singleStep, ref step1Done, ref step2Done);
         bool isFullyDone = GoalProgressRules.IsCollected(singleStep, step1Done, step2Done);
 
-        // 填充量（非动画）
-        if (fillImage != null)
+        // Dot Circle Filled 填充量（非动画）
+        if (dotCircleFilledImage != null)
         {
             if (isFullyDone)
-                fillImage.fillAmount = 1f;
+                dotCircleFilledImage.fillAmount = 1f;
             else if (step1Done)
-                fillImage.fillAmount = 0.5f;
+                dotCircleFilledImage.fillAmount = 0.5f;
             else
-                fillImage.fillAmount = 0f;
+                dotCircleFilledImage.fillAmount = 0f;
         }
 
-        // 角标 sprite（非动画）
-        if (badgeImage != null)
+        // Icon 透明度（非动画）
+        if (iconImage != null)
         {
+            Color color = iconImage.color;
             if (isFullyDone)
-                badgeImage.sprite = badgeCheckSprite;
+                color.a = 1f;
             else if (step1Done)
-                badgeImage.sprite = badgeStep1Sprite;
+                color.a = 0.7f;
             else
-                badgeImage.sprite = singleStep ? badgeStep1Sprite : badgeStep2Sprite;
+                color.a = 0.4f;
+            iconImage.color = color;
+        }
+
+        // Checkmark（非动画）
+        if (checkmark != null)
+        {
+            checkmark.SetActive(isFullyDone);
         }
     }
 
@@ -153,11 +153,15 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
             return;
 
         bool singleStep = GetEffectiveSingleStepFlag();
-        // isSingleStep 时任何 Step 到达即为全部完成
         bool isFullyDone = completedStep == GoalNoteStep.Step2 || singleStep;
 
-        AnimateFill(isFullyDone ? 1f : 0.5f);
-        AnimateBadge(isFullyDone ? badgeCheckSprite : badgeStep1Sprite);
+        AnimateDotCircle(0, isFullyDone ? 1f : 0.5f);
+        AnimateIconAlpha(isFullyDone ? 0.7f : 0.4f, isFullyDone ? 1f : 0.7f);
+
+        if (isFullyDone && checkmark != null)
+        {
+            checkmark.SetActive(true);
+        }
     }
 
     private void ApplyProgressFromSave()
@@ -236,18 +240,23 @@ public class GoalIconUIController : MonoBehaviour, IInitializePotentialDragHandl
     // 内部动画
     // ──────────────────────────────────────────────────────────────────────
 
-    private void AnimateFill(float targetFill)
+    private void AnimateDotCircle(float from, float to)
     {
-        if (fillImage == null) return;
-        fillImage.DOKill();
-        fillImage.DOFillAmount(targetFill, FillDuration).SetEase(Ease.OutQuad);
+        if (dotCircleFilledImage != null)
+        {
+            DOTween.To(() => dotCircleFilledImage.fillAmount, x => dotCircleFilledImage.fillAmount = x, to, FillDuration);
+        }
     }
 
-    private void AnimateBadge(Sprite nextSprite)
+    private void AnimateIconAlpha(float from, float to)
     {
-        if (badgeImage == null) return;
-        badgeImage.sprite = nextSprite;
-        badgeImage.transform.DOKill();
-        badgeImage.transform.DOPunchScale(Vector3.one * 0.4f, PunchDuration, 2, 0.5f);
+        if (iconImage != null)
+        {
+            Color color = iconImage.color;
+            DOTween.To(() => color.a, x => {
+                color.a = x;
+                iconImage.color = color;
+            }, to, IconAlphaDuration);
+        }
     }
 }

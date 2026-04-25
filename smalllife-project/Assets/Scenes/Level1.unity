@@ -1282,6 +1282,14 @@ MonoBehaviour:
   goals:
   - {fileID: 515472297}
   - {fileID: 57174845}
+  stepClickLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  dialogueClickLayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  max3DHits: 16
+  max2DHits: 16
 --- !u!1 &261931487
 GameObject:
   m_ObjectHideFlags: 0
@@ -5304,6 +5312,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -15.1
       objectReference: {fileID: 0}
+    - target: {fileID: 2977241614146961119, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 4acbcae7d9fcf4a9caa4251af3d9a020, type: 3}
     - target: {fileID: 3653951617365295078, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -5820,6 +5832,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -17.1
       objectReference: {fileID: 0}
+    - target: {fileID: 2977241614146961119, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 380d489bc9b677c489c1f9f8755c99ac, type: 3}
     - target: {fileID: 7833445342376458736, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: FallbackText
       value: 
@@ -6566,6 +6582,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultLanguage: Chinese
+  foregroundTargetFrameRate: 60
+  backgroundTargetFrameRate: 15
+  highRefreshThreshold: 90
+  normalRefreshVSyncCount: 1
+  highRefreshVSyncCount: 2
 --- !u!4 &1661393754
 Transform:
   m_ObjectHideFlags: 0
