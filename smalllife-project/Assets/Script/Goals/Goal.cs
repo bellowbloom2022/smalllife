@@ -304,6 +304,8 @@ public class Goal : MonoBehaviour
             // 用世界坐标转换，无论目标是否在 Content 内都能落到正确槽位
             Vector3 finalLocalPos = rectPenZai.parent.InverseTransformPoint(finalTarget.position);
             finalLocalPos.z = 0f;
+            rectPenZai.DOLocalMove(finalLocalPos, 0.4f).SetEase(Ease.InBack);
+            mGameObjectNovel.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack);
             rectPenZai.DOLocalMove(finalLocalPos, 0.4f).onComplete = () =>
             {
                 rectPenZai.GetComponent<Animator>().SetTrigger("click");
