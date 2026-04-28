@@ -174,3 +174,27 @@ enum Stage { PreAnim1, PostAnim1, PostAnim2 }
 - 当前实现还额外保留约 `1.5s` 延迟，给 note-panel 的文字显示留出缓冲。
 - 若带存档重新进入且该关卡已全完成，`Level.Start()` 也会在初始化计数后主动恢复 `InfoPanel` 完成态，不依赖再次收集触发。
 - 详见 `../tasks/resolved/panel-info-completion-flow.md`。
+
+---
+
+## Goal 拆分进度（2026-04-28）
+
+### 本次已完成（按“零 Inspector 迁移”原则）
+
+- 采用 `partial class Goal` 进行文件级拆分，**未新增需要挂载的 MonoBehaviour 组件**，也未迁移原有序列化字段。
+- 拆分结果：
+  - `Goal.cs`：保留序列化字段、主流程调度、保存恢复入口、Step1/Step2 动画收口。
+  - `Goal.StepFlow.cs`：`ExecuteStep`、`EndStep`、输入锁兜底（`ScheduleInputUnlockFallback` / `CancelInputUnlockFallback`）。
+  - `Goal.Dialogue.cs`：阶段对话点击分发、`IsMyGoalCollider`、阶段对话恢复与首句展示。
+  - `Goal.Collect.cs`：`TriggerCollectAnimation` 与收集后可视清理。
+
+### 兼容性确认
+
+- `SingleGoal` 继承关系保持不变，仍可调用 `EndStep(step1Config)` 与 `TriggerCollectAnimation(false)`。
+- 存档读写与事件顺序未调整：`GameDataUtils.SetGoalStep`、`SaveSystem.SaveGame`、`GoalNoteEvents` 逻辑保持原顺序。
+- 现有 Prefab/场景里 `Goal` 组件上的引用与参数无需手动重配。
+
+### 当前状态
+
+- 当前拆分先停在文件级解耦（不继续拆为新组件），优先保证稳定与低迁移成本。
+- 后续若继续拆分，建议仍维持 `partial` 路线，避免触发 Inspector 批量迁移。

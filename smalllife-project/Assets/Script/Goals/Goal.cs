@@ -1,8 +1,6 @@
 using UnityEngine;
-using UnityEngine.UI;
-using DG.Tweening;
 
-public class Goal : MonoBehaviour
+public partial class Goal : MonoBehaviour
 {
     public LevelDataAsset levelData;
     [Header("Step Config")]
@@ -59,19 +57,19 @@ public class Goal : MonoBehaviour
     private bool stepCutsceneActive;
     private float stepCutsceneStartTime;
 
-
     protected virtual void Start()
     {
         cameraController = FindObjectOfType<CameraController>();
-        
+
         // 仅在无保存进度时初始化为PreAnim1，否则让ApplySavedProgress()设置正确的stage
         if (Level.ins == null || !SaveSystem.GameData.goalProgressMap.ContainsKey($"{Level.ins.currentLevelIndex}_{goalID}"))
             currentStage = Stage.PreAnim1;
-        
+
         InitializeClickableColliderConfig();
         ApplyClickableCollidersByStepState();
         SFXZone.TryRegister(GetComponent<AudioSource>());
     }
+
     public virtual void OnClicked()
     {
         // Block any new goal trigger while a step cutscene is running.
@@ -120,35 +118,6 @@ public class Goal : MonoBehaviour
             Destroy(mGameObjectNovel);
         else
             mGameObjectNovel.SetActive(false);
-    }
-
-    private void RestoreDialoguePlayedState()
-    {
-        if (DialogueManager.Instance == null)
-            return;
-
-        // 如果Step1已完成，标记PreAnim1对话为已播放
-        if (step1Completed)
-        {
-            foreach (var spriteObj in dialogueSpritesPreAnim1)
-                if (spriteObj != null)
-                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
-        }
-
-        // 如果Step2已完成，标记PostAnim2对话为已播放
-        if (step2Completed)
-        {
-            foreach (var spriteObj in dialogueSpritesPostAnim2)
-                if (spriteObj != null)
-                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
-        }
-        // 否则如果只Step1完成，标记PostAnim1对话为已播放
-        else if (step1Completed)
-        {
-            foreach (var spriteObj in dialogueSpritesPostAnim1)
-                if (spriteObj != null)
-                    DialogueManager.Instance.MarkSpriteAsPlayed(spriteObj);
-        }
     }
 
     private void InitializeClickableColliderConfig()
@@ -237,131 +206,6 @@ public class Goal : MonoBehaviour
         animator.Play(animName);
     }
 
-    public void HandleClick(Collider2D hitCollider)
-    {
-        switch (currentStage)
-        {
-            case Stage.PreAnim1:
-                HandleDialogueClick(collidersPreAnim1, dialogueSpritesPreAnim1, dialogueAnchorsPreAnim1, hitCollider);
-                break;
-            case Stage.PostAnim1:
-                HandleDialogueClick(collidersPostAnim1, dialogueSpritesPostAnim1, dialogueAnchorsPostAnim1, hitCollider);
-                break;
-            case Stage.PostAnim2:
-                HandleDialogueClick(collidersPostAnim2, dialogueSpritesPostAnim2, dialogueAnchorsPostAnim2, hitCollider);
-                break;
-        }
-    }
-
-    protected void HandleDialogueClick(Collider2D[] colliders, GameObject[] dialogueSprites, Transform[] dialogueAnchors, Collider2D hitCollider)
-    {
-        for (int i = 0; i < colliders.Length; i++)
-        {
-            if (colliders[i] == hitCollider)
-            {
-                DialogueManager.Instance.ShowDialogue(dialogueSprites[i], dialogueAnchors[i]);
-                break;
-            }
-        }
-    }
-
-    public bool IsMyGoalCollider(Collider2D collider)
-    {
-        switch (currentStage)
-        {
-            case Stage.PreAnim1:
-                return System.Array.Exists(collidersPreAnim1, c => c == collider);
-            case Stage.PostAnim1:
-                return System.Array.Exists(collidersPostAnim1, c => c == collider);
-            case Stage.PostAnim2:
-                return System.Array.Exists(collidersPostAnim2, c => c == collider);
-            default:
-                return false;
-        }
-    }
-
-    protected void TriggerCollectAnimation(bool markStep2 = true)
-    {
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(mNovelPosStart.transform.position);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out Vector2 uiPos);
-        RectTransform rectPenZai = mGameObjectNovel.GetComponent<RectTransform>();
-        rectPenZai.anchoredPosition = uiPos;
-
-        screenPos = Camera.main.WorldToScreenPoint(mNovelPosMid.transform.position);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out uiPos);
-
-        mGameObjectNovel.transform.DOScale(Vector3.one * 2, 0.3f);
-        rectPenZai.DOLocalMove(uiPos, 0.4f).onComplete = () =>
-        {
-            mGameObjectNovel.transform.DOScale(Vector3.one, 0.3f);
-
-            // 在第二段飞行前先把 bar 对齐到目标，避免“落点按旧视口计算，随后 bar 才移动”的体感偏移。
-            if (levelData != null)
-                GoalIconBarController.Instance?.TryFocusToGoal(levelData.levelID, goalID, false);
-
-            Canvas.ForceUpdateCanvases();
-            Transform finalTarget = iconController != null ? iconController.transform : mNovelPos.transform;
-            // 用世界坐标转换，无论目标是否在 Content 内都能落到正确槽位
-            Vector3 finalLocalPos = rectPenZai.parent.InverseTransformPoint(finalTarget.position);
-            finalLocalPos.z = 0f;
-            rectPenZai.DOLocalMove(finalLocalPos, 0.4f).SetEase(Ease.InBack);
-            mGameObjectNovel.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack);
-            rectPenZai.DOLocalMove(finalLocalPos, 0.4f).onComplete = () =>
-            {
-                rectPenZai.GetComponent<Animator>().SetTrigger("click");
-                Level.ins.AddCount();
-                isFound = true;
-                step1Completed = true;
-                if (markStep2) step2Completed = true;
-
-                Debug.Log($"Goal ID {goalID} marked as found.");
-                GameDataUtils.SetGoalStep(SaveSystem.GameData, Level.ins.currentLevelIndex, goalID, true, markStep2);
-
-                int completedGoals = GameDataUtils.GetCompletedGoalCount(SaveSystem.GameData, Level.ins.currentLevelIndex);
-                SaveSystem.UpdateLevelStar(Level.ins.currentLevelIndex, completedGoals);
-
-                if (markStep2)
-                {
-                    SaveSystem.SaveGame();
-                    GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step2);
-                }
-                else
-                {
-                    // SingleGoal 单步完成：SaveGame 并通知 UI
-                    SaveSystem.SaveGame();
-                    GoalNoteEvents.RaiseGoalCompleted(levelData.levelID, goalID, GoalNoteStep.Step1);
-                }
-
-                if (levelData != null)
-                    GoalIconBarController.Instance?.TryFocusToGoal(levelData.levelID, goalID, false);
-
-                CleanupCollectedNovelObject();
-            };
-        };
-
-        AudioHub.Instance.PlayGlobal("goal_found");
-        currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
-        ShowFirstDialogueOfCurrentStage();
-    }
-
-    private void CleanupCollectedNovelObject()
-    {
-        if (!cleanupNovelAfterCollect || mGameObjectNovel == null)
-            return;
-
-        float delay = Mathf.Max(0f, cleanupDelayAfterCollect);
-        DOVirtual.DelayedCall(delay, () =>
-        {
-            if (mGameObjectNovel == null)
-                return;
-
-            if (destroyNovelObjectAfterCollect)
-                Destroy(mGameObjectNovel);
-            else
-                mGameObjectNovel.SetActive(false);
-        });
-    }
-
     protected void PlayStep1()
     {
         if (animator == null)
@@ -405,66 +249,7 @@ public class Goal : MonoBehaviour
     {
         ExecuteStep(step2Config);
     }
-    protected void ExecuteStep(StepConfig config)
-    {
-        if (config == null) return;
 
-        stepCutsceneActive = true;
-        stepCutsceneStartTime = Time.time;
-        ScheduleInputUnlockFallback();
-        if (InputRouter.Instance != null)
-            InputRouter.Instance.LockInput($"Goal#{goalID}.ExecuteStep");
-
-        if (config.useFocus && config.focusTarget != null)
-        {
-            FocusMaskController.Instance.Show(
-                config.focusTarget,
-                config.focusRadius,
-                config.focusShowDuration
-            );
-        }
-
-        if (config.moveCamera && config.cameraTarget != null)
-        {
-            DOVirtual.DelayedCall(config.cameraDelay, () =>
-            {
-                if (Camera.main == null) return;
-                CameraController controller = Camera.main.GetComponent<CameraController>();
-                if (controller == null) return;
-                controller.MoveCameraToPositionByDuration(
-                    config.cameraTarget.position,
-                    config.cameraDuration
-                );
-            });
-        }
-    }
-
-    private void ScheduleInputUnlockFallback()
-    {
-        int lockVersion = ++inputLockVersion;
-        float fallbackDelay = FallbackUnlockTimeout;
-
-        DOVirtual.DelayedCall(fallbackDelay, () =>
-        {
-            if (lockVersion != inputLockVersion)
-                return;
-
-            if (!stepCutsceneActive)
-                return;
-
-            if (InputRouter.Instance == null || !InputRouter.Instance.InputLocked)
-                return;
-
-            float elapsed = Time.time - stepCutsceneStartTime;
-            Debug.LogWarning($"[Goal {goalID}] Fallback unlock triggered after timeout {elapsed:F2}s.");
-            InputRouter.Instance.UnlockInput($"Goal#{goalID}.Fallback");
-        });
-    }
-
-    private void CancelInputUnlockFallback()
-    {
-        inputLockVersion++;
-    }
     public virtual void OnAnimEnd()
     {
         // Step1 动画刚播完
@@ -480,26 +265,11 @@ public class Goal : MonoBehaviour
             HandleStep2AnimEnd();
             return;
         }
-    }  
-
-    protected void EndStep(StepConfig config)
-    {
-        if (config == null) return;
-
-        stepCutsceneActive = false;
-
-        if (config.useFocus)
-            FocusMaskController.Instance.Hide(config.focusHideDuration, config.focusHideMode);
-
-        CancelInputUnlockFallback();
-        if (InputRouter.Instance != null)
-            InputRouter.Instance.UnlockInput($"Goal#{goalID}.EndStep");
     }
 
     protected void HandleStep1AnimEnd()
     {
         EndStep(step1Config);
-        //this.GetComponent<Animator>().ResetTrigger("click");
         Animator anim = GetComponent<Animator>();
         anim.ResetTrigger("step1"); // 对齐 Step 系统
         SetClickableColliders(step2ClickableColliders);
@@ -509,10 +279,10 @@ public class Goal : MonoBehaviour
         currentStage = Stage.PostAnim1;
 
         GameDataUtils.SetGoalStep(
-            SaveSystem.GameData, 
-            Level.ins.currentLevelIndex, 
-            goalID, 
-            true, 
+            SaveSystem.GameData,
+            Level.ins.currentLevelIndex,
+            goalID,
+            true,
             false
         );
         SaveSystem.SaveGame();
@@ -529,29 +299,6 @@ public class Goal : MonoBehaviour
         {
             mIsTriggered = true;
             TriggerCollectAnimation(true);
-        }
-    }
-
-    public void ShowFirstDialogueOfCurrentStage()
-    {
-        DialogueManager.Instance.HideDialogue();
-
-        switch (currentStage)
-        {
-            case Stage.PreAnim1:
-                if (dialogueSpritesPreAnim1.Length > 0)
-                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPreAnim1[0], dialogueAnchorsPreAnim1[0]);
-                break;
-
-            case Stage.PostAnim1:
-                if (dialogueSpritesPostAnim1.Length > 0)
-                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPostAnim1[0], dialogueAnchorsPostAnim1[0]);
-                break;
-
-            case Stage.PostAnim2:
-                if (dialogueSpritesPostAnim2.Length > 0)
-                    DialogueManager.Instance.ShowDialogue(dialogueSpritesPostAnim2[0], dialogueAnchorsPostAnim2[0]);
-                break;
         }
     }
 }
