@@ -193,3 +193,4 @@ string translated = LeanLocalization.GetTranslationText(pageLabelFormatPhrase.Na
 
 - `.github/notes/tasks/ongoing/goal-icon-hover-info-panel-detach-plan.md` - Hover 信息框脱离 Viewport 方案
 - `.github/notes/tasks/resolved/goalbar-prefab-overwrite-recovery-and-guardrails.md` - GoalBar Prefab 保护守则
+- `.github/notes/tasks/resolved/goal-note-panel-cleanup.md` - GoalNotePanel 清理记录
