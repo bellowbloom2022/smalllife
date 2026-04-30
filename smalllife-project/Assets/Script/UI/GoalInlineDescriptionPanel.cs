@@ -94,6 +94,10 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         CancelPendingHide();
         CancelAutoShow();
         ShowAll();
+
+        // 播放 hover 音效
+        if (AudioHub.Instance != null)
+            AudioHub.Instance.PlayGlobal("goal-icon-hover");
     }
 
     public void OnPointerExit(PointerEventData eventData)
