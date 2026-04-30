@@ -164,7 +164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2970237697168162160, guid: eadcf3ce38e8a4dbfb49387d8dd1f22a, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 300
+      value: 600
       objectReference: {fileID: 0}
     - target: {fileID: 2970237697168162160, guid: eadcf3ce38e8a4dbfb49387d8dd1f22a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5398,7 +5398,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMin.x
@@ -5406,7 +5406,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_SizeDelta.x
@@ -5450,7 +5450,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 63
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5824,6 +5824,10 @@ PrefabInstance:
       propertyPath: levelID
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 347183605069051812, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
+      propertyPath: inlineGoalNote
+      value: 
+      objectReference: {fileID: 1437034934}
     - target: {fileID: 2542542049970250027, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -8.9
@@ -5870,7 +5874,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMin.x
@@ -5878,7 +5882,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_SizeDelta.x
@@ -5922,7 +5926,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 63
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 7833445343167281358, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -5950,6 +5954,17 @@ PrefabInstance:
       objectReference: {fileID: 21300000, guid: 380d489bc9b677c489c1f9f8755c99ac, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
+--- !u!114 &1437034934 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7833445343167281350, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
+  m_PrefabInstance: {fileID: 1437034933}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1437034935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43cab1117e4303446a36f016f0c86ea9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1437034935 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7833445343167281353, guid: 2c25c1f21dea049ef9d582ada0cbe1ab, type: 3}
@@ -7539,6 +7554,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   infoText: {fileID: 1437034937}
   backgroundImage: {fileID: 1437034936}
+  forceVisibleWhenConfigured: 1
+  autoCreatePagingDecor: 1
+  pageText: {fileID: 0}
+  prevFoldGraphic: {fileID: 0}
+  nextFoldGraphic: {fileID: 0}
+  goalNoteBackgroundImage: {fileID: 0}
+  pageLabelFormat: '{0}/{1}'
+  autoRevealSeconds: 2
 --- !u!95 &1742657684
 Animator:
   serializedVersion: 4
