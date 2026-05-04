@@ -140,6 +140,18 @@ string translated = LeanLocalization.GetTranslationText(pageLabelFormatPhrase.Na
 | 4 | Update 提前返回 | 未显示时 `if (!isShowing) return;` 减少 RectTransform 计算开销 |
 | 5 | 消除重复代码 | `AutoHideRoutine`/`DelayedHideRoutine` 各自调用 `HideInfoText+HideDescriptionPanel` → 统一 `HideAll(true)` |
 
+### 2026-05-01 性能优化（降低运行时发烫）
+
+**背景：** 添加 descriptionPanel 后 Unity 运行容易发烫，主要原因是 `Update()` 每帧执行昂贵的矩形检测。
+
+| # | 优化项 | 改动 | 效果 |
+|---|--------|------|------|
+| 1 | 帧跳跃 | `Update()` 每帧检测 → 每 3 帧检测一次（`HoverCheckInterval = 3`） | 减少 ~66% Update 开销；0.15s 延迟足够覆盖 3 帧间隔（~50ms），手感无差异 |
+| 2 | UI 可见状态缓存 | 每帧 `IsAnyUIVisible()` 查询 `activeSelf` → `isUIShowing` 布尔标记，`ShowAll`/`HideAll` 时更新 | UI 未显示时 Update 仅一次布尔判断即退出，几乎零开销；删除 `IsAnyUIVisible()` 方法 |
+| 3 | Panel 区域检测优化 | panel 每帧 `GetWorldCorners()` 手动计算 → `RectTransformUtility.RectangleContainsScreenPoint`（Unity 内置优化） | 内置方法比手动 GetWorldCorners 更高效 |
+| 4 | 缓存 Panel RectTransform | 每帧 `descriptionPanelRoot.GetComponent<RectTransform>()` → `Awake` 缓存到 `cachedPanelRect` | 避免每帧 GetComponent 调用 |
+| 5 | worldCorners 改为 static | 实例级 `readonly worldCorners` → `static readonly s_WorldCorners` | 所有实例共享同一数组，减少 GC 压力 |
+
 ---
 
 ## 🔄 初始化顺序（关键！）

@@ -51,14 +51,21 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
     private CanvasGroup descriptionTextCG;
     private CanvasGroup summaryTextCG;
     private RectTransform cachedRootRect;
-    private readonly Vector3[] worldCorners = new Vector3[4];
+    private RectTransform cachedPanelRect;
+    private bool isUIShowing;              // 缓存 UI 可见状态，避免每帧查询 activeSelf
+    private int frameSkipCounter;          // 帧跳跃计数器
 
     private const int TotalPages = 2;
+    private const int HoverCheckInterval = 3; // 每 3 帧检测一次鼠标位置
 
     private void Awake()
     {
         // 缓存根节点 RectTransform
         cachedRootRect = GetComponent<RectTransform>();
+
+        // 缓存描述面板 RectTransform
+        if (descriptionPanelRoot != null)
+            cachedPanelRect = descriptionPanelRoot.GetComponent<RectTransform>();
 
         // 尝试自动查找缺失的引用
         if (showTextOnUI == null)
@@ -107,8 +114,11 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
 
     private void Update()
     {
-        bool isShowing = IsAnyUIVisible();
-        if (!isShowing) return;
+        if (!isUIShowing) return;
+
+        // 帧跳跃：每 HoverCheckInterval 帧检测一次，减少 CPU 开销
+        if (++frameSkipCounter < HoverCheckInterval) return;
+        frameSkipCounter = 0;
 
         bool isInZone = IsPointerInHoverZone();
 
@@ -123,39 +133,42 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
     }
 
     /// <summary>
-    /// 检测鼠标是否在 icon 或 panel 的 RectTransform 范围内（含间距容差）
+    /// 检测鼠标是否在 icon 或 panel 范围内（含间距容差）
+    /// 使用 Unity 内置 RectangleContainsScreenPoint，比手动 GetWorldCorners 更高效
     /// </summary>
     private bool IsPointerInHoverZone()
     {
         Vector2 mousePos = Input.mousePosition;
 
-        // 检测 icon 根节点
-        if (IsPointInRect(cachedRootRect, mousePos, iconPadding))
+        // 检测 icon 根节点（带 padding 扩展）
+        if (cachedRootRect != null &&
+            IsPointInRectWithPadding(cachedRootRect, mousePos, iconPadding))
             return true;
 
-        // 检测 descriptionPanel
-        if (descriptionPanelRoot != null && descriptionPanelRoot.activeSelf)
-        {
-            if (IsPointInRect(descriptionPanelRoot.GetComponent<RectTransform>(), mousePos, 0f))
-                return true;
-        }
+        // 检测 descriptionPanel（无需 padding）
+        if (cachedPanelRect != null && descriptionPanelRoot.activeSelf &&
+            RectTransformUtility.RectangleContainsScreenPoint(cachedPanelRect, mousePos))
+            return true;
 
         return false;
     }
 
     /// <summary>
-    /// 检测点是否在 RectTransform 范围内（可向外扩展 padding）
+    /// 检测点是否在 RectTransform 范围内，支持向外扩展 padding。
+    /// 缓存世界坐标角点，仅在首次调用时计算。
     /// </summary>
-    private bool IsPointInRect(RectTransform rt, Vector2 screenPoint, float padding)
+    private static readonly Vector3[] s_WorldCorners = new Vector3[4];
+
+    private bool IsPointInRectWithPadding(RectTransform rt, Vector2 screenPoint, float padding)
     {
         if (rt == null) return false;
 
-        rt.GetWorldCorners(worldCorners);
+        rt.GetWorldCorners(s_WorldCorners);
 
-        float minX = worldCorners[0].x - padding;
-        float maxX = worldCorners[2].x + padding;
-        float minY = worldCorners[0].y - padding;
-        float maxY = worldCorners[1].y + padding;
+        float minX = s_WorldCorners[0].x - padding;
+        float maxX = s_WorldCorners[2].x + padding;
+        float minY = s_WorldCorners[0].y - padding;
+        float maxY = s_WorldCorners[1].y + padding;
 
         return screenPoint.x >= minX && screenPoint.x <= maxX
             && screenPoint.y >= minY && screenPoint.y <= maxY;
@@ -170,6 +183,8 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
     {
         ShowInfoText();
         ShowDescriptionPanel();
+        isUIShowing = true;
+        frameSkipCounter = 0;
     }
 
     /// <summary>
@@ -182,6 +197,7 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         {
             HideInfoText();
             HideDescriptionPanel();
+            isUIShowing = false;
         }
         else
         {
@@ -380,18 +396,6 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
             string localized = LeanLocalization.GetTranslationText(localizationKey);
             text.text = string.IsNullOrEmpty(localized) ? localizationKey : localized;
         }
-    }
-
-    /// <summary>
-    /// 判断当前是否有任何 UI 元素正在显示（info text 或 description panel）
-    /// </summary>
-    private bool IsAnyUIVisible()
-    {
-        if (descriptionPanelRoot != null && descriptionPanelRoot.activeSelf)
-            return true;
-        if (showTextOnUI != null && showTextOnUI.infoText != null && showTextOnUI.infoText.gameObject.activeSelf)
-            return true;
-        return false;
     }
 
     // ── 显示/隐藏控制 ──
