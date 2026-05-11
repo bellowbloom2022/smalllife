@@ -54,9 +54,11 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
     private RectTransform cachedPanelRect;
     private bool isUIShowing;              // 缓存 UI 可见状态，避免每帧查询 activeSelf
     private int frameSkipCounter;          // 帧跳跃计数器
+    private float lastAttentionReportTime = -10f;
 
     private const int TotalPages = 2;
     private const int HoverCheckInterval = 3; // 每 3 帧检测一次鼠标位置
+    private const float AttentionReportInterval = 0.75f;
 
     private void Awake()
     {
@@ -101,6 +103,7 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         CancelPendingHide();
         CancelAutoShow();
         ShowAll();
+        ReportGoalIconAttention(true);
 
         // 播放 hover 音效
         if (AudioHub.Instance != null)
@@ -125,6 +128,7 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         if (isInZone)
         {
             CancelPendingHide();
+            ReportGoalIconAttention(false);
         }
         else if (hideCoroutine == null && autoShowCoroutine == null)
         {
@@ -251,6 +255,18 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         Debug.LogWarning($"[GoalDescPanel] GoalID {goalID} not found in LevelDataAsset.");
     }
 
+    private void ReportGoalIconAttention(bool force)
+    {
+        if (!force && Time.unscaledTime - lastAttentionReportTime < AttentionReportInterval)
+            return;
+
+        if (goalID <= 0 || string.IsNullOrEmpty(levelID))
+            ResolveGoalIdentity();
+
+        GoalAttentionTracker.Instance?.ReportGoalIconHover(levelID, goalID);
+        lastAttentionReportTime = Time.unscaledTime;
+    }
+
     private void RestoreStateFromSave()
     {
         var gd = SaveSystem.GameData;
@@ -338,6 +354,7 @@ public class GoalInlineDescriptionPanel : MonoBehaviour,
         currentPage = Mathf.Clamp(targetPage, 0, TotalPages - 1);
         UpdatePagingUI();
         RefreshCurrentPage();
+        ReportGoalIconAttention(true);
     }
 
     private void UpdatePagingUI()
