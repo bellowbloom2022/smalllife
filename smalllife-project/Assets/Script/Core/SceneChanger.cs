@@ -12,10 +12,17 @@ public class SceneChanger : MonoBehaviour
 
     [Header("BGM Fade Settings")]
     public bool useBGMFadeOut = false;      // 是否使用音乐淡出
-    private float fadeOutDuration = 0.5f;   // 音乐淡出时间
+    public float fadeOutDuration = 0.5f;    // 音乐淡出时间
+
+    // 防止重复点击切换场景
+    private bool isChanging = false;
 
     public void ChangeScene()
     {
+        // 防止重复点击
+        if (isChanging) return;
+        isChanging = true;
+
         if (useBGMFadeOut)
         {
             // 查找场景中的 BGMController，并触发淡出 + 延迟切换

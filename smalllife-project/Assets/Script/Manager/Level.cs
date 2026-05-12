@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -20,12 +19,11 @@ public class Level : MonoBehaviour
     public LevelDataAsset levelDataAsset;
 
     [Header("UI")]
-    public InfoPanelController infoPanel;
     public TextMeshProUGUI goalText;
-    public float completionInfoPanelDelay = 1.5f;
 
     [Header("Quick Next Button")]
     [SerializeField] private Button topRightNextLevelButton;
+    [SerializeField] private NextButtonEffectController nextButtonEffect;
 
     [Header("Count")]
     public int TotalCount;
@@ -33,8 +31,6 @@ public class Level : MonoBehaviour
 
     [Header("Scene")]
     public SceneChanger sceneChanger;
-
-    private Coroutine completionInfoPanelCoroutine;
 
     private void Awake()
     {
@@ -61,15 +57,6 @@ public class Level : MonoBehaviour
 
         SetupTopRightNextLevelButton();
         RefreshTopRightNextLevelButtonState();
-    }
-
-    private void OnDestroy()
-    {
-        if (completionInfoPanelCoroutine != null)
-        {
-            StopCoroutine(completionInfoPanelCoroutine);
-            completionInfoPanelCoroutine = null;
-        }
     }
     
     //  缓存所有 Goal 脚本引用 & 自动注入关卡数据
@@ -160,50 +147,6 @@ public class Level : MonoBehaviour
         }
     }
 
-    private void ScheduleCompletionInfoPanel()
-    {
-        if (completionInfoPanelCoroutine != null)
-            StopCoroutine(completionInfoPanelCoroutine);
-
-        completionInfoPanelCoroutine = StartCoroutine(ShowCompletionInfoPanelAfterDelay());
-    }
-
-    private IEnumerator ShowCompletionInfoPanelAfterDelay()
-    {
-        if (completionInfoPanelDelay > 0f)
-            yield return new WaitForSeconds(completionInfoPanelDelay);
-
-        completionInfoPanelCoroutine = null;
-        ShowCompletionInfoPanel();
-    }
-
-    private IEnumerator ShowCompletionInfoPanelNextFrame()
-    {
-        yield return null;
-        ShowCompletionInfoPanel();
-    }
-
-    private void ShowCompletionInfoPanel()
-    {
-        if (infoPanel == null)
-        {
-            Debug.LogWarning("Level: InfoPanelController not assigned.");
-            return;
-        }
-
-        if (sceneChanger == null)
-        {
-            infoPanel.ShowAsCompletion(null, null);
-            return;
-        }
-
-        LevelDataAsset nextLevelData = null;
-        if (!string.IsNullOrEmpty(sceneChanger.targetSceneName))
-            nextLevelData = Resources.Load<LevelDataAsset>($"LevelDataAssets/{sceneChanger.targetSceneName}");
-
-        infoPanel.ShowAsCompletion(nextLevelData, sceneChanger);
-    }
-
     private void SetupTopRightNextLevelButton()
     {
         if (topRightNextLevelButton == null)
@@ -219,7 +162,14 @@ public class Level : MonoBehaviour
             return;
 
         bool canGoNext = mCount >= TotalCount && sceneChanger != null;
+        bool wasActive = topRightNextLevelButton.gameObject.activeSelf;
         topRightNextLevelButton.gameObject.SetActive(canGoNext);
+
+        // 当按钮从隐藏变为显示时，播放出现动画
+        if (canGoNext && !wasActive && nextButtonEffect != null)
+        {
+            nextButtonEffect.PlayAppearEffect();
+        }
     }
 
     private void OnTopRightNextLevelButtonClicked()
@@ -230,7 +180,24 @@ public class Level : MonoBehaviour
             return;
         }
 
-        sceneChanger.ChangeScene();
+        // 禁用按钮防止重复点击
+        topRightNextLevelButton.interactable = false;
+
+        // 获取淡出时长，默认 0.5f
+        float fadeDuration = sceneChanger.fadeOutDuration;
+
+        // 播放消失动画，动画完成后切换场景
+        if (nextButtonEffect != null)
+        {
+            nextButtonEffect.PlayDisappearEffect(fadeDuration, () =>
+            {
+                sceneChanger.ChangeScene();
+            });
+        }
+        else
+        {
+            sceneChanger.ChangeScene();
+        }
     }
 
     private void ShowAllGoalsFoundFeedback()
