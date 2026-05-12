@@ -1,11 +1,24 @@
-﻿# [已完成] Panel_info 完成态、折叠侧边栏与节奏优化
+﻿# [已废弃] Panel_info 完成态、折叠侧边栏与节奏优化
 
-**状态：** ✅ 已完成  
-**完成日期：** 2026-04-04
+**状态：** ❌ 已废弃（由 LevelIntroPage 替代）  
+**废弃日期：** 2026-05-12
+
+> ⚠️ **重要说明**
+>
+> 以下功能已被完全移除，不再维护：
+> - 场景内 `Panel_infoBody` 折叠侧边栏
+> - 告示牌（paizi）点击打开 InfoPanel 的交互
+> - `InfoPanelController.cs` / `SignboardTrigger.cs` / `Panel_infoBody.prefab`
+>
+> **替代方案**：每个 Level 已有独立的 `LevelIntroPage` 用于展示关卡名称、详情和图片，关卡信息不再需要场景内折叠面板。
+>
+> 详细清理记录见：[panel-info-controller-cleanup.md](./panel-info-controller-cleanup.md)
 
 ---
 
-## 目标
+## 原始功能说明
+
+### 目标（已废弃）
 
 在保留场景内牌子交互的前提下，扩展 `Panel_info`：
 
@@ -17,11 +30,9 @@
 
 最终采用方案：**保留牌子入口 + 完成后自动展开 InfoPanel**。
 
----
+### 已落地行为（已废弃）
 
-## 已落地行为
-
-### 1. 常驻折叠态
+#### 1. 常驻折叠态
 
 - `InfoPanel` 不再依赖激活 / 失活切换显示
 - 默认保持在屏幕右侧折叠位置
@@ -29,13 +40,13 @@
 - 点击关闭按钮或空白区域时折回
 - 支持在分辨率变化时重新计算折叠 / 展开位置
 
-### 2. 场景牌子入口保留
+#### 2. 场景牌子入口保留
 
 - `SignboardTrigger` 统一调用 `infoPanel.OpenFromSignboard()`
 - 不再依赖旧的 `IsShown` 语义判断
-- 保留关卡内“看路牌了解关卡信息”的叙事入口
+- 保留关卡内"看路牌了解关卡信息"的叙事入口
 
-### 3. 完成态展示
+#### 3. 完成态展示
 
 关卡全部目标完成后，`InfoPanel` 会切换为完成态并展开，展示：
 
@@ -45,17 +56,15 @@
 
 下一关名称优先来自 `LevelDataAsset.titleKey` 的本地化文本；若缺失，则回退到 `SceneChanger.targetSceneName`。
 
-### 4. 完成态节奏
+#### 4. 完成态节奏
 
 - 全目标完成后不立即弹出，而是延迟约 `1.5s`
 - 先给 note-panel 打字效果留出缓冲
 - 展开后按顺序显示：`Checkmark -> NextLevelName -> NextButton`
 
----
+### 音效策略（已废弃）
 
-## 音效策略
-
-由于 `InfoPanel` 已转为“常驻 + 折叠/展开”模型，不再适合完全依赖 `BasePanel.Show/Hide()` 的音效语义。
+由于 `InfoPanel` 已转为"常驻 + 折叠/展开"模型，不再适合完全依赖 `BasePanel.Show/Hide()` 的音效语义。
 
 当前音效逻辑放在 `InfoPanelController` 内部：
 
@@ -65,17 +74,13 @@
 
 这样可以避免常驻面板与 `BasePanel` 的激活式音效产生错位。
 
----
+### 实现位置（已废弃）
 
-## 实现位置
+- `Assets/Script/UI/InfoPanelController.cs` ← **已删除**
+- `Assets/Script/UI/SignboardTrigger.cs` ← **已删除**
+- `Assets/Script/Manager/Level.cs` ← **已移除相关代码**
 
-- `Assets/Script/UI/InfoPanelController.cs`
-- `Assets/Script/UI/SignboardTrigger.cs`
-- `Assets/Script/Manager/Level.cs`
-
----
-
-## 相关架构说明
+### 相关架构说明（已废弃）
 
 - 输入分发与空白点击来源：`../../architecture/input-system.md`
 - Goal Step 完成、计数与完成触发链路：`../../architecture/goal-step-system.md`
@@ -84,7 +89,7 @@
 
 ---
 
-## 关键注意事项
+## 关键注意事项（已废弃）
 
 ### Inspector 依赖
 
@@ -98,7 +103,7 @@
 - `InfoPanelController.nextLevelNameText`
 - `InfoPanelController.nextButton`
 
-若 `sceneChanger` 未绑定，则完成态仍可弹出，但“下一步按钮”会隐藏或失效。
+若 `sceneChanger` 未绑定，则完成态仍可弹出，但"下一步按钮"会隐藏或失效。
 
 ### 折叠位置
 
@@ -108,7 +113,7 @@
 
 ---
 
-## 后续 Bug 修复记录
+## 后续 Bug 修复记录（已废弃）
 
 ### [2026-04-06] 完成态再次打开时元素消失
 
@@ -143,42 +148,42 @@
 **修复方式（`Level.cs`）：**
 
 - `Start()` 中在恢复计数后，若 `mCount >= TotalCount`，启动 `ShowCompletionInfoPanelNextFrame()`。
-- 使用“下一帧恢复”而非立即调用，避免与 `InfoPanelController.Start()` 的初始折叠/定位流程抢时序。
+- 使用"下一帧恢复"而非立即调用，避免与 `InfoPanelController.Start()` 的初始折叠/定位流程抢时序。
 
 ### [2026-04-09] 通关后不再自动弹出 InfoPanel，改为右上角快捷下一关
 
 **背景：**
 
-- 发行侧反馈：通关时自动弹出 `InfoPanel` 会打断玩家，且“下一步”入口不应只放在可折叠侧边栏内部。
+- 发行侧反馈：通关时自动弹出 `InfoPanel` 会打断玩家，且"下一步"入口不应只放在可折叠侧边栏内部。
 
 **调整结果：**
 
 - `Level` 通关后不再调用自动弹出 `InfoPanel` 的流程。
 - 新增右上角快捷按钮（`topRightNextLevelButton`）作为通关后的主跳转入口。
-- 该按钮仅在“已通关且 `sceneChanger` 有效”时显示；点击后调用 `sceneChanger.ChangeScene()`。
+- 该按钮仅在"已通关且 `sceneChanger` 有效"时显示；点击后调用 `sceneChanger.ChangeScene()`。
 - 读档进入已通关关卡时，按钮可见性也会正确恢复。
 
 **影响说明：**
 
-- `InfoPanel` 内原有完成态内容与按钮逻辑未删除，仅从“自动打断式入口”改为“可主动查看入口”。
+- `InfoPanel` 内原有完成态内容与按钮逻辑未删除，仅从"自动打断式入口"改为"可主动查看入口"。
 
 ### [2026-04-09] 路牌触发改为开关切换，并修复重复触发/性能问题
 
 **问题现象：**
 
-1. 面板展开时点击路牌会出现“收起后又展开”的体感抖动。
+1. 面板展开时点击路牌会出现"收起后又展开"的体感抖动。
 2. 路牌与空白点击事件叠加时，可能重复触发展开动画。
 3. 每次空白点击都做全场景物理检测，存在不必要开销。
 
 **根本原因：**
 
-1. `InputRouter.OnBlankClick` 先触发 `TryHide()`，再到 `OnMouseUp()` 执行路牌逻辑，形成同帧“先关后开”。
-2. 路牌逻辑早期只做“打开”，未统一为开关语义。
+1. `InputRouter.OnBlankClick` 先触发 `TryHide()`，再到 `OnMouseUp()` 执行路牌逻辑，形成同帧"先关后开"。
+2. 路牌逻辑早期只做"打开"，未统一为开关语义。
 3. `InfoPanelController.IsPointerOverSignboard()` 采用 `RaycastAll/OverlapPointAll`，每次点击都会分配数组并全量扫描。
 
 **修复方式：**
 
-- `SignboardTrigger` 统一为“点击切换”：展开时点路牌收起，收起时点路牌展开。
+- `SignboardTrigger` 统一为"点击切换"：展开时点路牌收起，收起时点路牌展开。
 - 新增路牌按下帧标记（`OnMouseDown` 记录 frame），`InfoPanel.TryHide()` 优先读取该标记并直接跳过收起。
 - 保留物理检测兜底，但改为 `RaycastNonAlloc` / `OverlapPointNonAlloc`，避免运行时分配。
 - 在 `SignboardTrigger.OnMouseUp()` 增加 UI 遮挡判断，防止 UI 点击误触场景路牌。
@@ -191,7 +196,7 @@
 
 ---
 
-## 本次 review 记录的后续优化项
+## 本次 review 记录的后续优化项（已废弃）
 
 以下不是当前阻塞项，留待后续统一处理：
 
@@ -201,7 +206,7 @@
 
 ---
 
-## 验证结论
+## 验证结论（已废弃）
 
 - 已完成的 UI 行为本身没有发现明显高能耗逻辑
 - 当前主要运行成本来自轻量级 DOTween UI 动画与少量事件监听，可接受
@@ -214,3 +219,4 @@
 - `../../architecture/input-system.md`
 - `../../architecture/goal-step-system.md`
 - `../ongoing/goal-input-lock-bug.md`
+- `./panel-info-controller-cleanup.md` ← 详细清理记录
