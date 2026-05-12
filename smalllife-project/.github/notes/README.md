@@ -53,6 +53,7 @@
 | [single-goal-click-lag-exittime-hotfix.md](tasks/resolved/single-goal-click-lag-exittime-hotfix.md) | SingleGoal 点击链路、读档恢复、统一命名与完成态恢复修复 |
 | [goal-save-restore-visual-sync.md](tasks/resolved/goal-save-restore-visual-sync.md) | Goal 读档恢复可视状态与 GoalBar icon 同步修复，含统一规则收敛与后续优化建议 |
 | [goal-dialog-save-restore-stage-sync.md](tasks/resolved/goal-dialog-save-restore-stage-sync.md) | GoalDialog 读档阶段错位修复：防止 Start 覆盖恢复阶段，并同步复播秒出状态 |
+| [goal-collect-layer-order-fallback.md](tasks/resolved/goal-collect-layer-order-fallback.md) | Goal 收集飞向 GoalBar 时的 UI 层级兜底：保证 mGameObjectNovel 飞行动画显示在 GoalBar 上方 |
 
 ---
 

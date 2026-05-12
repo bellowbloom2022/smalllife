@@ -198,3 +198,36 @@ enum Stage { PreAnim1, PostAnim1, PostAnim2 }
 
 - 当前拆分先停在文件级解耦（不继续拆为新组件），优先保证稳定与低迁移成本。
 - 后续若继续拆分，建议仍维持 `partial` 路线，避免触发 Inspector 批量迁移。
+
+---
+
+## 收集飞行动画层级兜底（2026-05-12）
+
+### 背景
+
+- `mGameObjectNovel` 通常位于 `Canvas/goal_item_object` 下。
+- `mNovelPos` / `iconController` 的目标位置位于 `GoalBar` / `GoalBar-levelX` 内。
+- 收集动画要求：飞向 GoalBar 的全过程必须显示在 GoalBar 上方，不能被 GoalBar 遮挡。
+
+### 定位结论
+
+- 没有发现 `Goal` / `GoalBar` 相关项目代码会运行时主动调整 `goal_item_object` 或 `GoalBar` 的父节点、sibling index 或 Canvas sorting。
+- `Goal.Collect.cs` 原逻辑只移动 `mGameObjectNovel` 的位置和缩放，不处理 UI 层级。
+- 场景序列化里 GoalBar 可能本身位于 `goal_item_object` 之后，因此同 Canvas 下默认会盖住收集物。
+
+### 当前方案
+
+文件：`Assets/Script/Goals/Goal.Collect.cs`
+
+- 在 `TriggerCollectAnimation()` 开始时获取 `mGameObjectNovel` 的父层 `collectLayer`，通常是 `goal_item_object`。
+- 根据 `iconController.transform` 或 `mNovelPos.transform` 找到 GoalBar 所在的同级顶层 UI 节点。
+- 调用 `ElevateCollectLayerAboveTarget(collectLayer, target)`，将 `goal_item_object` 移到目标 GoalBar 之后。
+- 在 `GoalIconBarController.TryFocusToGoal(...)` 和 `Canvas.ForceUpdateCanvases()` 后再次校正一次。
+
+### 设计原则
+
+- 调整承载层 `goal_item_object`，不直接重挂或移动 `mGameObjectNovel`，避免破坏原有动画坐标系。
+- 优先只放到目标 GoalBar 之后，不无条件盖过所有 Canvas 子节点，减少影响 Fade / Overlay / 其他全屏 UI。
+- 若目标层级无法解析，则退化为 `SetAsLastSibling()`，优先保证收集动画可见。
+
+详见：`../tasks/resolved/goal-collect-layer-order-fallback.md`

@@ -9,6 +9,9 @@ public partial class Goal : MonoBehaviour
         Vector3 screenPos = Camera.main.WorldToScreenPoint(mNovelPosStart.transform.position);
         RectTransformUtility.ScreenPointToLocalPointInRectangle(mCanvas.transform as RectTransform, screenPos, null, out Vector2 uiPos);
         RectTransform rectPenZai = mGameObjectNovel.GetComponent<RectTransform>();
+        Transform collectLayer = rectPenZai.parent;
+        Transform collectTarget = iconController != null ? iconController.transform : mNovelPos.transform;
+        ElevateCollectLayerAboveTarget(collectLayer, collectTarget);
         rectPenZai.anchoredPosition = uiPos;
 
         screenPos = Camera.main.WorldToScreenPoint(mNovelPosMid.transform.position);
@@ -25,6 +28,7 @@ public partial class Goal : MonoBehaviour
 
             Canvas.ForceUpdateCanvases();
             Transform finalTarget = iconController != null ? iconController.transform : mNovelPos.transform;
+            ElevateCollectLayerAboveTarget(collectLayer, finalTarget);
             // 用世界坐标转换，无论目标是否在 Content 内都能落到正确槽位
             Vector3 finalLocalPos = rectPenZai.parent.InverseTransformPoint(finalTarget.position);
             finalLocalPos.z = 0f;
@@ -66,6 +70,34 @@ public partial class Goal : MonoBehaviour
         AudioHub.Instance.PlayGlobal("goal_found");
         currentStage = markStep2 ? Stage.PostAnim2 : Stage.PostAnim1;
         ShowFirstDialogueOfCurrentStage();
+    }
+
+    private void ElevateCollectLayerAboveTarget(Transform collectLayer, Transform target)
+    {
+        if (collectLayer == null)
+            return;
+
+        if (target == null || collectLayer.parent == null)
+        {
+            collectLayer.SetAsLastSibling();
+            return;
+        }
+
+        Transform targetLayer = target;
+        while (targetLayer.parent != null && targetLayer.parent != collectLayer.parent)
+        {
+            targetLayer = targetLayer.parent;
+        }
+
+        if (targetLayer.parent != collectLayer.parent || targetLayer == collectLayer)
+        {
+            collectLayer.SetAsLastSibling();
+            return;
+        }
+
+        int targetIndex = targetLayer.GetSiblingIndex();
+        if (collectLayer.GetSiblingIndex() <= targetIndex)
+            collectLayer.SetSiblingIndex(targetIndex);
     }
 
     private void CleanupCollectedNovelObject()
